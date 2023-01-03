@@ -1,0 +1,39 @@
+import { request } from "../utils/request";
+
+export async function adminLogin(email, password) {
+  return request({
+    method: "POST",
+    url: `/admin/login`,
+    body: {
+      email,
+      password,
+    },
+  });
+}
+
+export async function createAdminAccount({ email, name, password }) {
+  return request({
+    method: "POST",
+    url: "/admin/account",
+    body: {
+      email,
+      name,
+      password,
+    },
+  });
+}
+
+export async function getAllAdminAccount() {
+  return request({
+    method: "GET",
+    url: "/admin/account",
+  });
+}
+
+
+export async function deleteAdminAccount(adminId) {
+  return request({
+    method: "DELETE",
+    url: `/admin/account/${adminId}`,
+  });
+}
