@@ -15,4 +15,14 @@ module.exports = {
       return {};
     }
   },
+
+  getAllUserAccount: async () => {
+    try {
+      const result = await postgresql.query(`SELECT * FROM users`);
+      return result?.rows || [];
+    } catch (error) {
+      console.log("getAllUserAccount >>>> ", error);
+      return [];
+    }
+  },
 };
