@@ -23,12 +23,14 @@ insert into admins(name, email, password, status, created_day) values('admin', '
 create table categorys (
 	_id serial PRIMARY key,
 	name varchar(255),
+	description text,
 	created_day timestamp
 );
 
 create table albums (
 	_id serial PRIMARY key,
 	name varchar(255),
+	description text,
 	created_day timestamp
 );
 
