@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
-import { styled, alpha } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import PropTypes from "prop-types";
-import { Alert, IconButton, TextField } from "@mui/material";
+import {IconButton } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import RTextField from "../../../../components/RedditTextField";
 import { toast } from "react-hot-toast";

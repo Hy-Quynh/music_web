@@ -33,7 +33,7 @@ module.exports = {
 
   getAllAdminAccount: async () => {
     try {
-      const result = await postgresql.query(`SELECT * FROM admins`);
+      const result = await postgresql.query(`SELECT * FROM admins ORDER BY created_day DESC`);
       return result?.rows || [];
     } catch (error) {
       console.log("getAllAdminAccounterror >>>> ", error);
@@ -45,6 +45,17 @@ module.exports = {
     try {
       const result = await postgresql.query(
         `DELETE FROM admins WHERE _id = ${Number(adminId)}`
+      );
+      return result?.rows ? true : false;
+    } catch (error) {
+      return false;
+    }
+  },
+
+  changeAdminStatus: async (adminId, status) => {
+    try {
+      const result = await postgresql.query(
+        `UPDATE admins SET status=${status} WHERE _id=${Number(adminId)}`
       );
       return result?.rows ? true : false;
     } catch (error) {

@@ -25,6 +25,7 @@ import {
 } from "../../../services/admin";
 import { toast } from "react-hot-toast";
 import { dateTimeConverter } from "../../../utils/utils";
+import ChangeStatusModal from "./components/ChangeStatusModal";
 
 const columns = [
   { id: "stt", label: "#", minWidth: 50 },
@@ -56,6 +57,7 @@ export default function AdminAccount() {
   const [viewUserData, setViewUserData] = useState({});
   const [visibleUserDrawer, setVisibleUserDrawer] = useState(false);
   const [visibleAddModal, setVisibleAddModal] = useState(false);
+  const [visibleStatusModal, setVisibleStatusModal] = useState(false);
   const [popoverId, setPopoverId] = useState("");
 
   const handleChangePage = (event, newPage) => {
@@ -217,11 +219,18 @@ export default function AdminAccount() {
                             ) : column.id === "created_day" ? (
                               dateTimeConverter(value)
                             ) : column.id === "status" ? (
-                              value ? (
-                                <Chip label="Active" color="success" />
-                              ) : (
-                                <Chip label="Inactive" color="error" />
-                              )
+                              <div
+                                onClick={() => {
+                                  setVisibleStatusModal(true);
+                                  setViewUserData(row);
+                                }}
+                              >
+                                <Chip
+                                  sx={{ cursor: "pointer" }}
+                                  label={value ? "Active" : "Inactive"}
+                                  color={value ? "success" : "error"}
+                                />
+                              </div>
                             ) : (
                               value
                             )}
@@ -258,6 +267,25 @@ export default function AdminAccount() {
           visible={visibleAddModal}
           onClose={() => setVisibleAddModal(false)}
           handleSubmit={(managerData) => handleCreateManager(managerData)}
+        />
+      )}
+
+      {visibleStatusModal && (
+        <ChangeStatusModal
+          onClose={() => {
+            setVisibleStatusModal(false);
+            setViewUserData({});
+          }}
+          visible={visibleStatusModal}
+          user={viewUserData}
+          handleChangeStatus={(id, status) => {
+            const admin = [...tableData];
+            const adminChangeId = admin?.findIndex((item) => item?._id === id);
+            if (adminChangeId >= 0) {
+              admin[adminChangeId].status = status;
+              setTableData(admin);
+            }
+          }}
         />
       )}
     </>

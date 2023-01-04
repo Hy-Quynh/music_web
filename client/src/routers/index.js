@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { AdminLayout } from "../layouts/AdminLayout";
 import ClientLayout from "../layouts/ClientLayout";
 import AdminAccount from "../pages/Admin/AdminAccount";
+import AdminCategory from "../pages/Admin/Category";
 import Dashboard from "../pages/Admin/Dashboard";
 import AdminLogin from "../pages/Admin/Login";
 import UserAccount from "../pages/Admin/UserAccount";
@@ -84,6 +85,18 @@ export default function MainRouter() {
           element={
             <AdminLayout>
               <UserAccount />
+            </AdminLayout>
+          }
+        />
+      </Routes>
+
+      <Routes>
+        <Route
+          exact
+          path="/admin/category"
+          element={
+            <AdminLayout>
+              <AdminCategory />
             </AdminLayout>
           }
         />

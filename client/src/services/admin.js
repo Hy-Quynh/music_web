@@ -37,3 +37,11 @@ export async function deleteAdminAccount(adminId) {
     url: `/admin/account/${adminId}`,
   });
 }
+
+export async function changeAdminStatus(adminId, status) {
+  return request({
+    method: "PUT",
+    url: `/admin/status/${adminId}`,
+    body: {status}
+  });
+}

@@ -20,6 +20,7 @@ import ListItemText from "@mui/material/ListItemText";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import PersonIcon from "@mui/icons-material/Person";
+import CategoryIcon from "@mui/icons-material/Category";
 
 import { useLocation } from "react-router-dom";
 const drawerWidth = 240;
@@ -108,13 +109,13 @@ export function AdminLayout(props) {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              TRANG QUẢN LÍ
+              ADMIN PAGE
             </Typography>
             <IconButton color="inherit">
               <LogoutIcon
                 onClick={() => {
-                  sessionStorage.clear();
-                  navigate("/login");
+                  localStorage.clear();
+                  navigate("/");
                 }}
               />
             </IconButton>
@@ -147,6 +148,20 @@ export function AdminLayout(props) {
               </ListItemButton>
 
               <ListItemButton
+                onClick={() => navigate("/admin/category")}
+                sx={
+                  pathName === "/admin/category"
+                    ? { background: "#b0b0b0" }
+                    : {}
+                }
+              >
+                <ListItemIcon>
+                  <CategoryIcon />
+                </ListItemIcon>
+                <ListItemText primary="Category" />
+              </ListItemButton>
+
+              <ListItemButton
                 onClick={() => navigate("/admin/admin-account")}
                 sx={
                   pathName === "/admin/admin-account"
@@ -169,7 +184,7 @@ export function AdminLayout(props) {
                 }
               >
                 <ListItemIcon>
-                  <ManageAccountsIcon />
+                  <PersonIcon />
                 </ListItemIcon>
                 <ListItemText primary="Customer Account" />
               </ListItemButton>

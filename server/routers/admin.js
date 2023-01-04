@@ -6,5 +6,6 @@ router.post('/login', adminController.LOGIN);
 router.post('/account', adminController.createNewAccount);
 router.get('/account', adminController.getAllAccount);
 router.delete('/account/:adminId', adminController.deleteAccount);
+router.put('/status/:adminId', adminController.changeStatus);
 
 module.exports = router;

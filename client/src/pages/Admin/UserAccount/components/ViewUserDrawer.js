@@ -41,7 +41,7 @@ export default function SwipeableTemporaryDrawer(props) {
                 fontWeight: 700,
               }}
             >
-              THÔNG TIN CÁ NHÂN
+              PERSONAL INFORMATION
             </Box>
             <Stack
               flexWrap="nowrap"
@@ -53,7 +53,7 @@ export default function SwipeableTemporaryDrawer(props) {
               <Box>
                 <PersonIcon sx={{ color: "#1876D1" }} />
               </Box>
-              <Box sx={inputStyle}>{initData?.name || 'Chưa thiết lập'}</Box>
+              <Box sx={inputStyle}>{initData?.name || "Chưa thiết lập"}</Box>
             </Stack>
 
             <Stack
@@ -90,13 +90,13 @@ export default function SwipeableTemporaryDrawer(props) {
               alignItems="center"
               justifyContent="flex-start"
             >
-              <Tooltip title='status' placement="top">
+              <Tooltip title="status" placement="top">
                 <Box>
                   <StarIcon sx={{ color: "#1876D1" }} />
                 </Box>
               </Tooltip>
               <Box sx={inputStyle}>
-                {initData?.status ? "Hoạt động" : "Không hoạt động"}
+                {initData?.status ? "Activce" : "Inactive"}
               </Box>
             </Stack>
           </Box>

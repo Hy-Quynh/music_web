@@ -17,6 +17,9 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import SwipeableTemporaryDrawer from "./components/ViewUserDrawer";
 import { dateTimeConverter } from "../../../utils/utils";
 import { getAllUserAccount } from "../../../services/user";
+import ChangeStatusModal from "./components/ChangeStatusModal";
+import ChangeRankModal from "./components/ChangeRankModel";
+import { COPPER_RANK } from "../../../utils/constants";
 
 const columns = [
   { id: "stt", label: "#", minWidth: 50 },
@@ -49,7 +52,7 @@ const columns = [
 
 const displayRank = (rank) => {
   if (!rank) {
-    return "COPPER";
+    return COPPER_RANK;
   }
   return rank;
 };
@@ -60,7 +63,8 @@ export default function UserAccount() {
   const [tableData, setTableData] = useState([]);
   const [viewUserData, setViewUserData] = useState({});
   const [visibleUserDrawer, setVisibleUserDrawer] = useState(false);
-  const [popoverId, setPopoverId] = useState("");
+  const [visibleStatusModal, setVisibleStatusModal] = useState(false);
+  const [visibleRankModal, setVisibleRankModal] = useState(false);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -162,11 +166,18 @@ export default function UserAccount() {
                             ) : column.id === "created_day" ? (
                               dateTimeConverter(value)
                             ) : column.id === "status" ? (
-                              value ? (
-                                <Chip label="Active" color="success" />
-                              ) : (
-                                <Chip label="Inactive" color="error" />
-                              )
+                              <div
+                                onClick={() => {
+                                  setVisibleStatusModal(true);
+                                  setViewUserData(row);
+                                }}
+                              >
+                                <Chip
+                                  sx={{ cursor: "pointer" }}
+                                  label={value ? "Active" : "Inactive"}
+                                  color={value ? "success" : "error"}
+                                />
+                              </div>
                             ) : column.id === "name" ? (
                               !value ? (
                                 "Chưa thiết lập"
@@ -174,7 +185,19 @@ export default function UserAccount() {
                                 value
                               )
                             ) : column.id === "rank" ? (
-                              displayRank(value)
+                              <div
+                                onClick={() => {
+                                  setVisibleRankModal(true);
+                                  setViewUserData(row);
+                                }}
+                              >
+                                <Chip
+                                  sx={{ cursor: "pointer" }}
+                                  label={displayRank(value)}
+                                  color="primary"
+                                  variant="outlined"
+                                />
+                              </div>
                             ) : (
                               value
                             )}
@@ -203,6 +226,44 @@ export default function UserAccount() {
           visible={visibleUserDrawer}
           initData={viewUserData}
           onClose={() => setVisibleUserDrawer(false)}
+        />
+      )}
+
+      {visibleStatusModal && (
+        <ChangeStatusModal
+          onClose={() => {
+            setVisibleStatusModal(false);
+            setViewUserData({});
+          }}
+          visible={visibleStatusModal}
+          user={viewUserData}
+          handleChangeStatus={(id, status) => {
+            const user = [...tableData];
+            const userChangeId = user?.findIndex((item) => item?._id === id);
+            if (userChangeId >= 0) {
+              user[userChangeId].status = status;
+              setTableData(user);
+            }
+          }}
+        />
+      )}
+
+      {visibleRankModal && (
+        <ChangeRankModal
+          onClose={() => {
+            setVisibleRankModal(false);
+            setViewUserData({});
+          }}
+          visible={visibleRankModal}
+          user={viewUserData}
+          handleChangeRank={(id, rank) => {
+            const user = [...tableData];
+            const userChangeId = user?.findIndex((item) => item?._id === id);
+            if (userChangeId >= 0) {
+              user[userChangeId].rank = rank;
+              setTableData(user);
+            }
+          }}
         />
       )}
     </>

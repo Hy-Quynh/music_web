@@ -6,6 +6,7 @@ const cors = require('cors');
 const authRouter = require('./routers/auth');
 const adminRouter = require('./routers/admin');
 const userRouter = require('./routers/user');
+const categoryRouter = require('./routers/category');
 
 app.use(cookieSession({
   name: 'session',
@@ -35,6 +36,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/api/auth', authRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/user', userRouter);
+app.use('/api/category', categoryRouter);
 
 let PORT = process.env.PORT || 5005
 app.listen(PORT, () => console.log(`App running on port: ${PORT}`))

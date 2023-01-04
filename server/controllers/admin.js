@@ -5,6 +5,7 @@ const {
   createNewAccount,
   getAllAdminAccount,
   deleteAdminAccount,
+  changeAdminStatus,
 } = require("../models/admin");
 
 module.exports = {
@@ -75,6 +76,26 @@ module.exports = {
       return res.send({
         success: false,
         error: "Xoá tài khoản thất bại",
+      });
+    }
+  }),
+
+  changeStatus: asyncHandler(async (req, res) => {
+    try {
+      const { adminId } = req?.params;
+      const { status } = req?.body;
+      const result = await changeAdminStatus(adminId, status);
+      if (result) {
+        return res.send({ success: true });
+      }
+      return res.send({
+        success: false,
+        error: "Thay đổi trạng thái thất bại",
+      });
+    } catch (error) {
+      return res.send({
+        success: false,
+        error: "Thay đổi trạng thái thất bại",
       });
     }
   }),

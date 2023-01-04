@@ -18,11 +18,35 @@ module.exports = {
 
   getAllUserAccount: async () => {
     try {
-      const result = await postgresql.query(`SELECT * FROM users`);
+      const result = await postgresql.query(
+        `SELECT * FROM users ORDER BY created_day DESC`
+      );
       return result?.rows || [];
     } catch (error) {
       console.log("getAllUserAccount >>>> ", error);
       return [];
+    }
+  },
+
+  changeUserStatus: async (userId, status) => {
+    try {
+      const result = await postgresql.query(
+        `UPDATE users SET status=${status} WHERE _id=${Number(userId)}`
+      );
+      return result?.rows ? true : false;
+    } catch (error) {
+      return false;
+    }
+  },
+
+  changeUserRank: async (userId, rank) => {
+    try {
+      const result = await postgresql.query(
+        `UPDATE users SET rank='${rank}' WHERE _id=${Number(userId)}`
+      );
+      return result?.rows ? true : false;
+    } catch (error) {
+      return false;
     }
   },
 };

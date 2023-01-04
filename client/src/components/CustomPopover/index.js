@@ -20,9 +20,11 @@ export default function CustomPopover(props) {
           }}
         >
           <div style={{ textAlign: "center" }}>
-            {noti ? noti : "Bạn có chắc chắn muốn đổi trạng thái?"}
+            {noti ? noti : "Are you sure you want to change the status?"}
           </div>
-          <div style={{borderBottom: '1px solid gray', marginTop: '5px'}}></div>
+          <div
+            style={{ borderBottom: "1px solid gray", marginTop: "5px" }}
+          ></div>
           {content && content}
           <div
             style={{
@@ -39,13 +41,13 @@ export default function CustomPopover(props) {
               }}
               onClick={handleSubmit}
             >
-              Đồng ý
+              Confirm
             </button>
             <button
               style={{ padding: "3px 20px", border: "gray 1px solid" }}
               onClick={onClose}
             >
-              Huỷ
+              Cancel
             </button>
           </div>
         </div>
