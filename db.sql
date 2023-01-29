@@ -42,6 +42,16 @@ create table singers (
 	created_day timestamp
 );
 
+
+create table countries (
+	_id serial PRIMARY key,
+	name varchar(255),
+	created_day timestamp
+);
+
+select * from songs s ;
+select * from song_singer;
+
 create table songs (
 	_id serial PRIMARY key,
 	name varchar(255),
@@ -49,6 +59,7 @@ create table songs (
 	description text,
 	category_id int,
 	album_id int null,
+	country_id int,
 	status boolean,
 	view int,
 	favourite int,
@@ -61,7 +72,11 @@ create table songs (
 	
 	CONSTRAINT fk_songs_albums
     FOREIGN KEY(album_id) 
-	REFERENCES albums(_id)
+	REFERENCES albums(_id),
+	
+	CONSTRAINT fk_songs_countries
+    FOREIGN KEY(country_id) 
+	REFERENCES countries(_id)
 )
 
 create table song_singer (
