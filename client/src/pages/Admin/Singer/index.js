@@ -16,14 +16,22 @@ import CustomModal from "../../../components/CustomModal";
 import RTextField from "../../../components/RedditTextField";
 import { toast } from "react-hot-toast";
 import {
-  createNewCategory,
-  deleteCategoryData,
-  getAllCategory,
-  updateCategory,
-} from "../../../services/category";
+  createNewSinger,
+  deleteSingerData,
+  getAllSinger,
+  updateSinger,
+} from "../../../services/singer";
+import storage from "../../../firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const columns = [
   { id: "stt", label: "#", minWidth: 50, align: "center" },
+  {
+    id: "avatar",
+    label: "Avatar",
+    minWidth: 170,
+    align: "center",
+  },
   {
     id: "name",
     label: "Name",
@@ -45,20 +53,22 @@ const columns = [
   },
 ];
 
-export default function AdminCategory() {
-  const [listCategory, setListCategory] = useState([]);
-  const [addCategoryModal, setAddCategoryModal] = useState({
+export default function AdminSinger() {
+  const [listSinger, setListSinger] = useState([]);
+  const [addSingerModal, setAddSingerModal] = useState({
     status: false,
     type: "",
   });
-  const [editCategory, setEditCategory] = useState({
-    categoryName: "",
+  const [editSinger, setEditSinger] = useState({
+    singerName: "",
+    singerImage: "",
     description: "",
-    categoryId: -1,
+    singerId: -1,
   });
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [popoverId, setPopoverId] = useState("");
+  const [submitLoading, setSubmitLoading] = useState(false);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -69,74 +79,93 @@ export default function AdminCategory() {
     setPage(0);
   };
 
-  const getListCategory = async () => {
+  const getListSinger = async () => {
     try {
-      const res = await getAllCategory();
+      const res = await getAllSinger();
       if (res?.data?.success) {
-        setListCategory(res?.data?.payload);
+        setListSinger(res?.data?.payload);
       }
     } catch (error) {
-      console.log("get list category error >>> ", error);
+      console.log("get list singer error >>> ", error);
     }
   };
 
   useEffect(() => {
-    getListCategory();
+    getListSinger();
   }, []);
 
-  const handleCreateUpdateCategory = async () => {
-    const { categoryName, description } = editCategory;
-    if (!categoryName.trim().length || !description.trim().length) {
+  const handleCreateUpdateSinger = async () => {
+    const { singerName, description, singerImage } = editSinger;
+    if (
+      !singerName.trim().length ||
+      !description.trim().length ||
+      (addSingerModal.type === "add" && typeof singerImage === "string")
+    ) {
       return toast.error("Data can not blank ");
-    } else if (categoryName.trim().length <= 3) {
-      return toast.error("Name must be more than 3 characters");
+    } else if (singerName.trim().length < 3) {
+      return toast.error("Name must be more than 2 characters");
     } else if (description.length <= 10) {
       return toast.error("Description must be more than 10 characters");
     } else {
-      if (addCategoryModal.type === "add") {
-        const createRes = await createNewCategory(
-          categoryName,
-          description
+      let newAvatar = singerImage;
+      if (typeof singerImage !== "string") {
+        const imageName = "singer-" + new Date().getTime();
+        const storageRef = ref(storage, imageName);
+
+        const updateImageRes = await uploadBytes(storageRef, singerImage);
+        if (updateImageRes) {
+          const pathReference = ref(storage, imageName);
+          const url = await getDownloadURL(pathReference);
+          newAvatar = url;
+        } else {
+          return toast.error("Can't upload avatar");
+        }
+      }
+
+      if (addSingerModal.type === "add") {
+        const createRes = await createNewSinger(
+          singerName,
+          description,
+          newAvatar
         );
         if (createRes?.data?.success) {
-          toast.success("Add new category succes");
-          getListCategory();
-          return setAddCategoryModal({ status: false, type: "" });
+          toast.success("Add new singer succes");
+          getListSinger();
+          return setAddSingerModal({ status: false, type: "" });
         } else {
-          return toast.error(
-            createRes?.data?.error || "Add new category failed"
-          );
+          return toast.error(createRes?.data?.error || "Add new singer failed");
         }
       } else {
-        const updateRes = await updateCategory(
-          editCategory?.categoryId,
-          categoryName,
-          description
+        const updateRes = await updateSinger(
+          editSinger?.singerId,
+          singerName,
+          description,
+          newAvatar
         );
 
         if (updateRes?.data?.success) {
-          toast.success("Update category success");
-          getListCategory();
-          setAddCategoryModal({ status: false, type: "" });
+          toast.success("Update singer success");
+          getListSinger();
+          setAddSingerModal({ status: false, type: "" });
         } else {
-          toast.error(updateRes?.data?.error || "Update category failed");
+          toast.error(updateRes?.data?.error || "Update singer failed");
         }
       }
     }
   };
 
-  const deleteCategory = async (categoryId) => {
+  const deleteSinger = async (singerId) => {
     try {
-      const deleteRes = await deleteCategoryData(categoryId);
+      const deleteRes = await deleteSingerData(singerId);
       if (deleteRes?.data?.success) {
-        toast.success("Delete category success");
-        getListCategory();
+        toast.success("Delete singer success");
+        getListSinger();
         setPopoverId("");
       } else {
-        toast.error(deleteRes?.data?.error || "Delete category failed");
+        toast.error(deleteRes?.data?.error || "Delete singer failed");
       }
     } catch (error) {
-      toast.error("Delete category failed");
+      toast.error("Delete singer failed");
     }
   };
 
@@ -144,40 +173,65 @@ export default function AdminCategory() {
     <>
       <div>
         <CustomModal
-          visible={addCategoryModal.status}
+          visible={addSingerModal.status}
           onClose={() =>
-            setAddCategoryModal({ ...addCategoryModal, status: false })
+            setAddSingerModal({ ...addSingerModal, status: false })
           }
           title={
-            addCategoryModal.type === "add"
-              ? "Add new category"
-              : "Update category"
+            addSingerModal.type === "add" ? "Add new singer" : "Update singer"
           }
           content={
             <>
               <RTextField
                 label="Name"
-                defaultValue={editCategory.categoryName || ""}
+                defaultValue={editSinger.singerName || ""}
                 id="post-title"
                 variant="filled"
                 style={{ marginTop: 11, textAlign: "left" }}
                 onChange={(event) =>
-                  setEditCategory({
-                    ...editCategory,
-                    categoryName: event.target.value,
+                  setEditSinger({
+                    ...editSinger,
+                    singerName: event.target.value,
                   })
                 }
               />
 
+              <Typography
+                variant="p"
+                component="p"
+                sx={{
+                  fontSize: "17px",
+                  color: "black",
+                  marginBottom: "-10px",
+                  marginTop: "10px",
+                }}
+              >
+                Avatar:
+              </Typography>
+              <RTextField
+                defaultValue=""
+                id="post-title"
+                variant="filled"
+                style={{ marginTop: 11 }}
+                type="file"
+                accept="image/*"
+                onChange={(event) => {
+                  setEditSinger({
+                    ...editSinger,
+                    singerImage: event.target.files[0],
+                  });
+                }}
+              />
+
               <TextareaAutosize
-                defaultValue={editCategory.description || ""}
+                defaultValue={editSinger.description || ""}
                 aria-label="minimum height"
                 minRows={10}
                 placeholder="Description"
                 style={{ width: "100%", marginTop: "20px", padding: "10px" }}
                 onChange={(event) =>
-                  setEditCategory({
-                    ...editCategory,
+                  setEditSinger({
+                    ...editSinger,
                     description: event.target.value,
                   })
                 }
@@ -187,11 +241,14 @@ export default function AdminCategory() {
           action={
             <LoadingButton
               autoFocus
-              onClick={() => {
-                handleCreateUpdateCategory();
+              onClick={async() => {
+                setSubmitLoading(true)
+                await handleCreateUpdateSinger();
+                setSubmitLoading(false)
               }}
+              loading={submitLoading}
             >
-              {addCategoryModal.type === "add" ? "Add new" : "Update"}
+              {addSingerModal.type === "add" ? "Add new" : "Update"}
             </LoadingButton>
           }
         />
@@ -209,14 +266,18 @@ export default function AdminCategory() {
           gutterBottom
           sx={{ textAlign: "left" }}
         >
-          Manage categories
+          Manage singer
         </Typography>
         <div>
           <Button
             variant="contained"
             onClick={() => {
-              setEditCategory({ categoryName: "", description: "" });
-              setAddCategoryModal({ status: true, type: "add" });
+              setEditSinger({
+                singerName: "",
+                description: "",
+                singerImage: "",
+              });
+              setAddSingerModal({ status: true, type: "add" });
             }}
           >
             Add new
@@ -240,7 +301,7 @@ export default function AdminCategory() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {listCategory
+              {listSinger
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   return (
@@ -262,8 +323,8 @@ export default function AdminCategory() {
                                 <CustomPopover
                                   open={popoverId === row?._id}
                                   onClose={() => setPopoverId("")}
-                                  handleSubmit={() => deleteCategory(row?._id)}
-                                  noti="Are you sure you want to delete the category?"
+                                  handleSubmit={() => deleteSinger(row?._id)}
+                                  noti="Are you sure you want to delete the singer?"
                                 >
                                   <Button
                                     color="error"
@@ -284,12 +345,13 @@ export default function AdminCategory() {
                                   variant="contained"
                                   size="small"
                                   onClick={() => {
-                                    setEditCategory({
-                                      categoryName: row?.name,
+                                    setEditSinger({
+                                      singerName: row?.name,
+                                      singerImage: row?.avatar,
                                       description: row?.description,
-                                      categoryId: row?._id,
+                                      singerId: row?._id,
                                     });
-                                    setAddCategoryModal({
+                                    setAddSingerModal({
                                       status: true,
                                       type: "update",
                                     });
@@ -319,6 +381,8 @@ export default function AdminCategory() {
                               >
                                 {value}
                               </div>
+                            ) : column.id === "avatar" ? (
+                              <img src={value} alt="avatar" width={70} height={70}/>
                             ) : (
                               value
                             )}
@@ -334,7 +398,7 @@ export default function AdminCategory() {
         <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component="div"
-          count={listCategory.length}
+          count={listSinger.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

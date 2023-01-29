@@ -7,7 +7,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import { Button, Stack, TextareaAutosize, Typography } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LoadingButton from "@mui/lab/LoadingButton";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -16,11 +16,11 @@ import CustomModal from "../../../components/CustomModal";
 import RTextField from "../../../components/RedditTextField";
 import { toast } from "react-hot-toast";
 import {
-  createNewCategory,
-  deleteCategoryData,
-  getAllCategory,
-  updateCategory,
-} from "../../../services/category";
+  createNewCountry,
+  deleteCountryData,
+  getAllCountry,
+  updateCountry,
+} from "../../../services/country";
 
 const columns = [
   { id: "stt", label: "#", minWidth: 50, align: "center" },
@@ -31,13 +31,6 @@ const columns = [
     align: "left",
   },
   {
-    id: "description",
-    label: "Description",
-    minWidth: 170,
-    maxWidth: 200,
-    align: "left",
-  },
-  {
     id: "action",
     label: "Action",
     minWidth: 170,
@@ -45,16 +38,15 @@ const columns = [
   },
 ];
 
-export default function AdminCategory() {
-  const [listCategory, setListCategory] = useState([]);
-  const [addCategoryModal, setAddCategoryModal] = useState({
+export default function AdminCountry() {
+  const [listCountry, setListCountry] = useState([]);
+  const [addCountryModal, setAddCountryModal] = useState({
     status: false,
     type: "",
   });
-  const [editCategory, setEditCategory] = useState({
-    categoryName: "",
-    description: "",
-    categoryId: -1,
+  const [editCountry, setEditCountry] = useState({
+    countryName: "",
+    countryId: -1,
   });
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -69,74 +61,68 @@ export default function AdminCategory() {
     setPage(0);
   };
 
-  const getListCategory = async () => {
+  const getListCountry = async () => {
     try {
-      const res = await getAllCategory();
+      const res = await getAllCountry();
       if (res?.data?.success) {
-        setListCategory(res?.data?.payload);
+        setListCountry(res?.data?.payload);
       }
     } catch (error) {
-      console.log("get list category error >>> ", error);
+      console.log("get list country error >>> ", error);
     }
   };
 
   useEffect(() => {
-    getListCategory();
+    getListCountry();
   }, []);
 
-  const handleCreateUpdateCategory = async () => {
-    const { categoryName, description } = editCategory;
-    if (!categoryName.trim().length || !description.trim().length) {
+  const handleCreateUpdateCountry = async () => {
+    const { countryName } = editCountry;
+    if (!countryName.trim().length) {
       return toast.error("Data can not blank ");
-    } else if (categoryName.trim().length <= 3) {
-      return toast.error("Name must be more than 3 characters");
-    } else if (description.length <= 10) {
-      return toast.error("Description must be more than 10 characters");
+    } else if (countryName.trim().length <= 1) {
+      return toast.error("Name must be more than 1 characters");
     } else {
-      if (addCategoryModal.type === "add") {
-        const createRes = await createNewCategory(
-          categoryName,
-          description
-        );
+      if (addCountryModal.type === "add") {
+        const createRes = await createNewCountry(countryName);
         if (createRes?.data?.success) {
-          toast.success("Add new category succes");
-          getListCategory();
-          return setAddCategoryModal({ status: false, type: "" });
+          toast.success("Add new country succes");
+          getListCountry();
+          return setAddCountryModal({ status: false, type: "" });
         } else {
           return toast.error(
-            createRes?.data?.error || "Add new category failed"
+            createRes?.data?.error || "Add new country failed"
           );
         }
       } else {
-        const updateRes = await updateCategory(
-          editCategory?.categoryId,
-          categoryName,
-          description
+        const updateRes = await updateCountry(
+          editCountry?.countryId,
+          countryName
         );
 
         if (updateRes?.data?.success) {
-          toast.success("Update category success");
-          getListCategory();
-          setAddCategoryModal({ status: false, type: "" });
+          toast.success("Update country success");
+          getListCountry();
+          setAddCountryModal({ status: false, type: "" });
         } else {
-          toast.error(updateRes?.data?.error || "Update category failed");
+          toast.error(updateRes?.data?.error || "Update country failed");
         }
       }
     }
   };
 
-  const deleteCategory = async (categoryId) => {
+  const deleteCountry = async (countryId) => {
     try {
-      const deleteRes = await deleteCategoryData(categoryId);
+      const deleteRes = await deleteCountryData(countryId);
       if (deleteRes?.data?.success) {
-        toast.success("Delete category success");
-        getListCategory();
+        toast.success("Delete country success");
+        getListCountry();
         setPopoverId("");
       } else {
-        toast.error(deleteRes?.data?.error || "Delete category failed");
+        toast.error(deleteRes?.data?.error || "Delete country failed");
       }
     } catch (error) {
-      toast.error("Delete category failed");
+      toast.error("Delete country failed");
     }
   };
 
@@ -144,41 +130,27 @@ export default function AdminCategory() {
     <>
       <div>
         <CustomModal
-          visible={addCategoryModal.status}
+          visible={addCountryModal.status}
           onClose={() =>
-            setAddCategoryModal({ ...addCategoryModal, status: false })
+            setAddCountryModal({ ...addCountryModal, status: false })
           }
           title={
-            addCategoryModal.type === "add"
-              ? "Add new category"
-              : "Update category"
+            addCountryModal.type === "add"
+              ? "Add new country"
+              : "Update country"
           }
           content={
             <>
               <RTextField
                 label="Name"
-                defaultValue={editCategory.categoryName || ""}
+                defaultValue={editCountry.countryName || ""}
                 id="post-title"
                 variant="filled"
                 style={{ marginTop: 11, textAlign: "left" }}
                 onChange={(event) =>
-                  setEditCategory({
-                    ...editCategory,
-                    categoryName: event.target.value,
-                  })
-                }
-              />
-
-              <TextareaAutosize
-                defaultValue={editCategory.description || ""}
-                aria-label="minimum height"
-                minRows={10}
-                placeholder="Description"
-                style={{ width: "100%", marginTop: "20px", padding: "10px" }}
-                onChange={(event) =>
-                  setEditCategory({
-                    ...editCategory,
-                    description: event.target.value,
+                  setEditCountry({
+                    ...editCountry,
+                    countryName: event.target.value,
                   })
                 }
               />
@@ -188,10 +160,10 @@ export default function AdminCategory() {
             <LoadingButton
               autoFocus
               onClick={() => {
-                handleCreateUpdateCategory();
+                handleCreateUpdateCountry();
               }}
             >
-              {addCategoryModal.type === "add" ? "Add new" : "Update"}
+              {addCountryModal.type === "add" ? "Add new" : "Update"}
             </LoadingButton>
           }
         />
@@ -209,14 +181,14 @@ export default function AdminCategory() {
           gutterBottom
           sx={{ textAlign: "left" }}
         >
-          Manage categories
+          Manage countries
         </Typography>
         <div>
           <Button
             variant="contained"
             onClick={() => {
-              setEditCategory({ categoryName: "", description: "" });
-              setAddCategoryModal({ status: true, type: "add" });
+              setEditCountry({ countryName: "", description: "" });
+              setAddCountryModal({ status: true, type: "add" });
             }}
           >
             Add new
@@ -240,7 +212,7 @@ export default function AdminCategory() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {listCategory
+              {listCountry
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   return (
@@ -262,8 +234,8 @@ export default function AdminCategory() {
                                 <CustomPopover
                                   open={popoverId === row?._id}
                                   onClose={() => setPopoverId("")}
-                                  handleSubmit={() => deleteCategory(row?._id)}
-                                  noti="Are you sure you want to delete the category?"
+                                  handleSubmit={() => deleteCountry(row?._id)}
+                                  noti="Are you sure you want to delete the country?"
                                 >
                                   <Button
                                     color="error"
@@ -284,12 +256,12 @@ export default function AdminCategory() {
                                   variant="contained"
                                   size="small"
                                   onClick={() => {
-                                    setEditCategory({
-                                      categoryName: row?.name,
+                                    setEditCountry({
+                                      countryName: row?.name,
                                       description: row?.description,
-                                      categoryId: row?._id,
+                                      countryId: row?._id,
                                     });
-                                    setAddCategoryModal({
+                                    setAddCountryModal({
                                       status: true,
                                       type: "update",
                                     });
@@ -310,15 +282,6 @@ export default function AdminCategory() {
                               </div>
                             ) : column.id === "name" ? (
                               <div style={{ fontWeight: 600 }}>{value}</div>
-                            ) : column.id === "description" ? (
-                              <div
-                                style={{
-                                  maxWidth: "200px",
-                                  overflowWrap: "anywhere",
-                                }}
-                              >
-                                {value}
-                              </div>
                             ) : (
                               value
                             )}
@@ -334,7 +297,7 @@ export default function AdminCategory() {
         <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component="div"
-          count={listCategory.length}
+          count={listCountry.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

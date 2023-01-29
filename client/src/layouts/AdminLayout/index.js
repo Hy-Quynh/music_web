@@ -21,6 +21,10 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import PersonIcon from "@mui/icons-material/Person";
 import CategoryIcon from "@mui/icons-material/Category";
+import AlbumIcon from "@mui/icons-material/Album";
+import InterpreterModeIcon from "@mui/icons-material/InterpreterMode";
+import LibraryMusicIcon from "@mui/icons-material/LibraryMusic";
+import LanguageIcon from "@mui/icons-material/Language";
 
 import { useLocation } from "react-router-dom";
 const drawerWidth = 240;
@@ -111,13 +115,14 @@ export function AdminLayout(props) {
             >
               ADMIN PAGE
             </Typography>
-            <IconButton color="inherit">
-              <LogoutIcon
-                onClick={() => {
-                  localStorage.clear();
-                  navigate("/");
-                }}
-              />
+            <IconButton
+              color="inherit"
+              onClick={() => {
+                localStorage.clear();
+                navigate("/");
+              }}
+            >
+              <LogoutIcon />
             </IconButton>
           </Toolbar>
         </AppBar>
@@ -159,6 +164,54 @@ export function AdminLayout(props) {
                   <CategoryIcon />
                 </ListItemIcon>
                 <ListItemText primary="Category" />
+              </ListItemButton>
+
+              <ListItemButton
+                onClick={() => navigate("/admin/country")}
+                sx={
+                  pathName === "/admin/country" ? { background: "#b0b0b0" } : {}
+                }
+              >
+                <ListItemIcon>
+                  <LanguageIcon />
+                </ListItemIcon>
+                <ListItemText primary="Country" />
+              </ListItemButton>
+
+              <ListItemButton
+                onClick={() => navigate("/admin/album")}
+                sx={
+                  pathName === "/admin/album" ? { background: "#b0b0b0" } : {}
+                }
+              >
+                <ListItemIcon>
+                  <AlbumIcon />
+                </ListItemIcon>
+                <ListItemText primary="Album" />
+              </ListItemButton>
+
+              <ListItemButton
+                onClick={() => navigate("/admin/singer")}
+                sx={
+                  pathName === "/admin/singer" ? { background: "#b0b0b0" } : {}
+                }
+              >
+                <ListItemIcon>
+                  <InterpreterModeIcon />
+                </ListItemIcon>
+                <ListItemText primary="Singer" />
+              </ListItemButton>
+
+              <ListItemButton
+                onClick={() => navigate("/admin/music")}
+                sx={
+                  pathName === "/admin/music" ? { background: "#b0b0b0" } : {}
+                }
+              >
+                <ListItemIcon>
+                  <LibraryMusicIcon />
+                </ListItemIcon>
+                <ListItemText primary="Song" />
               </ListItemButton>
 
               <ListItemButton

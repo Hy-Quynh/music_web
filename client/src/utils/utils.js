@@ -15,3 +15,13 @@ export const dateTimeConverter = (dateTime) => {
   }
   return '';
 };
+
+export const parseJSON = (inputString, fallback) => {
+  if (inputString) {
+    try {
+      return JSON.parse(inputString);
+    } catch (e) {
+      return fallback;
+    }
+  }
+};

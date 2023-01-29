@@ -26,6 +26,7 @@ const query = async (queryStr) => {
   try {
     return await client.query(queryStr)
   } catch (error) {
+    console.log('error >>>> ', error);
     throw error
   } finally {
     client.release()

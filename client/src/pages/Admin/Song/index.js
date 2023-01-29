@@ -7,23 +7,27 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import { Button, Stack, TextareaAutosize, Typography } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import LoadingButton from "@mui/lab/LoadingButton";
 import SettingsIcon from "@mui/icons-material/Settings";
 import CustomPopover from "../../../components/CustomPopover";
-import CustomModal from "../../../components/CustomModal";
-import RTextField from "../../../components/RedditTextField";
 import { toast } from "react-hot-toast";
-import {
-  createNewCategory,
-  deleteCategoryData,
-  getAllCategory,
-  updateCategory,
-} from "../../../services/category";
+import storage from "../../../firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { deleteSongData, getAllSong, updateSong } from "../../../services/song";
+import ControlMusicModal from "./components/ControlMusicModal";
+import { createNewSong } from "../../../services/song";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
+import PlayMusicModal from "./components/PlayMusicModal";
 
 const columns = [
   { id: "stt", label: "#", minWidth: 50, align: "center" },
+  {
+    id: "avatar",
+    label: "Avatar",
+    minWidth: 170,
+    align: "center",
+  },
   {
     id: "name",
     label: "Name",
@@ -31,10 +35,27 @@ const columns = [
     align: "left",
   },
   {
-    id: "description",
-    label: "Description",
+    id: "country_name",
+    label: "Country",
     minWidth: 170,
-    maxWidth: 200,
+    align: "left",
+  },
+  {
+    id: "category_name",
+    label: "Category",
+    minWidth: 170,
+    align: "left",
+  },
+  {
+    id: "album_name",
+    label: "Album",
+    minWidth: 170,
+    align: "left",
+  },
+  {
+    id: "singer",
+    label: "Singer",
+    minWidth: 170,
     align: "left",
   },
   {
@@ -45,20 +66,17 @@ const columns = [
   },
 ];
 
-export default function AdminCategory() {
-  const [listCategory, setListCategory] = useState([]);
-  const [addCategoryModal, setAddCategoryModal] = useState({
+export default function AdminSong() {
+  const [listSong, setListSong] = useState([]);
+  const [addSongModal, setAddSongModal] = useState({
     status: false,
     type: "",
   });
-  const [editCategory, setEditCategory] = useState({
-    categoryName: "",
-    description: "",
-    categoryId: -1,
-  });
+  const [editSong, setEditSong] = useState({});
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [popoverId, setPopoverId] = useState("");
+  const [visiblePlayMusic, setVisiblePlayMusic] = useState(false);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -69,133 +87,128 @@ export default function AdminCategory() {
     setPage(0);
   };
 
-  const getListCategory = async () => {
+  const getListSong = async () => {
     try {
-      const res = await getAllCategory();
+      const res = await getAllSong();
       if (res?.data?.success) {
-        setListCategory(res?.data?.payload);
+        setListSong(res?.data?.payload);
       }
     } catch (error) {
-      console.log("get list category error >>> ", error);
+      console.log("get list song error >>> ", error);
     }
   };
 
   useEffect(() => {
-    getListCategory();
+    getListSong();
   }, []);
 
-  const handleCreateUpdateCategory = async () => {
-    const { categoryName, description } = editCategory;
-    if (!categoryName.trim().length || !description.trim().length) {
-      return toast.error("Data can not blank ");
-    } else if (categoryName.trim().length <= 3) {
-      return toast.error("Name must be more than 3 characters");
-    } else if (description.length <= 10) {
-      return toast.error("Description must be more than 10 characters");
-    } else {
-      if (addCategoryModal.type === "add") {
-        const createRes = await createNewCategory(
-          categoryName,
-          description
-        );
-        if (createRes?.data?.success) {
-          toast.success("Add new category succes");
-          getListCategory();
-          return setAddCategoryModal({ status: false, type: "" });
-        } else {
-          return toast.error(
-            createRes?.data?.error || "Add new category failed"
-          );
-        }
-      } else {
-        const updateRes = await updateCategory(
-          editCategory?.categoryId,
-          categoryName,
-          description
-        );
+  const handleCreateUpdateSong = async (songData) => {
+    try {
+      const {
+        avatar,
+        category_id,
+        description,
+        link,
+        name,
+        country_id,
+        singer,
+      } = songData;
 
-        if (updateRes?.data?.success) {
-          toast.success("Update category success");
-          getListCategory();
-          setAddCategoryModal({ status: false, type: "" });
+      if (
+        !name?.trim()?.length ||
+        !description?.trim()?.length ||
+        category_id === -1 ||
+        country_id === -1 ||
+        (typeof avatar === "string" && !avatar?.length) ||
+        (typeof link === "string" && !link?.length) ||
+        !singer?.length
+      ) {
+        return toast.error("Data can not blank ");
+      }
+
+      let newAvatar = avatar;
+      if (typeof avatar !== "string") {
+        const imageName = "song-avatar-" + new Date().getTime();
+        const storageRef = ref(storage, imageName);
+
+        const updateImageRes = await uploadBytes(storageRef, avatar);
+        if (updateImageRes) {
+          const pathReference = ref(storage, imageName);
+          const url = await getDownloadURL(pathReference);
+          newAvatar = url;
         } else {
-          toast.error(updateRes?.data?.error || "Update category failed");
+          return toast.error("Can't upload avatar");
         }
       }
+
+      let newLink = link;
+      if (typeof link !== "string") {
+        const songLink = "song-link-" + new Date().getTime();
+        const storageRef = ref(storage, songLink);
+
+        const updateImageRes = await uploadBytes(storageRef, link);
+        if (updateImageRes) {
+          const pathReference = ref(storage, songLink);
+          const url = await getDownloadURL(pathReference);
+          newLink = url;
+        } else {
+          return toast.error("Can't upload song");
+        }
+      }
+
+      if (addSongModal?.type === "add") {
+        const song = {
+          ...songData,
+          avatar: newAvatar,
+          link: newLink,
+        };
+        const createRes = await createNewSong(song);
+        if (createRes?.data?.success) {
+          toast.success("Add new song success");
+          getListSong();
+          return setAddSongModal({ status: false, type: "" });
+        } else {
+          return toast.error(createRes?.data?.error || "Add new song failed");
+        }
+      }
+
+      if (addSongModal?.type === "update") {
+        const song = {
+          ...songData,
+          avatar: newAvatar,
+          link: newLink,
+        };
+        const updateRes = await updateSong(editSong?._id, song);
+        if (updateRes?.data?.success) {
+          toast.success("Update song succes");
+          getListSong();
+          return setAddSongModal({ status: false, type: "" });
+        } else {
+          return toast.error(updateRes?.data?.error || "Update song failed");
+        }
+      }
+    } catch (error) {
+      console.log("Create update song error >>> ", error);
     }
   };
 
-  const deleteCategory = async (categoryId) => {
+  const deleteSong = async (songId) => {
     try {
-      const deleteRes = await deleteCategoryData(categoryId);
+      const deleteRes = await deleteSongData(songId);
       if (deleteRes?.data?.success) {
-        toast.success("Delete category success");
-        getListCategory();
+        toast.success("Delete song success");
+        getListSong();
         setPopoverId("");
       } else {
-        toast.error(deleteRes?.data?.error || "Delete category failed");
+        toast.error(deleteRes?.data?.error || "Delete song failed");
       }
     } catch (error) {
-      toast.error("Delete category failed");
+      toast.error("Delete song failed");
     }
   };
 
   return (
     <>
-      <div>
-        <CustomModal
-          visible={addCategoryModal.status}
-          onClose={() =>
-            setAddCategoryModal({ ...addCategoryModal, status: false })
-          }
-          title={
-            addCategoryModal.type === "add"
-              ? "Add new category"
-              : "Update category"
-          }
-          content={
-            <>
-              <RTextField
-                label="Name"
-                defaultValue={editCategory.categoryName || ""}
-                id="post-title"
-                variant="filled"
-                style={{ marginTop: 11, textAlign: "left" }}
-                onChange={(event) =>
-                  setEditCategory({
-                    ...editCategory,
-                    categoryName: event.target.value,
-                  })
-                }
-              />
-
-              <TextareaAutosize
-                defaultValue={editCategory.description || ""}
-                aria-label="minimum height"
-                minRows={10}
-                placeholder="Description"
-                style={{ width: "100%", marginTop: "20px", padding: "10px" }}
-                onChange={(event) =>
-                  setEditCategory({
-                    ...editCategory,
-                    description: event.target.value,
-                  })
-                }
-              />
-            </>
-          }
-          action={
-            <LoadingButton
-              autoFocus
-              onClick={() => {
-                handleCreateUpdateCategory();
-              }}
-            >
-              {addCategoryModal.type === "add" ? "Add new" : "Update"}
-            </LoadingButton>
-          }
-        />
-      </div>
       <Stack
         flexWrap={"nowrap"}
         flexDirection="row"
@@ -209,14 +222,14 @@ export default function AdminCategory() {
           gutterBottom
           sx={{ textAlign: "left" }}
         >
-          Manage categories
+          Manage song
         </Typography>
         <div>
           <Button
             variant="contained"
             onClick={() => {
-              setEditCategory({ categoryName: "", description: "" });
-              setAddCategoryModal({ status: true, type: "add" });
+              setEditSong({});
+              setAddSongModal({ status: true, type: "add" });
             }}
           >
             Add new
@@ -240,7 +253,7 @@ export default function AdminCategory() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {listCategory
+              {listSong
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   return (
@@ -262,8 +275,8 @@ export default function AdminCategory() {
                                 <CustomPopover
                                   open={popoverId === row?._id}
                                   onClose={() => setPopoverId("")}
-                                  handleSubmit={() => deleteCategory(row?._id)}
-                                  noti="Are you sure you want to delete the category?"
+                                  handleSubmit={() => deleteSong(row?._id)}
+                                  noti="Are you sure you want to delete the song?"
                                 >
                                   <Button
                                     color="error"
@@ -284,18 +297,25 @@ export default function AdminCategory() {
                                   variant="contained"
                                   size="small"
                                   onClick={() => {
-                                    setEditCategory({
-                                      categoryName: row?.name,
-                                      description: row?.description,
-                                      categoryId: row?._id,
-                                    });
-                                    setAddCategoryModal({
+                                    setEditSong({ ...row });
+                                    setAddSongModal({
                                       status: true,
                                       type: "update",
                                     });
                                   }}
                                 >
                                   <SettingsIcon />
+                                </Button>
+                                <Button
+                                  variant="contained"
+                                  size="small"
+                                  color="success"
+                                  onClick={() => {
+                                    setEditSong({ ...row });
+                                    setVisiblePlayMusic(true);
+                                  }}
+                                >
+                                  <VolumeUpIcon />
                                 </Button>
                               </Stack>
                             ) : column.id === "stt" ? (
@@ -310,14 +330,18 @@ export default function AdminCategory() {
                               </div>
                             ) : column.id === "name" ? (
                               <div style={{ fontWeight: 600 }}>{value}</div>
-                            ) : column.id === "description" ? (
-                              <div
-                                style={{
-                                  maxWidth: "200px",
-                                  overflowWrap: "anywhere",
-                                }}
-                              >
-                                {value}
+                            ) : column.id === "avatar" ? (
+                              <img
+                                src={value}
+                                alt="avatar"
+                                width={70}
+                                height={70}
+                              />
+                            ) : column.id === "singer" ? (
+                              <div>
+                                {value?.length
+                                  ? value.map((item) => item.name).join(",")
+                                  : ""}
                               </div>
                             ) : (
                               value
@@ -334,13 +358,33 @@ export default function AdminCategory() {
         <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component="div"
-          count={listCategory.length}
+          count={listSong.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
+
+      {addSongModal?.status && (
+        <ControlMusicModal
+          visible={addSongModal?.status}
+          onClose={() => setAddSongModal({ status: false, type: "" })}
+          type={addSongModal?.type}
+          handleCreateUpdateSong={(songData) =>
+            handleCreateUpdateSong(songData)
+          }
+          editSong={editSong}
+        />
+      )}
+
+      {visiblePlayMusic && (
+        <PlayMusicModal
+          musicData={editSong}
+          onClose={() => setVisiblePlayMusic(false)}
+          visible={visiblePlayMusic}
+        />
+      )}
     </>
   );
 }

@@ -15,12 +15,7 @@ import CustomPopover from "../../../components/CustomPopover";
 import CustomModal from "../../../components/CustomModal";
 import RTextField from "../../../components/RedditTextField";
 import { toast } from "react-hot-toast";
-import {
-  createNewCategory,
-  deleteCategoryData,
-  getAllCategory,
-  updateCategory,
-} from "../../../services/category";
+import { createNewAlbum, deleteAlbumData, getAllAlbum, updateAlbum } from "../../../services/album";
 
 const columns = [
   { id: "stt", label: "#", minWidth: 50, align: "center" },
@@ -45,16 +40,16 @@ const columns = [
   },
 ];
 
-export default function AdminCategory() {
-  const [listCategory, setListCategory] = useState([]);
-  const [addCategoryModal, setAddCategoryModal] = useState({
+export default function AdminAlbum() {
+  const [listAlbum, setListAlbum] = useState([]);
+  const [addAlbumModal, setAddAlbumModal] = useState({
     status: false,
     type: "",
   });
-  const [editCategory, setEditCategory] = useState({
-    categoryName: "",
+  const [editAlbum, setEditAlbum] = useState({
+    albumName: "",
     description: "",
-    categoryId: -1,
+    albumId: -1,
   });
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -69,74 +64,74 @@ export default function AdminCategory() {
     setPage(0);
   };
 
-  const getListCategory = async () => {
+  const getListAlbum = async () => {
     try {
-      const res = await getAllCategory();
+      const res = await getAllAlbum();
       if (res?.data?.success) {
-        setListCategory(res?.data?.payload);
+        setListAlbum(res?.data?.payload);
       }
     } catch (error) {
-      console.log("get list category error >>> ", error);
+      console.log("get list brand error >>> ", error);
     }
   };
 
   useEffect(() => {
-    getListCategory();
+    getListAlbum();
   }, []);
 
-  const handleCreateUpdateCategory = async () => {
-    const { categoryName, description } = editCategory;
-    if (!categoryName.trim().length || !description.trim().length) {
+  const handleCreateUpdateAlbum = async () => {
+    const { albumName, description } = editAlbum;
+    if (!albumName.trim().length || !description.trim().length) {
       return toast.error("Data can not blank ");
-    } else if (categoryName.trim().length <= 3) {
+    } else if (albumName.trim().length <= 3) {
       return toast.error("Name must be more than 3 characters");
     } else if (description.length <= 10) {
       return toast.error("Description must be more than 10 characters");
     } else {
-      if (addCategoryModal.type === "add") {
-        const createRes = await createNewCategory(
-          categoryName,
+      if (addAlbumModal.type === "add") {
+        const createRes = await createNewAlbum(
+          albumName,
           description
         );
         if (createRes?.data?.success) {
-          toast.success("Add new category succes");
-          getListCategory();
-          return setAddCategoryModal({ status: false, type: "" });
+          toast.success("Add new album succes");
+          getListAlbum();
+          return setAddAlbumModal({ status: false, type: "" });
         } else {
           return toast.error(
-            createRes?.data?.error || "Add new category failed"
+            createRes?.data?.error || "Add new album failed"
           );
         }
       } else {
-        const updateRes = await updateCategory(
-          editCategory?.categoryId,
-          categoryName,
+        const updateRes = await updateAlbum(
+          editAlbum?.albumId,
+          albumName,
           description
         );
 
         if (updateRes?.data?.success) {
-          toast.success("Update category success");
-          getListCategory();
-          setAddCategoryModal({ status: false, type: "" });
+          toast.success("Update album success");
+          getListAlbum();
+          setAddAlbumModal({ status: false, type: "" });
         } else {
-          toast.error(updateRes?.data?.error || "Update category failed");
+          toast.error(updateRes?.data?.error || "Update album failed");
         }
       }
     }
   };
 
-  const deleteCategory = async (categoryId) => {
+  const deleteAlbum = async (albumId) => {
     try {
-      const deleteRes = await deleteCategoryData(categoryId);
+      const deleteRes = await deleteAlbumData(albumId);
       if (deleteRes?.data?.success) {
-        toast.success("Delete category success");
-        getListCategory();
+        toast.success("Delete album success");
+        getListAlbum();
         setPopoverId("");
       } else {
-        toast.error(deleteRes?.data?.error || "Delete category failed");
+        toast.error(deleteRes?.data?.error || "Delete album failed");
       }
     } catch (error) {
-      toast.error("Delete category failed");
+      toast.error("Delete album failed");
     }
   };
 
@@ -144,40 +139,40 @@ export default function AdminCategory() {
     <>
       <div>
         <CustomModal
-          visible={addCategoryModal.status}
+          visible={addAlbumModal.status}
           onClose={() =>
-            setAddCategoryModal({ ...addCategoryModal, status: false })
+            setAddAlbumModal({ ...addAlbumModal, status: false })
           }
           title={
-            addCategoryModal.type === "add"
-              ? "Add new category"
-              : "Update category"
+            addAlbumModal.type === "add"
+              ? "Add new album"
+              : "Update album"
           }
           content={
             <>
               <RTextField
                 label="Name"
-                defaultValue={editCategory.categoryName || ""}
+                defaultValue={editAlbum.albumName || ""}
                 id="post-title"
                 variant="filled"
                 style={{ marginTop: 11, textAlign: "left" }}
                 onChange={(event) =>
-                  setEditCategory({
-                    ...editCategory,
-                    categoryName: event.target.value,
+                  setEditAlbum({
+                    ...editAlbum,
+                    albumName: event.target.value,
                   })
                 }
               />
 
               <TextareaAutosize
-                defaultValue={editCategory.description || ""}
+                defaultValue={editAlbum.description || ""}
                 aria-label="minimum height"
                 minRows={10}
                 placeholder="Description"
                 style={{ width: "100%", marginTop: "20px", padding: "10px" }}
                 onChange={(event) =>
-                  setEditCategory({
-                    ...editCategory,
+                  setEditAlbum({
+                    ...editAlbum,
                     description: event.target.value,
                   })
                 }
@@ -188,10 +183,10 @@ export default function AdminCategory() {
             <LoadingButton
               autoFocus
               onClick={() => {
-                handleCreateUpdateCategory();
+                handleCreateUpdateAlbum();
               }}
             >
-              {addCategoryModal.type === "add" ? "Add new" : "Update"}
+              {addAlbumModal.type === "add" ? "Add new" : "Update"}
             </LoadingButton>
           }
         />
@@ -209,14 +204,14 @@ export default function AdminCategory() {
           gutterBottom
           sx={{ textAlign: "left" }}
         >
-          Manage categories
+          Manage Album
         </Typography>
         <div>
           <Button
             variant="contained"
             onClick={() => {
-              setEditCategory({ categoryName: "", description: "" });
-              setAddCategoryModal({ status: true, type: "add" });
+              setEditAlbum({ albumName: "", description: "" });
+              setAddAlbumModal({ status: true, type: "add" });
             }}
           >
             Add new
@@ -240,7 +235,7 @@ export default function AdminCategory() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {listCategory
+              {listAlbum
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   return (
@@ -262,8 +257,8 @@ export default function AdminCategory() {
                                 <CustomPopover
                                   open={popoverId === row?._id}
                                   onClose={() => setPopoverId("")}
-                                  handleSubmit={() => deleteCategory(row?._id)}
-                                  noti="Are you sure you want to delete the category?"
+                                  handleSubmit={() => deleteAlbum(row?._id)}
+                                  noti="Are you sure you want to delete the album?"
                                 >
                                   <Button
                                     color="error"
@@ -284,12 +279,12 @@ export default function AdminCategory() {
                                   variant="contained"
                                   size="small"
                                   onClick={() => {
-                                    setEditCategory({
-                                      categoryName: row?.name,
+                                    setEditAlbum({
+                                      albumName: row?.name,
                                       description: row?.description,
-                                      categoryId: row?._id,
+                                      albumId: row?._id,
                                     });
-                                    setAddCategoryModal({
+                                    setAddAlbumModal({
                                       status: true,
                                       type: "update",
                                     });
@@ -334,7 +329,7 @@ export default function AdminCategory() {
         <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component="div"
-          count={listCategory.length}
+          count={listAlbum.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
