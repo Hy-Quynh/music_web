@@ -27,10 +27,12 @@ create table categorys (
 	created_day timestamp
 );
 
+
 create table albums (
 	_id serial PRIMARY key,
 	name varchar(255),
 	description text,
+	avatar text,
 	created_day timestamp
 );
 
@@ -49,8 +51,8 @@ create table countries (
 	created_day timestamp
 );
 
-select * from songs s ;
 select * from song_singer;
+
 
 create table songs (
 	_id serial PRIMARY key,

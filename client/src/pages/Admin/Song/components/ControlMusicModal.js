@@ -57,7 +57,7 @@ export default function ControlMusicModal({
     try {
       const res = await getAllAlbum();
       if (res?.data?.success) {
-        setAlbumList(res?.data?.payload);
+        setAlbumList(res?.data?.payload?.album);
       }
     } catch (error) {
       console.log("get album error >>> ", error);

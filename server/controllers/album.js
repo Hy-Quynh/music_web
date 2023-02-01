@@ -4,13 +4,19 @@ const {
   createNewAlbum,
   updateAlbumData,
   deleteAlbumData,
+  getTotalAlbum,
 } = require("../models/album");
 
 module.exports = {
   getAllAlbum: asyncHandler(async (req, res) => {
     try {
-      const listAlbum = await getListAlbum();
-      return res.send({ success: true, payload: listAlbum });
+      const { limit, offset, keyFilter } = req?.query;
+      const listAlbum = await getListAlbum(limit, offset, keyFilter);
+      const totalAlbum = await getTotalAlbum(keyFilter);
+      return res.send({
+        success: true,
+        payload: { album: listAlbum, totalItem: totalAlbum },
+      });
     } catch (error) {
       return res.send({
         success: false,
@@ -21,8 +27,8 @@ module.exports = {
 
   createAlbum: asyncHandler(async (req, res) => {
     try {
-      const { name, description } = req?.body;
-      const result = await createNewAlbum(name, description);
+      const { name, description, avatar } = req?.body;
+      const result = await createNewAlbum(name, description, avatar);
       if (result) {
         return res.send({ success: true });
       }
@@ -40,9 +46,9 @@ module.exports = {
 
   updateAlbum: asyncHandler(async (req, res) => {
     try {
-      const { name, description } = req?.body;
+      const { name, description, avatar } = req?.body;
       const { albumId } = req?.params;
-      const result = await updateAlbumData(albumId, name, description);
+      const result = await updateAlbumData(albumId, name, description, avatar);
       if (result) {
         return res.send({ success: true });
       }

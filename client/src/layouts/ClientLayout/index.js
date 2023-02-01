@@ -14,7 +14,7 @@ export default function ClientLayout(props) {
                 id="oneMusicNav"
               >
                 {/* Nav brand */}
-                <a href="index.html" className="nav-brand">
+                <a href="/" className="nav-brand">
                   <img src="img/core-img/logo.png" alt="" />
                 </a>
                 {/* Navbar Toggler */}
@@ -38,19 +38,19 @@ export default function ClientLayout(props) {
                   <div className="classynav">
                     <ul>
                       <li>
-                        <a href="index.html">Home</a>
+                        <a href="/">Home</a>
                       </li>
                       <li>
-                        <a href="albums-store.html">Albums</a>
+                        <a href="/album">Albums</a>
                       </li>
                       <li>
                         <a href="#">Pages</a>
                         <ul className="dropdown">
                           <li>
-                            <a href="index.html">Home</a>
+                            <a href="/">Home</a>
                           </li>
                           <li>
-                            <a href="albums-store.html">Albums</a>
+                            <a href="/album">Albums</a>
                           </li>
                           <li>
                             <a href="event.html">Events</a>
@@ -122,13 +122,6 @@ export default function ClientLayout(props) {
                         <a href="/login" id="loginBtn">
                           Login / Register
                         </a>
-                      </div>
-                      {/* Cart Button */}
-                      <div className="cart-btn">
-                        <p>
-                          <span className="icon-shopping-cart" />{" "}
-                          <span className="quantity">1</span>
-                        </p>
                       </div>
                     </div>
                   </div>

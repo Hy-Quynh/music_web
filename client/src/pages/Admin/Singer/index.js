@@ -99,7 +99,7 @@ export default function AdminSinger() {
     if (
       !singerName.trim().length ||
       !description.trim().length ||
-      (addSingerModal.type === "add" && typeof singerImage === "string")
+      (typeof singerImage === "string" && !singerImage?.length)
     ) {
       return toast.error("Data can not blank ");
     } else if (singerName.trim().length < 3) {

@@ -14,6 +14,7 @@ import Login from "../pages/Client/Login";
 import Register from "../pages/Client/Register";
 import AdminSong from "../pages/Admin/Song";
 import AdminCountry from "../pages/Admin/Country";
+import AlbumPage from "../pages/Client/Album";
 
 export default function MainRouter() {
   return (
@@ -25,6 +26,18 @@ export default function MainRouter() {
           element={
             <ClientLayout>
               <HomePage />
+            </ClientLayout>
+          }
+        />
+      </Routes>
+
+      <Routes>
+        <Route
+          exact
+          path="/album"
+          element={
+            <ClientLayout>
+              <AlbumPage />
             </ClientLayout>
           }
         />

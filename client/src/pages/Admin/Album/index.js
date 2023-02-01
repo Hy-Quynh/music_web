@@ -15,10 +15,23 @@ import CustomPopover from "../../../components/CustomPopover";
 import CustomModal from "../../../components/CustomModal";
 import RTextField from "../../../components/RedditTextField";
 import { toast } from "react-hot-toast";
-import { createNewAlbum, deleteAlbumData, getAllAlbum, updateAlbum } from "../../../services/album";
+import {
+  createNewAlbum,
+  deleteAlbumData,
+  getAllAlbum,
+  updateAlbum,
+} from "../../../services/album";
+import storage from "../../../firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const columns = [
   { id: "stt", label: "#", minWidth: 50, align: "center" },
+  {
+    id: "avatar",
+    label: "Avatar",
+    minWidth: 170,
+    align: "center",
+  },
   {
     id: "name",
     label: "Name",
@@ -49,11 +62,13 @@ export default function AdminAlbum() {
   const [editAlbum, setEditAlbum] = useState({
     albumName: "",
     description: "",
+    avatar: "",
     albumId: -1,
   });
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [popoverId, setPopoverId] = useState("");
+  const [submitLoading, setSubmitLoading] = useState(false);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -68,7 +83,7 @@ export default function AdminAlbum() {
     try {
       const res = await getAllAlbum();
       if (res?.data?.success) {
-        setListAlbum(res?.data?.payload);
+        setListAlbum(res?.data?.payload?.album);
       }
     } catch (error) {
       console.log("get list brand error >>> ", error);
@@ -80,33 +95,52 @@ export default function AdminAlbum() {
   }, []);
 
   const handleCreateUpdateAlbum = async () => {
-    const { albumName, description } = editAlbum;
-    if (!albumName.trim().length || !description.trim().length) {
+    const { albumName, description, avatar } = editAlbum;
+    if (
+      !albumName.trim().length ||
+      !description.trim().length ||
+      (typeof avatar === "string" && !avatar?.length)
+    ) {
       return toast.error("Data can not blank ");
     } else if (albumName.trim().length <= 3) {
       return toast.error("Name must be more than 3 characters");
     } else if (description.length <= 10) {
       return toast.error("Description must be more than 10 characters");
     } else {
+      let newAvatar = avatar;
+      if (typeof avatar !== "string") {
+        const imageName = "album-" + new Date().getTime();
+        const storageRef = ref(storage, imageName);
+
+        const updateImageRes = await uploadBytes(storageRef, avatar);
+        if (updateImageRes) {
+          const pathReference = ref(storage, imageName);
+          const url = await getDownloadURL(pathReference);
+          newAvatar = url;
+        } else {
+          return toast.error("Can't upload avatar");
+        }
+      }
+
       if (addAlbumModal.type === "add") {
         const createRes = await createNewAlbum(
           albumName,
-          description
+          description,
+          newAvatar
         );
         if (createRes?.data?.success) {
           toast.success("Add new album succes");
           getListAlbum();
           return setAddAlbumModal({ status: false, type: "" });
         } else {
-          return toast.error(
-            createRes?.data?.error || "Add new album failed"
-          );
+          return toast.error(createRes?.data?.error || "Add new album failed");
         }
       } else {
         const updateRes = await updateAlbum(
           editAlbum?.albumId,
           albumName,
-          description
+          description,
+          newAvatar
         );
 
         if (updateRes?.data?.success) {
@@ -140,13 +174,9 @@ export default function AdminAlbum() {
       <div>
         <CustomModal
           visible={addAlbumModal.status}
-          onClose={() =>
-            setAddAlbumModal({ ...addAlbumModal, status: false })
-          }
+          onClose={() => setAddAlbumModal({ ...addAlbumModal, status: false })}
           title={
-            addAlbumModal.type === "add"
-              ? "Add new album"
-              : "Update album"
+            addAlbumModal.type === "add" ? "Add new album" : "Update album"
           }
           content={
             <>
@@ -162,6 +192,33 @@ export default function AdminAlbum() {
                     albumName: event.target.value,
                   })
                 }
+              />
+
+              <Typography
+                variant="p"
+                component="p"
+                sx={{
+                  fontSize: "17px",
+                  color: "black",
+                  marginBottom: "-10px",
+                  marginTop: "10px",
+                }}
+              >
+                Avatar:
+              </Typography>
+              <RTextField
+                defaultValue=""
+                id="post-title"
+                variant="filled"
+                style={{ marginTop: 11 }}
+                type="file"
+                accept="image/*"
+                onChange={(event) => {
+                  setEditAlbum({
+                    ...editAlbum,
+                    avatar: event.target.files[0],
+                  });
+                }}
               />
 
               <TextareaAutosize
@@ -182,9 +239,12 @@ export default function AdminAlbum() {
           action={
             <LoadingButton
               autoFocus
-              onClick={() => {
-                handleCreateUpdateAlbum();
+              onClick={async() => {
+                setSubmitLoading(true);
+                await handleCreateUpdateAlbum();
+                setSubmitLoading(false);
               }}
+              loading={submitLoading}
             >
               {addAlbumModal.type === "add" ? "Add new" : "Update"}
             </LoadingButton>
@@ -210,7 +270,7 @@ export default function AdminAlbum() {
           <Button
             variant="contained"
             onClick={() => {
-              setEditAlbum({ albumName: "", description: "" });
+              setEditAlbum({ albumName: "", description: "", avatar: "" });
               setAddAlbumModal({ status: true, type: "add" });
             }}
           >
@@ -282,6 +342,7 @@ export default function AdminAlbum() {
                                     setEditAlbum({
                                       albumName: row?.name,
                                       description: row?.description,
+                                      avatar: row?.avatar,
                                       albumId: row?._id,
                                     });
                                     setAddAlbumModal({
@@ -314,6 +375,13 @@ export default function AdminAlbum() {
                               >
                                 {value}
                               </div>
+                            ) : column.id === "avatar" ? (
+                              <img
+                                src={value}
+                                alt="avatar"
+                                width={70}
+                                height={70}
+                              />
                             ) : (
                               value
                             )}
