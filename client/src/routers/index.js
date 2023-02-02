@@ -15,156 +15,93 @@ import Register from "../pages/Client/Register";
 import AdminSong from "../pages/Admin/Song";
 import AdminCountry from "../pages/Admin/Country";
 import AlbumPage from "../pages/Client/Album";
+import CategoryPage from "../pages/Client/Category";
+
+const ClientLayoutPage = [
+  {
+    path: "/",
+    page: <HomePage />,
+  },
+  {
+    path: "/album",
+    page: <AlbumPage />,
+  },
+  {
+    path: "/category",
+    page: <CategoryPage />,
+  },
+  {
+    path: "/login",
+    page: <Login />,
+  },
+  {
+    path: "/sign-up",
+    page: <Register />,
+  },
+];
+
+const AdminLayoutPage = [
+  {
+    path: "/admin",
+    page: <Dashboard />,
+  },
+  {
+    path: "/admin/admin-account",
+    page: <AdminAccount />,
+  },
+  {
+    path: "/admin/user-account",
+    page: <UserAccount />,
+  },
+  {
+    path: "/admin/category",
+    page: <AdminCategory />,
+  },
+  {
+    path: "/admin/country",
+    page: <AdminCountry />,
+  },
+  {
+    path: "/admin/album",
+    page: <AdminAlbum />,
+  },
+  {
+    path: "/admin/singer",
+    page: <AdminSinger />,
+  },
+  {
+    path: "/admin/music",
+    page: <AdminSong />,
+  },
+];
 
 export default function MainRouter() {
   return (
     <Router>
-      <Routes>
-        <Route
-          exact
-          path="/"
-          element={
-            <ClientLayout>
-              <HomePage />
-            </ClientLayout>
-          }
-        />
-      </Routes>
-
-      <Routes>
-        <Route
-          exact
-          path="/album"
-          element={
-            <ClientLayout>
-              <AlbumPage />
-            </ClientLayout>
-          }
-        />
-      </Routes>
-
-      <Routes>
-        <Route
-          exact
-          path="/login"
-          element={
-            <ClientLayout>
-              <Login />
-            </ClientLayout>
-          }
-        />
-      </Routes>
-
-      <Routes>
-        <Route
-          exact
-          path="/sign-up"
-          element={
-            <ClientLayout>
-              <Register />
-            </ClientLayout>
-          }
-        />
-      </Routes>
-
+      {ClientLayoutPage?.map((item, index) => {
+        return (
+          <Routes key={`client-router-${index}`}>
+            <Route
+              exact
+              path={item.path}
+              element={<ClientLayout>{item?.page}</ClientLayout>}
+            />
+          </Routes>
+        );
+      })}
+      {AdminLayoutPage?.map((item, index) => {
+        return (
+          <Routes key={`admin-router-${index}`}>
+            <Route
+              exact
+              path={item.path}
+              element={<AdminLayout>{item?.page}</AdminLayout>}
+            />
+          </Routes>
+        );
+      })}
       <Routes>
         <Route exact path="/admin/login" element={<AdminLogin />} />
-      </Routes>
-
-      <Routes>
-        <Route
-          exact
-          path="/admin"
-          element={
-            <AdminLayout>
-              <Dashboard />
-            </AdminLayout>
-          }
-        />
-      </Routes>
-
-      <Routes>
-        <Route
-          exact
-          path="/admin/admin-account"
-          element={
-            <AdminLayout>
-              <AdminAccount />
-            </AdminLayout>
-          }
-        />
-      </Routes>
-
-      <Routes>
-        <Route
-          exact
-          path="/admin/user-account"
-          element={
-            <AdminLayout>
-              <UserAccount />
-            </AdminLayout>
-          }
-        />
-      </Routes>
-
-      <Routes>
-        <Route
-          exact
-          path="/admin/category"
-          element={
-            <AdminLayout>
-              <AdminCategory />
-            </AdminLayout>
-          }
-        />
-      </Routes>
-
-      <Routes>
-        <Route
-          exact
-          path="/admin/country"
-          element={
-            <AdminLayout>
-              <AdminCountry />
-            </AdminLayout>
-          }
-        />
-      </Routes>
-
-      <Routes>
-        <Route
-          exact
-          path="/admin/album"
-          element={
-            <AdminLayout>
-              <AdminAlbum />
-            </AdminLayout>
-          }
-        />
-      </Routes>
-
-      <Routes>
-        <Route
-          exact
-          path="/admin/singer"
-          element={
-            <AdminLayout>
-              <AdminSinger />
-            </AdminLayout>
-          }
-        />
-      </Routes>
-
-      <Routes>
-        <Route
-          exact
-          path="/admin/music"
-          element={
-            <AdminLayout>
-              <AdminSong />
-            </AdminLayout>
-          }
-        />
       </Routes>
     </Router>
   );

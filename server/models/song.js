@@ -78,11 +78,20 @@ module.exports = {
         FROM songs s JOIN countries c ON s.country_id = c._id 
         LEFT JOIN albums al ON s.album_id = al._id  
         JOIN categorys ct ON s.category_id = ct._id
-        ${limitOffset} `
+        ORDER BY created_day DESC ${limitOffset}`
       );
       return result?.rows || [];
     } catch (error) {
       return [];
+    }
+  },
+
+  getTotalSong: async () => {
+    try {
+      const result = await postgresql.query(`SELECT COUNT(_id) as total_song FROM songs`)
+      return result?.rows?.[0]?.total_song || 0
+    } catch (error) {
+      return 0
     }
   },
 

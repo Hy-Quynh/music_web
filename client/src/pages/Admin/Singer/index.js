@@ -7,7 +7,13 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import { Button, Stack, TextareaAutosize, Typography } from "@mui/material";
+import {
+  Button,
+  Checkbox,
+  Stack,
+  TextareaAutosize,
+  Typography,
+} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LoadingButton from "@mui/lab/LoadingButton";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -16,6 +22,7 @@ import CustomModal from "../../../components/CustomModal";
 import RTextField from "../../../components/RedditTextField";
 import { toast } from "react-hot-toast";
 import {
+  changeSingerEffect,
   createNewSinger,
   deleteSingerData,
   getAllSinger,
@@ -28,26 +35,33 @@ const columns = [
   { id: "stt", label: "#", minWidth: 50, align: "center" },
   {
     id: "avatar",
-    label: "Avatar",
+    label: "Ảnh đại diện",
     minWidth: 170,
     align: "center",
   },
   {
     id: "name",
-    label: "Name",
+    label: "Tên",
     minWidth: 170,
     align: "left",
   },
   {
     id: "description",
-    label: "Description",
+    label: "Thông tin chi tiết",
     minWidth: 170,
     maxWidth: 200,
     align: "left",
   },
   {
+    id: "effect",
+    label: "Hiện thị trang chủ",
+    minWidth: 170,
+    maxWidth: 200,
+    align: "center",
+  },
+  {
     id: "action",
-    label: "Action",
+    label: "Hành động",
     minWidth: 170,
     align: "center",
   },
@@ -169,6 +183,30 @@ export default function AdminSinger() {
     }
   };
 
+  const handleChangeSingerEffect = async (singerId, effect) => {
+    try {
+      const result = await changeSingerEffect(singerId, effect)
+      if (result?.data?.success){
+        if (result?.data?.payload){
+          const singer = [...listSinger]?.map((item) => {
+            if (item?._id === singerId){
+              return {
+                ...item,
+                effect
+              }
+            }
+            return {...item}
+          })
+          setListSinger(singer)
+          return toast.success('Thay đổi trạng thái hiện thị của ca sĩ thành công')
+        }
+      }
+      toast.error("Thay đổi trạng thái hiện thị của ca sĩ thất bại");
+    } catch (error) {
+      toast.error("Thay đổi trạng thái hiện thị của ca sĩ thất bại");
+    }
+  };
+
   return (
     <>
       <div>
@@ -241,10 +279,10 @@ export default function AdminSinger() {
           action={
             <LoadingButton
               autoFocus
-              onClick={async() => {
-                setSubmitLoading(true)
+              onClick={async () => {
+                setSubmitLoading(true);
                 await handleCreateUpdateSinger();
-                setSubmitLoading(false)
+                setSubmitLoading(false);
               }}
               loading={submitLoading}
             >
@@ -382,7 +420,33 @@ export default function AdminSinger() {
                                 {value}
                               </div>
                             ) : column.id === "avatar" ? (
-                              <img src={value} alt="avatar" width={70} height={70}/>
+                              <img
+                                src={value}
+                                alt="avatar"
+                                width={70}
+                                height={70}
+                              />
+                            ) : column.id === "effect" ? (
+                              <Checkbox
+                                checked={value}
+                                onChange={(event) => {
+                                  if (event?.target?.checked) {
+                                    const checked = listSinger?.filter(
+                                      (item) => item?.effect
+                                    );
+                                    if (checked?.length >= 10) {
+                                      return toast.error(
+                                        "Chỉ hiện thị tối đa 10 ca sĩ trên trang chủ"
+                                      );
+                                    }
+                                  }
+
+                                  handleChangeSingerEffect(
+                                    row?._id,
+                                    event?.target?.checked
+                                  );
+                                }}
+                              />
                             ) : (
                               value
                             )}

@@ -7,6 +7,7 @@ const {
   deleteSongSinger,
   deleteSong,
   updateSongData,
+  getTotalSong,
 } = require("../models/song");
 
 module.exports = {
@@ -14,13 +15,17 @@ module.exports = {
     try {
       const { limit, offset } = req?.query;
       const result = await getListSong(limit, offset);
+      const totalSong = await getTotalSong();
       if (result) {
         for (let i = 0; i < result?.length; i++) {
           const singer = await getSongSinger(result?.[i]?._id);
           result[i].singer = [...singer];
         }
 
-        return res.send({ success: true, payload: result });
+        return res.send({
+          success: true,
+          payload: { song: result, totalItem: totalSong },
+        });
       }
 
       return res.send({

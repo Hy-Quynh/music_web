@@ -44,4 +44,25 @@ module.exports = {
       return false;
     }
   },
+
+  changeSingerEffect: async (id, effect) => {
+    try {
+      const result = await postgresql.query(
+        `UPDATE singers SET effect=${effect} WHERE _id=${Number(id)}`
+      );
+      return result?.rows ? true : false
+    } catch (error) {
+      return false;
+    }
+  },
+
+  getPopularSingerData: async() => {
+    try {
+      const result = await postgresql.query(`SELECT * FROM singers WHERE effect = true`)
+      console.log('result >>> ', result);
+      return result?.rows || []
+    } catch (error) {
+      return []
+    }
+  }
 };

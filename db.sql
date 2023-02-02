@@ -36,11 +36,14 @@ create table albums (
 	created_day timestamp
 );
 
+SELECT * FROM singers WHERE effect = true
+
 create table singers (
 	_id serial PRIMARY key,
 	name varchar(255),
 	avatar text,
 	description text,
+	effect boolean,
 	created_day timestamp
 );
 

@@ -4,6 +4,8 @@ const {
   createNewSinger,
   updateSingerData,
   deleteSingerData,
+  changeSingerEffect,
+  getPopularSingerData,
 } = require("../models/singer");
 
 module.exports = {
@@ -78,6 +80,32 @@ module.exports = {
       return res.send({
         success: false,
         error: "Xoá ca sĩ thất bại",
+      });
+    }
+  }),
+
+  changeSingerEffect: asyncHandler(async (req, res) => {
+    try {
+      const { effect } = req?.body;
+      const { singerId } = req?.params;
+      const result = await changeSingerEffect(singerId, effect);
+      return res.send({ success: true, payload: result });
+    } catch (error) {
+      return res.send({
+        success: false,
+        error: "Chuyển đổi trạng thái thất bại",
+      });
+    }
+  }),
+
+  getPopularSinger: asyncHandler(async (req, res) => {
+    try {
+      const result = await getPopularSingerData();
+      return res.send({ success: true, payload: result });
+    } catch (error) {
+      return res.send({
+        success: false,
+        error: "Chuyển đổi trạng thái thất bại",
       });
     }
   }),

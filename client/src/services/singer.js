@@ -14,7 +14,7 @@ export async function createNewSinger(name, description, avatar) {
     body: {
       name,
       description,
-      avatar
+      avatar,
     },
   });
 }
@@ -26,7 +26,7 @@ export async function updateSinger(id, name, description, avatar) {
     body: {
       name,
       description,
-      avatar
+      avatar,
     },
   });
 }
@@ -35,5 +35,20 @@ export async function deleteSingerData(id) {
   return request({
     method: "DELETE",
     url: `/singer/${id}`,
+  });
+}
+
+export async function changeSingerEffect(id, effect) {
+  return request({
+    method: "PUT",
+    url: `/singer/effect/${id}`,
+    body: { effect },
+  });
+}
+
+export async function getPopularSinger() {
+  return request({
+    method: "GET",
+    url: `/singer/effect/list`,
   });
 }

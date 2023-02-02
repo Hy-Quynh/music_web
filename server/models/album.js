@@ -12,7 +12,7 @@ module.exports = {
             : keyFilter === "number"
             ? "lower(name) SIMILAR TO '[0-9]%'"
             : `lower(name) SIMILAR TO '(${keyFilter})%'`
-        }  ${limitOffset}`
+        } ORDER BY created_day DESC ${limitOffset}`
       );
       return result?.rows || [];
     } catch (error) {

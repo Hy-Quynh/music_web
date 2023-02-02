@@ -91,7 +91,7 @@ export default function AdminSong() {
     try {
       const res = await getAllSong();
       if (res?.data?.success) {
-        setListSong(res?.data?.payload);
+        setListSong(res?.data?.payload?.song);
       }
     } catch (error) {
       console.log("get list song error >>> ", error);

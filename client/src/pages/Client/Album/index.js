@@ -3,7 +3,7 @@ import { getAllAlbum } from "../../../services/album";
 import AlbumList from "./components/AlbumList";
 import FilterList from "./components/FilterList";
 
-const PAGE_OFFSET = 24;
+const PAGE_LIMIT = 24;
 
 export default function AlbumPage() {
   const [filterKey, setFilterKey] = useState("al");
@@ -13,10 +13,10 @@ export default function AlbumPage() {
 
   const getAlbumList = async () => {
     try {
-      const result = await getAllAlbum(PAGE_OFFSET, page, filterKey);
+      const result = await getAllAlbum(PAGE_LIMIT, page, filterKey);
       if (result?.data?.success) {
         setAlbumList(result?.data?.payload?.album);
-        setTotalPage(Math.ceil(result?.data?.payload?.totalItem / PAGE_OFFSET));
+        setTotalPage(Math.ceil(result?.data?.payload?.totalItem / PAGE_LIMIT));
       }
     } catch (error) {
       console.log("get album error >>> ", error);
@@ -38,8 +38,7 @@ export default function AlbumPage() {
         style={{ backgroundImage: "url(img/bg-img/breadcumb3.jpg)" }}
       >
         <div className="bradcumbContent">
-          <p>See what’s new</p>
-          <h2>Latest Albums</h2>
+          <h2>Danh sách Album</h2>
         </div>
       </section>
 

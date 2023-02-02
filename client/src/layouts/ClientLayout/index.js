@@ -38,82 +38,25 @@ export default function ClientLayout(props) {
                   <div className="classynav">
                     <ul>
                       <li>
-                        <a href="/">Home</a>
+                        <a href="/">Trang chủ</a>
                       </li>
                       <li>
                         <a href="/album">Albums</a>
                       </li>
                       <li>
-                        <a href="#">Pages</a>
-                        <ul className="dropdown">
-                          <li>
-                            <a href="/">Home</a>
-                          </li>
-                          <li>
-                            <a href="/album">Albums</a>
-                          </li>
-                          <li>
-                            <a href="event.html">Events</a>
-                          </li>
-                          <li>
-                            <a href="blog.html">News</a>
-                          </li>
-                          <li>
-                            <a href="contact.html">Contact</a>
-                          </li>
-                          <li>
-                            <a href="elements.html">Elements</a>
-                          </li>
-                          <li>
-                            <a href="/login">Login</a>
-                          </li>
-                          <li>
-                            <a href="#">Dropdown</a>
-                            <ul className="dropdown">
-                              <li>
-                                <a href="#">Even Dropdown</a>
-                              </li>
-                              <li>
-                                <a href="#">Even Dropdown</a>
-                              </li>
-                              <li>
-                                <a href="#">Even Dropdown</a>
-                              </li>
-                              <li>
-                                <a href="#">Even Dropdown</a>
-                                <ul className="dropdown">
-                                  <li>
-                                    <a href="#">Deeply Dropdown</a>
-                                  </li>
-                                  <li>
-                                    <a href="#">Deeply Dropdown</a>
-                                  </li>
-                                  <li>
-                                    <a href="#">Deeply Dropdown</a>
-                                  </li>
-                                  <li>
-                                    <a href="#">Deeply Dropdown</a>
-                                  </li>
-                                  <li>
-                                    <a href="#">Deeply Dropdown</a>
-                                  </li>
-                                </ul>
-                              </li>
-                              <li>
-                                <a href="#">Even Dropdown</a>
-                              </li>
-                            </ul>
-                          </li>
-                        </ul>
+                        <a href="/category">Thể loại</a>
                       </li>
                       <li>
-                        <a href="event.html">Events</a>
+                        <a href="/new-hit">Nhạc mới</a>
                       </li>
                       <li>
-                        <a href="blog.html">News</a>
+                        <a href="event.html">Sự kiện</a>
                       </li>
                       <li>
-                        <a href="contact.html">Contact</a>
+                        <a href="blog.html">Bài viết</a>
+                      </li>
+                      <li>
+                        <a href="contact.html">Liên hệ</a>
                       </li>
                     </ul>
 

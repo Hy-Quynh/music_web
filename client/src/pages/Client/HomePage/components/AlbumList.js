@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { getAllAlbum } from "../../../../services/album";
 
-const PAGE_OFFSET = 12;
+const PAGE_LIMIT = 12;
 
 export default function AlbumList() {
   const [albumList, setAlbumList] = useState([]);
 
   const getAlbumList = async () => {
     try {
-      const result = await getAllAlbum(PAGE_OFFSET, 0, "al");
+      const result = await getAllAlbum(PAGE_LIMIT, 0, "al");
       if (result?.data?.success) {
         setAlbumList(result?.data?.payload?.album);
       }
@@ -27,8 +27,8 @@ export default function AlbumList() {
         <div className="row">
           <div className="col-12">
             <div className="section-heading style-2">
-              <p>See what’s new</p>
-              <h2>Latest Albums</h2>
+              <p>Điều gì mới</p>
+              <h2>Album mới nhất</h2>
             </div>
           </div>
         </div>
@@ -61,7 +61,7 @@ export default function AlbumList() {
               data-wow-delay="300ms"
             >
               <a href="/album" className="btn oneMusic-btn">
-                Load More <i className="fa fa-angle-double-right" />
+                Xem thêm <i className="fa fa-angle-double-right" />
               </a>
             </div>
           </div>
