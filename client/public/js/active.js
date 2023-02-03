@@ -203,6 +203,7 @@
 
     // :: 13.0 wow Active Code
     if (browserWindow.width() > 767) {
+        // eslint-disable-next-line no-undef
         new WOW().init();
     }
     
@@ -211,4 +212,5 @@
         $('.catagory-menu a').removeClass('active');
         $(this).addClass('active');
     })
+// eslint-disable-next-line no-undef
 })(jQuery);

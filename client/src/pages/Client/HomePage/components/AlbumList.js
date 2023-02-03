@@ -36,13 +36,27 @@ export default function AlbumList() {
         <div className="row">
           {albumList?.map((item, index) => {
             return (
-              <div className="col-12 col-sm-6 col-md-4 col-lg-2" key={`album-item-${index}`}>
+              <div
+                className="col-12 col-sm-6 col-md-4 col-lg-2"
+                key={`album-item-${index}`}
+              >
                 <div
                   className="single-album-area wow fadeInUp"
                   data-wow-delay="100ms"
                 >
-                  <div className="album-thumb">
-                    <img src={item?.avatar} alt="" style={{width: '192px', height: '192px'}}/>
+                  <div
+                    className="album-thumb"
+                    style={{
+                      minWidth: "192px",
+                      minHeight: "192px",
+                      border: "0.5px solid gray",
+                    }}
+                  >
+                    <img
+                      src={item?.avatar}
+                      alt=""
+                      style={{ width: "192px", height: "192px" }}
+                    />
                   </div>
                   <div className="album-info">
                     <a href="#">

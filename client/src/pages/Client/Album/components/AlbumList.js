@@ -23,7 +23,17 @@ export default function AlbumList({ albumList, page, totalPage, setPage }) {
               key={`album-item-${index}`}
             >
               <div className="single-album">
-                <img src={item?.avatar} alt="" style={{width: '150px', height: '150px'}} />
+                <img
+                  src={item?.avatar}
+                  alt=""
+                  style={{
+                    width: "160px",
+                    height: "160px",
+                    minWidth: "160px",
+                    minHeight: "160px",
+                    border: "0.5px solid gray",
+                  }}
+                />
                 <div className="album-info">
                   <a href="#">
                     <h5>{item?.name}</h5>
@@ -53,9 +63,7 @@ export default function AlbumList({ albumList, page, totalPage, setPage }) {
                   }
                 }}
               >
-                <a className="btn oneMusic-btn">
-                  Previous
-                </a>
+                <a className="btn oneMusic-btn">Previous</a>
               </div>
               <div className="load-more-btn text-center">
                 <a
@@ -74,9 +82,7 @@ export default function AlbumList({ albumList, page, totalPage, setPage }) {
                   }
                 }}
               >
-                <a className="btn oneMusic-btn">
-                  Next
-                </a>
+                <a className="btn oneMusic-btn">Next</a>
               </div>
             </div>
           </div>

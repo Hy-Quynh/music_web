@@ -35,8 +35,20 @@ export default function PopularArtist() {
             data-wow-delay="100ms"
             key={`popular-singer-item-${index}`}
           >
-            <div className="thumbnail">
-              <img src={item?.avatar} alt="" style={{width: '65px', height: '65px'}}/>
+            <div
+              className="thumbnail"
+              style={{
+                minWidth: "65px",
+                minHeight: "65px",
+                border: "0.5px solid gray",
+                borderRadius: "32.5px",
+              }}
+            >
+              <img
+                src={item?.avatar}
+                alt=""
+                style={{ width: "65px", height: "65px" }}
+              />
             </div>
             <div className="content-">
               <p>{item?.name}</p>

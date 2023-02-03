@@ -16,6 +16,7 @@ import AdminSong from "../pages/Admin/Song";
 import AdminCountry from "../pages/Admin/Country";
 import AlbumPage from "../pages/Client/Album";
 import CategoryPage from "../pages/Client/Category";
+import NewSong from "../pages/Client/NewSong";
 
 const ClientLayoutPage = [
   {
@@ -37,6 +38,10 @@ const ClientLayoutPage = [
   {
     path: "/sign-up",
     page: <Register />,
+  },
+  {
+    path: "/new-song",
+    page: <NewSong />,
   },
 ];
 

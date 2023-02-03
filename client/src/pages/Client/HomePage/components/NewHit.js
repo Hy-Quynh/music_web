@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { getAllSong } from "../../../../services/song";
+import PlayIcon from "../../../../assets/image/play-music-black.svg";
+import StopIcon from "../../../../assets/image/stop-music-black.svg";
+import { useDispatch, useSelector } from "react-redux";
+import { setSongPlaying, setSongState, songData } from "../../../../slices/songSlice";
 
 const PAGE_LIMIT = 6;
 
 export default function NewHit() {
   const [listHit, setListHit] = useState([]);
+  const dispatch = useDispatch();
+  const { song } = useSelector(songData);
 
   const getListHit = async () => {
     try {
@@ -38,7 +44,14 @@ export default function NewHit() {
             key={`album-item-${index}`}
           >
             <div className="first-part d-flex align-items-center">
-              <div className="thumbnail">
+              <div
+                className="thumbnail"
+                style={{
+                  minWidth: "73px",
+                  minHeight: "73px",
+                  border: "0.5px solid gray",
+                }}
+              >
                 <img
                   src={item?.avatar}
                   alt=""
@@ -47,117 +60,48 @@ export default function NewHit() {
               </div>
               <div className="content-">
                 <h6>{item?.name}</h6>
-                <p>{item?.singer?.length ? item?.singer?.map((it) => it?.name).join(", ") : ""}</p>
+                <p>
+                  {item?.singer?.length
+                    ? item?.singer?.map((it) => it?.name).join(", ")
+                    : ""}
+                </p>
               </div>
             </div>
-            <audio preload="auto" controls>
+            <div>
+              {song?._id === item?._id && song?.playing ? (
+                <img
+                  src={StopIcon}
+                  alt="play music"
+                  style={{
+                    width: "50px",
+                    height: "50px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    dispatch(setSongState(false));
+                  }}
+                />
+              ) : (
+                <img
+                  src={PlayIcon}
+                  alt="play music"
+                  style={{
+                    width: "50px",
+                    height: "50px",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    dispatch(setSongPlaying({ ...item, playing: true }));
+                  }}
+                />
+              )}
+            </div>
+            {/* <audio preload="auto" controls>
               <source src={item?.link} />
-            </audio>
+            </audio> */}
           </div>
         );
       })}
-      {/* <div
-        className="single-new-item d-flex align-items-center justify-content-between wow fadeInUp"
-        data-wow-delay="100ms"
-      >
-        <div className="first-part d-flex align-items-center">
-          <div className="thumbnail">
-            <img src="img/bg-img/wt7.jpg" alt="" />
-          </div>
-          <div className="content-">
-            <h6>Sam Smith</h6>
-            <p>Underground</p>
-          </div>
-        </div>
-        <audio preload="auto" controls>
-          <source src="audio/dummy-audio.mp3" />
-        </audio>
-      </div>
-      <div
-        className="single-new-item d-flex align-items-center justify-content-between wow fadeInUp"
-        data-wow-delay="150ms"
-      >
-        <div className="first-part d-flex align-items-center">
-          <div className="thumbnail">
-            <img src="img/bg-img/wt8.jpg" alt="" />
-          </div>
-          <div className="content-">
-            <h6>Power Play</h6>
-            <p>In my mind</p>
-          </div>
-        </div>
-        <audio preload="auto" controls>
-          <source src="audio/dummy-audio.mp3" />
-        </audio>
-      </div>
-      <div
-        className="single-new-item d-flex align-items-center justify-content-between wow fadeInUp"
-        data-wow-delay="200ms"
-      >
-        <div className="first-part d-flex align-items-center">
-          <div className="thumbnail">
-            <img src="img/bg-img/wt9.jpg" alt="" />
-          </div>
-          <div className="content-">
-            <h6>Cristinne Smith</h6>
-            <p>My Music</p>
-          </div>
-        </div>
-        <audio preload="auto" controls>
-          <source src="audio/dummy-audio.mp3" />
-        </audio>
-      </div>
-      <div
-        className="single-new-item d-flex align-items-center justify-content-between wow fadeInUp"
-        data-wow-delay="250ms"
-      >
-        <div className="first-part d-flex align-items-center">
-          <div className="thumbnail">
-            <img src="img/bg-img/wt10.jpg" alt="" />
-          </div>
-          <div className="content-">
-            <h6>The Music Band</h6>
-            <p>Underground</p>
-          </div>
-        </div>
-        <audio preload="auto" controls>
-          <source src="audio/dummy-audio.mp3" />
-        </audio>
-      </div>
-      <div
-        className="single-new-item d-flex align-items-center justify-content-between wow fadeInUp"
-        data-wow-delay="300ms"
-      >
-        <div className="first-part d-flex align-items-center">
-          <div className="thumbnail">
-            <img src="img/bg-img/wt11.jpg" alt="" />
-          </div>
-          <div className="content-">
-            <h6>Creative Lyrics</h6>
-            <p>Songs and stuff</p>
-          </div>
-        </div>
-        <audio preload="auto" controls>
-          <source src="audio/dummy-audio.mp3" />
-        </audio>
-      </div>
-      <div
-        className="single-new-item d-flex align-items-center justify-content-between wow fadeInUp"
-        data-wow-delay="350ms"
-      >
-        <div className="first-part d-flex align-items-center">
-          <div className="thumbnail">
-            <img src="img/bg-img/wt12.jpg" alt="" />
-          </div>
-          <div className="content-">
-            <h6>The Culture</h6>
-            <p>Pop Songs</p>
-          </div>
-        </div>
-        <audio preload="auto" controls>
-          <source src="audio/dummy-audio.mp3" />
-        </audio>
-      </div> */}
     </div>
   );
 }

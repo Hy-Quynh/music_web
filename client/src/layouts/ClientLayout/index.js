@@ -1,6 +1,34 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setSongPlaying, songData } from "../../slices/songSlice";
+import "./style.scss";
 
 export default function ClientLayout(props) {
+  const { song } = useSelector(songData);
+  const audioRef = useRef(null);
+  const dispatch = useDispatch();
+
+  const pauseAndPlaySong = () => {
+    if (song.playing) {
+      audioRef?.current?.play();
+    } else {
+      audioRef?.current?.pause();
+    }
+  };
+
+  useEffect(() => {
+    if (audioRef) {
+      pauseAndPlaySong();
+    }
+  }, [song.playing]);
+
+  useEffect(() => {
+    if (audioRef) {
+      audioRef?.current?.load();
+      pauseAndPlaySong();
+    }
+  }, [song._id]);
+
   return (
     <>
       <header className="header-area">
@@ -47,7 +75,7 @@ export default function ClientLayout(props) {
                         <a href="/category">Thể loại</a>
                       </li>
                       <li>
-                        <a href="/new-hit">Nhạc mới</a>
+                        <a href="/new-song">Nhạc mới</a>
                       </li>
                       <li>
                         <a href="event.html">Sự kiện</a>
@@ -75,50 +103,58 @@ export default function ClientLayout(props) {
           </div>
         </div>
       </header>
-      {props.children}
-      <footer className="footer-area">
-        <div className="container">
-          <div className="row d-flex flex-wrap align-items-center">
-            <div className="col-12 col-md-6">
-              <a href="#">
-                <img src="img/core-img/logo.png" alt="" />
-              </a>
-              <p className="copywrite-text">
-                <a href="#">
-                  {/* Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. */}
-                  Copyright © All rights reserved | This template is made with{" "}
-                  <i className="fa fa-heart-o" aria-hidden="true" /> by{" "}
-                </a>
-                <a href="https://colorlib.com" target="_blank">
-                  Colorlib
-                </a>
-                {/* Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. */}
-              </p>
-            </div>
-            <div className="col-12 col-md-6">
-              <div className="footer-nav">
-                <ul>
-                  <li>
-                    <a href="#">Home</a>
-                  </li>
-                  <li>
-                    <a href="#">Albums</a>
-                  </li>
-                  <li>
-                    <a href="#">Events</a>
-                  </li>
-                  <li>
-                    <a href="#">News</a>
-                  </li>
-                  <li>
-                    <a href="#">Contact</a>
-                  </li>
-                </ul>
+      <div style={{ marginBottom: "100px" }}>{props.children}</div>
+      {song?._id ? (
+        <div className="fixed-playing-song">
+          <div
+            className="single-new-item d-flex align-items-center justify-content-between"
+            data-wow-delay="100ms"
+          >
+            <div
+              className="first-part d-flex align-items-center"
+              style={{ gap: "20px" }}
+            >
+              <div
+                className="thumbnail"
+                style={{
+                  minWidth: "73px",
+                  minHeight: "73px",
+                  border: "0.5px solid gray",
+                }}
+              >
+                <img
+                  src={song?.avatar}
+                  alt=""
+                  style={{ width: "73px", height: "73px" }}
+                />
+              </div>
+              <div className="content-">
+                <h6 style={{ color: "white" }}>{song?.name}</h6>
+                <p style={{ color: "white" }}>
+                  {song?.singer?.length
+                    ? song?.singer?.map((it) => it?.name).join(", ")
+                    : ""}
+                </p>
               </div>
             </div>
+            <audio
+              preload="auto"
+              controls
+              ref={audioRef}
+              onPlay={(event) => {
+                dispatch(setSongPlaying({ ...song, playing: true }));
+              }}
+              onPause={(event) => {
+                dispatch(setSongPlaying({ ...song, playing: false }));
+              }}
+            >
+              <source src={song?.link} />
+            </audio>
           </div>
         </div>
-      </footer>
+      ) : (
+        <></>
+      )}
     </>
   );
 }

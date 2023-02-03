@@ -2,10 +2,17 @@ import React, { useEffect, useState } from "react";
 import { getCategorySong } from "../../../../services/category";
 import PlayMusicIcon from "../../../../assets/image/play-music.svg";
 import StopMusicIcon from "../../../../assets/image/stop-music.svg";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setSongPlaying,
+  setSongState,
+  songData,
+} from "../../../../slices/songSlice";
 
 export default function CategorySong() {
   const [categorySong, setCategorySong] = useState([]);
-  const [songPlayId, setSongPlayId] = useState(-1);
+  const dispatch = useDispatch();
+  const { song } = useSelector(songData);
 
   const getSong = async () => {
     try {
@@ -50,13 +57,20 @@ export default function CategorySong() {
                               href="#!"
                               style={{ cursor: "pointer" }}
                               onClick={() => {
-                                if (it?._id === songPlayId) {
-                                  return setSongPlayId(-1);
+                                if (it?._id !== song?._id) {
+                                  dispatch(
+                                    setSongPlaying({ ...it, playing: true })
+                                  );
+                                } else {
+                                  if (song?.playing) {
+                                    dispatch(setSongState(false));
+                                  } else {
+                                    dispatch(setSongState(true));
+                                  }
                                 }
-                                setSongPlayId(it?._id);
                               }}
                             >
-                              {it?._id === songPlayId ? (
+                              {song?._id === it?._id && song?.playing ? (
                                 <img
                                   src={StopMusicIcon}
                                   alt="play-icon"
