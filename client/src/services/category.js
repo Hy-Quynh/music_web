@@ -35,3 +35,10 @@ export async function deleteCategoryData(id) {
     url: `/category/${id}`,
   });
 }
+
+export async function getCategorySong() {
+  return request({
+    method: "GET",
+    url: "/category/song/popular",
+  });
+}

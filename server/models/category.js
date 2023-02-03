@@ -1,12 +1,23 @@
 const { postgresql } = require("../config/connect");
+const { getByLimitAndOffset } = require("../utils/utils");
 
 module.exports = {
-  getListCategory: async () => {
+  getListCategory: async (limit, offset) => {
     try {
-      const result = await postgresql.query(`SELECT * FROM categorys`);
+      const limitOffset = getByLimitAndOffset(limit, offset);
+      const result = await postgresql.query(`SELECT * FROM categorys ORDER BY created_day DESC ${limitOffset}`);
       return result?.rows || [];
     } catch (error) {
       return [];
+    }
+  },
+
+  getTotalCategory: async () => {
+    try {
+      const result = await postgresql.query(`SELECT COUNT(_id) as total_category FROM categorys`)
+      return result?.rows?.[0]?.total_category || 0
+    } catch (error) {
+      return 0
     }
   },
 

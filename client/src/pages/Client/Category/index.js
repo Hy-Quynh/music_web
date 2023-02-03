@@ -1,5 +1,6 @@
 import React from "react";
 import Category from "./components/Category";
+import CategorySong from "./components/CategorySong";
 import Country from "./components/Country";
 import Prominent from "./components/Prominent";
 import "./style.scss";
@@ -20,6 +21,9 @@ export default function CategoryPage() {
         </div>
         <div style={{marginTop: '30px'}}>
           <Category />
+        </div>
+        <div style={{marginTop: '30px'}}>
+          <CategorySong />
         </div>
       </div>
     </div>

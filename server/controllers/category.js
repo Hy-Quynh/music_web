@@ -1,12 +1,23 @@
 const asyncHandler = require("express-async-handler");
-const { getListCategory, createNewCategory, updateCategoryData, deleteCategoryData } = require("../models/category");
+const {
+  getListCategory,
+  createNewCategory,
+  updateCategoryData,
+  deleteCategoryData,
+  getTotalCategory,
+} = require("../models/category");
+const { getListSong, getSongSinger } = require("../models/song");
 
 module.exports = {
   getAllCategory: asyncHandler(async (req, res) => {
     try {
-      const listCategory = await getListCategory();
-      return res.send({ success: true, payload: listCategory });
-
+      const { limit, offset } = req?.query;
+      const listCategory = await getListCategory(limit, offset);
+      const totalItem = await getTotalCategory();
+      return res.send({
+        success: true,
+        payload: { category: listCategory, totalItem },
+      });
     } catch (error) {
       return res.send({
         success: false,
@@ -17,8 +28,8 @@ module.exports = {
 
   createCategoty: asyncHandler(async (req, res) => {
     try {
-      const {name, description} = req?.body
-      const result = await createNewCategory(name, description)
+      const { name, description } = req?.body;
+      const result = await createNewCategory(name, description);
       if (result) {
         return res.send({ success: true });
       }
@@ -36,9 +47,9 @@ module.exports = {
 
   updateCategoty: asyncHandler(async (req, res) => {
     try {
-      const {name, description} = req?.body
-      const {categoryId} = req?.params
-      const result = await updateCategoryData(categoryId, name, description)
+      const { name, description } = req?.body;
+      const { categoryId } = req?.params;
+      const result = await updateCategoryData(categoryId, name, description);
       if (result) {
         return res.send({ success: true });
       }
@@ -56,8 +67,8 @@ module.exports = {
 
   deleteCategoty: asyncHandler(async (req, res) => {
     try {
-      const {categoryId} = req?.params
-      const result = await deleteCategoryData(categoryId)
+      const { categoryId } = req?.params;
+      const result = await deleteCategoryData(categoryId);
       if (result) {
         return res.send({ success: true });
       }
@@ -69,6 +80,32 @@ module.exports = {
       return res.send({
         success: false,
         error: "Xoá thể loại thất bại",
+      });
+    }
+  }),
+
+  getCategorySong: asyncHandler(async (req, res) => {
+    try {
+      const listCategory = await getListCategory();
+      const categoryFullData = [];
+
+      for (let i = 0; i < listCategory?.length; i++) {
+        const song = await getListSong(10, 0, listCategory?.[i]?._id);
+
+        for (let j = 0; j < song?.length; j++) {
+          const singer = await getSongSinger(song?.[j]?._id);
+          song[j].singer = [...singer];
+        }
+        categoryFullData?.push({
+          ...listCategory?.[i],
+          song,
+        });
+      }
+      return res.send({ success: true, payload: categoryFullData });
+    } catch (error) {
+      return res.send({
+        success: false,
+        error: "Lấy danh sách bài hát thất bại",
       });
     }
   }),

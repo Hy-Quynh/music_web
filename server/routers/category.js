@@ -6,5 +6,6 @@ router.get('/', categoryController.getAllCategory);
 router.post('/', categoryController.createCategoty);
 router.put('/:categoryId', categoryController.updateCategoty);
 router.delete('/:categoryId', categoryController.deleteCategoty);
+router.get("/song/popular", categoryController.getCategorySong);
 
 module.exports = router;

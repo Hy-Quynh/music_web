@@ -46,7 +46,7 @@ export default function ControlMusicModal({
     try {
       const res = await getAllCategory();
       if (res?.data?.success) {
-        setCategoryList(res?.data?.payload);
+        setCategoryList(res?.data?.payload?.category);
       }
     } catch (error) {
       console.log("get category error >>> ", error);

@@ -6,11 +6,11 @@ const COLOR_LIST = ["#03001C", "#301E67", "#1C82AD", "#5B8FB9"];
 export default function Category() {
   const [categoryList, setCategoryList] = useState([]);
 
-  const getListCountry = async () => {
+  const getListCatogory = async () => {
     try {
       const result = await getAllCategory();
       if (result?.data?.success) {
-        setCategoryList(result?.data?.payload);
+        setCategoryList(result?.data?.payload?.category);
       }
     } catch (error) {
       console.log("get list category error >>> ", error);
@@ -18,7 +18,7 @@ export default function Category() {
   };
 
   useEffect(() => {
-    getListCountry();
+    getListCatogory();
   }, []);
 
   return (
