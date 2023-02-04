@@ -27,16 +27,22 @@ create table categorys (
 	created_day timestamp
 );
 
-
 create table albums (
 	_id serial PRIMARY key,
 	name varchar(255),
 	description text,
 	avatar text,
-	created_day timestamp
+	created_day timestamp,
+	country_id int,
+	singer_id int,
+	CONSTRAINT fk_albums_countries
+	FOREIGN KEY (country_id) 
+	REFERENCES countries(_id),
+	
+	CONSTRAINT fk_albums_singers
+	FOREIGN KEY (singer_id) 
+	REFERENCES singers(_id)
 );
-
-SELECT * FROM singers WHERE effect = true
 
 create table singers (
 	_id serial PRIMARY key,
@@ -44,18 +50,19 @@ create table singers (
 	avatar text,
 	description text,
 	effect boolean,
-	created_day timestamp
+	created_day timestamp,
+	country_id int,
+	
+	CONSTRAINT fk_singers_countries
+	FOREIGN KEY (country_id) 
+	REFERENCES countries(_id)
 );
-
 
 create table countries (
 	_id serial PRIMARY key,
 	name varchar(255),
 	created_day timestamp
 );
-
-select * from song_singer;
-
 
 create table songs (
 	_id serial PRIMARY key,
