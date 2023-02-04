@@ -73,7 +73,7 @@ export default function AdminCategory() {
     try {
       const res = await getAllCategory();
       if (res?.data?.success) {
-        setListCategory(res?.data?.payload);
+        setListCategory(res?.data?.payload?.category);
       }
     } catch (error) {
       console.log("get list category error >>> ", error);

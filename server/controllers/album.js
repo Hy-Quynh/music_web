@@ -5,6 +5,7 @@ const {
   updateAlbumData,
   deleteAlbumData,
   getTotalAlbum,
+  getAlbumDetail,
 } = require("../models/album");
 
 module.exports = {
@@ -25,10 +26,27 @@ module.exports = {
     }
   }),
 
+  getAlbumById: asyncHandler(async (req, res) => {
+    try {
+      const { id } = req?.params;
+      const albumDetail = await getAlbumDetail(id);
+
+      return res.send({
+        success: true,
+        payload: albumDetail,
+      });
+    } catch (error) {
+      return res.send({
+        success: false,
+        error: "Lấy thông tin chi tiết album thất bại",
+      });
+    }
+  }),
+
   createAlbum: asyncHandler(async (req, res) => {
     try {
-      const { name, description, avatar } = req?.body;
-      const result = await createNewAlbum(name, description, avatar);
+      const { name, description, avatar, singerId, countryId } = req?.body;
+      const result = await createNewAlbum(name, description, avatar, singerId, countryId );
       if (result) {
         return res.send({ success: true });
       }
@@ -46,9 +64,9 @@ module.exports = {
 
   updateAlbum: asyncHandler(async (req, res) => {
     try {
-      const { name, description, avatar } = req?.body;
+      const { name, description, avatar, singerId, countryId  } = req?.body;
       const { albumId } = req?.params;
-      const result = await updateAlbumData(albumId, name, description, avatar);
+      const result = await updateAlbumData(albumId, name, description, avatar, singerId, countryId );
       if (result) {
         return res.send({ success: true });
       }

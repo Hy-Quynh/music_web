@@ -7,7 +7,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import { Button, Stack, TextareaAutosize, Typography } from "@mui/material";
+import { Button, MenuItem, Select, Stack, TextareaAutosize, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LoadingButton from "@mui/lab/LoadingButton";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -23,6 +23,8 @@ import {
 } from "../../../services/album";
 import storage from "../../../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getAllSinger } from "../../../services/singer";
+import { getAllCountry } from "../../../services/country";
 
 const columns = [
   { id: "stt", label: "#", minWidth: 50, align: "center" },
@@ -35,6 +37,18 @@ const columns = [
   {
     id: "name",
     label: "Name",
+    minWidth: 170,
+    align: "left",
+  },
+  {
+    id: "singer_name",
+    label: "Tên ca sĩ",
+    minWidth: 170,
+    align: "left",
+  },
+  {
+    id: "country_name",
+    label: "Quốc gia",
     minWidth: 170,
     align: "left",
   },
@@ -64,11 +78,15 @@ export default function AdminAlbum() {
     description: "",
     avatar: "",
     albumId: -1,
+    singerId: -1,
+    countryId: -1,
   });
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [popoverId, setPopoverId] = useState("");
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [singerList, setSingerList] = useState([]);
+  const [countryList, setCountryList] = useState([]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -90,15 +108,41 @@ export default function AdminAlbum() {
     }
   };
 
+  const getListSinger = async () => {
+    try {
+      const res = await getAllSinger();
+      if (res?.data?.success) {
+        setSingerList(res?.data?.payload);
+      }
+    } catch (error) {
+      console.log("get singer error >>> ", error);
+    }
+  };
+
+  const getListCountry = async () => {
+    try {
+      const res = await getAllCountry();
+      if (res?.data?.success) {
+        setCountryList(res?.data?.payload);
+      }
+    } catch (error) {
+      console.log("get country error >>> ", error);
+    }
+  };
+
   useEffect(() => {
+    getListCountry();
+    getListSinger();
     getListAlbum();
   }, []);
 
   const handleCreateUpdateAlbum = async () => {
-    const { albumName, description, avatar } = editAlbum;
+    const { albumName, description, avatar, singerId, countryId } = editAlbum;
     if (
       !albumName.trim().length ||
       !description.trim().length ||
+      singerId === -1 || 
+      countryId === -1 ||
       (typeof avatar === "string" && !avatar?.length)
     ) {
       return toast.error("Data can not blank ");
@@ -126,7 +170,9 @@ export default function AdminAlbum() {
         const createRes = await createNewAlbum(
           albumName,
           description,
-          newAvatar
+          newAvatar,
+          singerId,
+          countryId
         );
         if (createRes?.data?.success) {
           toast.success("Add new album succes");
@@ -140,7 +186,9 @@ export default function AdminAlbum() {
           editAlbum?.albumId,
           albumName,
           description,
-          newAvatar
+          newAvatar,
+          singerId,
+          countryId
         );
 
         if (updateRes?.data?.success) {
@@ -200,6 +248,72 @@ export default function AdminAlbum() {
                 sx={{
                   fontSize: "17px",
                   color: "black",
+                  marginTop: "10px",
+                }}
+              >
+                Country:
+              </Typography>
+
+              <Select
+                placeholder="Enter Country"
+                value={editAlbum?.countryId || -1}
+                sx={{ width: "100%" }}
+                label="Country"
+                onChange={(event) => {
+                  setEditAlbum({
+                    ...editAlbum,
+                    countryId: event.target.value,
+                  })
+                }}
+              >
+                {countryList?.map((item, index) => {
+                  return (
+                    <MenuItem value={item?._id} key={`country-item-${index}`}>
+                      {item?.name}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+
+              <Typography
+                variant="p"
+                component="p"
+                sx={{
+                  fontSize: "17px",
+                  color: "black",
+                  marginTop: "10px",
+                }}
+              >
+                Singer:
+              </Typography>
+
+              <Select
+                placeholder="Enter Singer"
+                value={editAlbum?.singerId || -1}
+                sx={{ width: "100%" }}
+                label="Singer"
+                onChange={(event) => {
+                  setEditAlbum({
+                    ...editAlbum,
+                    singerId: event.target.value,
+                  })
+                }}
+              >
+                {singerList?.map((item, index) => {
+                  return (
+                    <MenuItem value={item?._id} key={`country-item-${index}`}>
+                      {item?.name}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+
+              <Typography
+                variant="p"
+                component="p"
+                sx={{
+                  fontSize: "17px",
+                  color: "black",
                   marginBottom: "-10px",
                   marginTop: "10px",
                 }}
@@ -239,7 +353,7 @@ export default function AdminAlbum() {
           action={
             <LoadingButton
               autoFocus
-              onClick={async() => {
+              onClick={async () => {
                 setSubmitLoading(true);
                 await handleCreateUpdateAlbum();
                 setSubmitLoading(false);
@@ -270,7 +384,13 @@ export default function AdminAlbum() {
           <Button
             variant="contained"
             onClick={() => {
-              setEditAlbum({ albumName: "", description: "", avatar: "" });
+              setEditAlbum({
+                albumName: "",
+                description: "",
+                avatar: "",
+                singerId: -1,
+                countryId: -1,
+              });
               setAddAlbumModal({ status: true, type: "add" });
             }}
           >
@@ -344,6 +464,8 @@ export default function AdminAlbum() {
                                       description: row?.description,
                                       avatar: row?.avatar,
                                       albumId: row?._id,
+                                      singerId: row?.singer_id || -1,
+                                      countryId: row?.country_id || -1,
                                     });
                                     setAddAlbumModal({
                                       status: true,

@@ -1,6 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function AlbumList({ albumList, page, totalPage, setPage }) {
+  const navigate = useNavigate();
+
   return (
     <div className="row oneMusic-albums">
       {!albumList?.length ? (
@@ -21,6 +24,8 @@ export default function AlbumList({ albumList, page, totalPage, setPage }) {
             <div
               className="col-12 col-sm-4 col-md-3 col-lg-2 single-album-item"
               key={`album-item-${index}`}
+              style={{ cursor: "pointer" }}
+              onClick={() => navigate(`/album/${item?._id}`)}
             >
               <div className="single-album">
                 <img

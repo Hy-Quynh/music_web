@@ -70,7 +70,7 @@ module.exports = {
     }
   },
 
-  getListSong: async (limit, offset, category) => {
+  getListSong: async (limit, offset, category, album) => {
     try {
       const limitOffset = getByLimitAndOffset(limit, offset);
       const result = await postgresql.query(
@@ -82,6 +82,11 @@ module.exports = {
           category && category !== "undefined"
             ? `category_id = ${category}`
             : "category_id is not null"
+        } AND 
+        ${
+          album && album !== "undefined"
+            ? `album_id = ${album}`
+            : "album_id is not null"
         }
         ORDER BY created_day DESC ${limitOffset}`
       );

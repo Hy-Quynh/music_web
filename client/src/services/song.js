@@ -1,9 +1,9 @@
 import { request } from "../utils/request";
 
-export async function getAllSong(limit, offset) {
+export async function getAllSong(limit, offset, album) {
   return request({
     method: "GET",
-    url: `/song?limit=${limit}&offset=${offset}`,
+    url: `/song?limit=${limit}&offset=${offset}&album=${album}`,
   });
 }
 

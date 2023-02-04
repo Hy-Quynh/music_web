@@ -17,6 +17,7 @@ import AdminCountry from "../pages/Admin/Country";
 import AlbumPage from "../pages/Client/Album";
 import CategoryPage from "../pages/Client/Category";
 import NewSong from "../pages/Client/NewSong";
+import AlbumDetail from "../pages/Client/AlbumDetail";
 
 const ClientLayoutPage = [
   {
@@ -26,6 +27,10 @@ const ClientLayoutPage = [
   {
     path: "/album",
     page: <AlbumPage />,
+  },
+  {
+    path: "/album/:id",
+    page: <AlbumDetail />,
   },
   {
     path: "/category",

@@ -23,8 +23,8 @@ module.exports = {
 
   createSinger: asyncHandler(async (req, res) => {
     try {
-      const { name, description, avatar } = req?.body;
-      const result = await createNewSinger(name, description, avatar);
+      const { name, description, avatar, countryId } = req?.body;
+      const result = await createNewSinger(name, description, avatar, countryId);
       if (result) {
         return res.send({ success: true });
       }
@@ -42,13 +42,14 @@ module.exports = {
 
   updateSinger: asyncHandler(async (req, res) => {
     try {
-      const { name, description, avatar } = req?.body;
+      const { name, description, avatar, countryId } = req?.body;
       const { singerId } = req?.params;
       const result = await updateSingerData(
         singerId,
         name,
         description,
-        avatar
+        avatar,
+        countryId
       );
       if (result) {
         return res.send({ success: true });

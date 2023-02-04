@@ -10,6 +10,8 @@ import TableRow from "@mui/material/TableRow";
 import {
   Button,
   Checkbox,
+  MenuItem,
+  Select,
   Stack,
   TextareaAutosize,
   Typography,
@@ -30,6 +32,7 @@ import {
 } from "../../../services/singer";
 import storage from "../../../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getAllCountry } from "../../../services/country";
 
 const columns = [
   { id: "stt", label: "#", minWidth: 50, align: "center" },
@@ -42,6 +45,12 @@ const columns = [
   {
     id: "name",
     label: "Tên",
+    minWidth: 170,
+    align: "left",
+  },
+  {
+    id: "country_name",
+    label: "Quốc gia",
     minWidth: 170,
     align: "left",
   },
@@ -78,11 +87,13 @@ export default function AdminSinger() {
     singerImage: "",
     description: "",
     singerId: -1,
+    countryId: -1
   });
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [popoverId, setPopoverId] = useState("");
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [countryList, setCountryList] = useState([]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -104,15 +115,29 @@ export default function AdminSinger() {
     }
   };
 
+  const getListCountry = async () => {
+    try {
+      const res = await getAllCountry();
+      if (res?.data?.success) {
+        setCountryList(res?.data?.payload);
+      }
+    } catch (error) {
+      console.log("get country error >>> ", error);
+    }
+  };
+
   useEffect(() => {
     getListSinger();
+    getListCountry();
   }, []);
 
   const handleCreateUpdateSinger = async () => {
-    const { singerName, description, singerImage } = editSinger;
+    const { singerName, description, singerImage, countryId } = editSinger;
+    console.log('editSinger >> ', editSinger);
     if (
       !singerName.trim().length ||
       !description.trim().length ||
+      countryId === -1 || 
       (typeof singerImage === "string" && !singerImage?.length)
     ) {
       return toast.error("Data can not blank ");
@@ -140,7 +165,8 @@ export default function AdminSinger() {
         const createRes = await createNewSinger(
           singerName,
           description,
-          newAvatar
+          newAvatar,
+          countryId
         );
         if (createRes?.data?.success) {
           toast.success("Add new singer succes");
@@ -154,7 +180,8 @@ export default function AdminSinger() {
           editSinger?.singerId,
           singerName,
           description,
-          newAvatar
+          newAvatar,
+          countryId
         );
 
         if (updateRes?.data?.success) {
@@ -185,20 +212,22 @@ export default function AdminSinger() {
 
   const handleChangeSingerEffect = async (singerId, effect) => {
     try {
-      const result = await changeSingerEffect(singerId, effect)
-      if (result?.data?.success){
-        if (result?.data?.payload){
+      const result = await changeSingerEffect(singerId, effect);
+      if (result?.data?.success) {
+        if (result?.data?.payload) {
           const singer = [...listSinger]?.map((item) => {
-            if (item?._id === singerId){
+            if (item?._id === singerId) {
               return {
                 ...item,
-                effect
-              }
+                effect,
+              };
             }
-            return {...item}
-          })
-          setListSinger(singer)
-          return toast.success('Thay đổi trạng thái hiện thị của ca sĩ thành công')
+            return { ...item };
+          });
+          setListSinger(singer);
+          return toast.success(
+            "Thay đổi trạng thái hiện thị của ca sĩ thành công"
+          );
         }
       }
       toast.error("Thay đổi trạng thái hiện thị của ca sĩ thất bại");
@@ -233,6 +262,39 @@ export default function AdminSinger() {
                   })
                 }
               />
+
+              <Typography
+                variant="p"
+                component="p"
+                sx={{
+                  fontSize: "17px",
+                  color: "black",
+                  marginTop: "10px",
+                }}
+              >
+                Country:
+              </Typography>
+
+              <Select
+                placeholder="Enter Country"
+                value={editSinger?.countryId || -1}
+                sx={{ width: "100%" }}
+                label="Country"
+                onChange={(event) => {
+                  setEditSinger({
+                    ...editSinger,
+                    countryId: event.target.value,
+                  });
+                }}
+              >
+                {countryList?.map((item, index) => {
+                  return (
+                    <MenuItem value={item?._id} key={`country-item-${index}`}>
+                      {item?.name}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
 
               <Typography
                 variant="p"
@@ -314,6 +376,7 @@ export default function AdminSinger() {
                 singerName: "",
                 description: "",
                 singerImage: "",
+                countryId: -1
               });
               setAddSingerModal({ status: true, type: "add" });
             }}
@@ -388,6 +451,7 @@ export default function AdminSinger() {
                                       singerImage: row?.avatar,
                                       description: row?.description,
                                       singerId: row?._id,
+                                      countryId: row?.country_id || -1
                                     });
                                     setAddSingerModal({
                                       status: true,

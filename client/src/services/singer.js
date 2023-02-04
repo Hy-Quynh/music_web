@@ -7,7 +7,7 @@ export async function getAllSinger() {
   });
 }
 
-export async function createNewSinger(name, description, avatar) {
+export async function createNewSinger(name, description, avatar, countryId) {
   return request({
     method: "POST",
     url: "/singer",
@@ -15,11 +15,12 @@ export async function createNewSinger(name, description, avatar) {
       name,
       description,
       avatar,
+      countryId
     },
   });
 }
 
-export async function updateSinger(id, name, description, avatar) {
+export async function updateSinger(id, name, description, avatar, countryId) {
   return request({
     method: "PUT",
     url: `/singer/${id}`,
@@ -27,6 +28,7 @@ export async function updateSinger(id, name, description, avatar) {
       name,
       description,
       avatar,
+      countryId
     },
   });
 }

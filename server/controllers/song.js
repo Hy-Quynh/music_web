@@ -13,8 +13,8 @@ const {
 module.exports = {
   getAllSong: asyncHandler(async (req, res) => {
     try {
-      const { limit, offset } = req?.query;
-      const result = await getListSong(limit, offset);
+      const { limit, offset, album, category } = req?.query;
+      const result = await getListSong(limit, offset, category, album);
       const totalSong = await getTotalSong();
       if (result) {
         for (let i = 0; i < result?.length; i++) {
@@ -123,5 +123,5 @@ module.exports = {
     }
   }),
 
-  
+
 };
