@@ -55,4 +55,15 @@ module.exports = {
       return false;
     }
   },
+
+  getCategoryById: async(id) => {
+    try {
+      const result = await postgresql.query(
+        `SELECT * FROM categorys WHERE _id=${Number(id)}`
+      );
+      return result?.rows?.[0] || {};
+    } catch (error) {
+      return {};
+    }
+  }
 };

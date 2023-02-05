@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getPopularSinger } from "../../../../services/singer";
 
 export default function PopularArtist() {
   const [popularSinger, setPopularSinger] = useState([]);
+  const navigate = useNavigate();
 
   const getListPopularSinger = async () => {
     try {
@@ -34,6 +36,8 @@ export default function PopularArtist() {
             className="single-artists d-flex align-items-center wow fadeInUp"
             data-wow-delay="100ms"
             key={`popular-singer-item-${index}`}
+            style={{cursor: 'pointer'}}
+            onClick={() => navigate(`/singer/${item?._id}`)}
           >
             <div
               className="thumbnail"

@@ -70,7 +70,7 @@ module.exports = {
     }
   },
 
-  getListSong: async (limit, offset, category, album) => {
+  getListSong: async (limit, offset, category, album, country, singer) => {
     try {
       const limitOffset = getByLimitAndOffset(limit, offset);
       const result = await postgresql.query(
@@ -80,15 +80,28 @@ module.exports = {
         JOIN categorys ct ON s.category_id = ct._id
         WHERE ${
           category && category !== "undefined"
-            ? `category_id = ${category}`
-            : "category_id is not null"
+            ? `s.category_id = ${category}`
+            : "s._id is not null"
         } AND 
         ${
           album && album !== "undefined"
-            ? `album_id = ${album}`
-            : "album_id is not null"
+            ? `s.album_id = ${album}`
+            : "s._id is not null"
+        } AND 
+        ${
+          country && country !== "undefined"
+            ? `s.country_id = ${Number(country)}`
+            : "s._id is not null"
+        } AND 
+        ${
+          singer && singer !== "undefined"
+            ? `${
+                Number(singer) +
+                " IN (SELECT ss.singer_id FROM song_singer ss WHERE ss.song_id = s._id)"
+              }`
+            : "s._id is not null"
         }
-        ORDER BY created_day DESC ${limitOffset}`
+        ORDER BY s.created_day DESC ${limitOffset}`
       );
       return result?.rows || [];
     } catch (error) {
@@ -96,13 +109,33 @@ module.exports = {
     }
   },
 
-  getTotalSong: async (category) => {
+  getTotalSong: async (category, album, country, singer) => {
     try {
       const result = await postgresql.query(
-        `SELECT COUNT(_id) as total_song FROM songs WHERE ${
+        `SELECT COUNT(_id) as total_song 
+        FROM songs 
+        WHERE ${
           category && category !== "undefined"
             ? `category_id = ${category}`
-            : "category_id is not null"
+            : "_id is not null"
+        } AND 
+        ${
+          album && album !== "undefined"
+            ? `album_id = ${album}`
+            : "_id is not null"
+        } AND 
+        ${
+          country && country !== "undefined"
+            ? `country_id = ${Number(country)}`
+            : "_id is not null"
+        } AND 
+        ${
+          singer && singer !== "undefined"
+            ? `${
+                Number(singer) +
+                " IN (SELECT ss.singer_id FROM song_singer ss WHERE ss.song_id = _id)"
+              }`
+            : "_id is not null"
         }`
       );
       return result?.rows?.[0]?.total_song || 0;

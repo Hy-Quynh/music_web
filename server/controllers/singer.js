@@ -6,12 +6,14 @@ const {
   deleteSingerData,
   changeSingerEffect,
   getPopularSingerData,
+  getSingerById,
 } = require("../models/singer");
 
 module.exports = {
   getAllSinger: asyncHandler(async (req, res) => {
     try {
-      const listSinger = await getListSinger();
+      const { limit, offset, country } = req?.query;
+      const listSinger = await getListSinger(limit, offset, country);
       return res.send({ success: true, payload: listSinger });
     } catch (error) {
       return res.send({
@@ -21,10 +23,28 @@ module.exports = {
     }
   }),
 
+  getSingerDetail: asyncHandler(async (req, res) => {
+    try {
+      const { singerId } = req?.params;
+      const result = await getSingerById(singerId);
+      return res.send({ success: true, payload: result });
+    } catch (error) {
+      return res.send({
+        success: false,
+        error: "Lấy thông tin ca sĩ thất bại",
+      });
+    }
+  }),
+
   createSinger: asyncHandler(async (req, res) => {
     try {
       const { name, description, avatar, countryId } = req?.body;
-      const result = await createNewSinger(name, description, avatar, countryId);
+      const result = await createNewSinger(
+        name,
+        description,
+        avatar,
+        countryId
+      );
       if (result) {
         return res.send({ success: true });
       }

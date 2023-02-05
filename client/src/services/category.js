@@ -7,6 +7,13 @@ export async function getAllCategory() {
   });
 }
 
+export async function getCategoryDetail(id) {
+  return request({
+    method: "GET",
+    url: `/category/${id}`,
+  });
+}
+
 export async function createNewCategory(name, description) {
   return request({
     method: "POST",

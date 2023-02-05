@@ -10,6 +10,15 @@ module.exports = {
     }
   },
 
+  getCountryById: async(id) => {
+    try {
+      const result = await postgresql.query(`SELECT * FROM countries WHERE _id=${Number(id)}`)
+      return result?.rows?.[0] || {}
+    } catch (error) {
+      return {};
+    }
+  },
+
   createNewCountry: async (name) => {
     try {
       const result = await postgresql.query(

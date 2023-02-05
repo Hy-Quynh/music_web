@@ -40,7 +40,7 @@ export default function AlbumList({ albumList, page, totalPage, setPage }) {
                   }}
                 />
                 <div className="album-info">
-                  <a href="#">
+                  <a>
                     <h5>{item?.name}</h5>
                   </a>
                   {/* <p>Second Song</p> */}
@@ -68,10 +68,13 @@ export default function AlbumList({ albumList, page, totalPage, setPage }) {
                   }
                 }}
               >
-                <a className="btn oneMusic-btn">Previous</a>
+                <a className="btn oneMusic-btn" >
+                  Sau
+                </a>
               </div>
               <div className="load-more-btn text-center">
                 <a
+                  
                   className="btn oneMusic-btn"
                   style={{ padding: 0, minWidth: "100px", width: "100px" }}
                 >
@@ -87,7 +90,7 @@ export default function AlbumList({ albumList, page, totalPage, setPage }) {
                   }
                 }}
               >
-                <a className="btn oneMusic-btn">Next</a>
+                <a className="btn oneMusic-btn" >Trước</a>
               </div>
             </div>
           </div>

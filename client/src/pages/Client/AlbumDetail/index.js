@@ -23,7 +23,7 @@ export default function AlbumDetail() {
 
   const dispatch = useDispatch();
   const { song } = useSelector(songData);
-  let { id } = useParams();
+  const { id } = useParams();
 
   const getListSong = async () => {
     try {
@@ -49,9 +49,12 @@ export default function AlbumDetail() {
   };
 
   useEffect(() => {
-    getListSong();
     getAlbumDetail();
   }, []);
+
+  useEffect(() => {
+    getListSong();
+  }, [page])
 
   return (
     <div style={{ marginBottom: "100px" }}>
@@ -205,7 +208,7 @@ export default function AlbumDetail() {
                                         }
                                       }}
                                     >
-                                      <a className="btn oneMusic-btn" href="!#">
+                                      <a className="btn oneMusic-btn" >
                                         Trước
                                       </a>
                                     </div>
@@ -217,7 +220,7 @@ export default function AlbumDetail() {
                                           minWidth: "100px",
                                           width: "100px",
                                         }}
-                                        href="!#"
+                                        
                                       >
                                         {page + 1} / {totalPage}
                                       </a>

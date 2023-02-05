@@ -54,7 +54,6 @@ export default function CategorySong() {
                           <div class="overlay-content">
                             <a
                               class="hover"
-                              href="#!"
                               style={{ cursor: "pointer" }}
                               onClick={() => {
                                 if (it?._id !== song?._id) {
@@ -97,7 +96,7 @@ export default function CategorySong() {
                       </div>
 
                       <div class="card-content">
-                        <a href="#!">
+                        <a>
                           <p style={{ margin: 0, padding: 0 }}>
                             {it?.singer?.length
                               ? it?.singer?.map((i) => i.name)?.join(", ")

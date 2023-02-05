@@ -18,6 +18,9 @@ import AlbumPage from "../pages/Client/Album";
 import CategoryPage from "../pages/Client/Category";
 import NewSong from "../pages/Client/NewSong";
 import AlbumDetail from "../pages/Client/AlbumDetail";
+import CategoryDetail from "../pages/Client/CategoryDetail";
+import CountryDetail from "../pages/Client/CountryDetail";
+import SingerDetail from "../pages/Client/SingerDetail";
 
 const ClientLayoutPage = [
   {
@@ -35,6 +38,18 @@ const ClientLayoutPage = [
   {
     path: "/category",
     page: <CategoryPage />,
+  },
+  {
+    path: "/category/:id",
+    page: <CategoryDetail />,
+  },
+  {
+    path: "/singer/:id",
+    page: <SingerDetail />,
+  },
+  {
+    path: "/country/:id",
+    page: <CountryDetail />,
   },
   {
     path: "/login",

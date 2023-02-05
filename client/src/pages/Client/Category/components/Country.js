@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getAllCountry } from "../../../../services/country";
 
 const COLOR_LIST = ["#D8562B", "#239F97", "#20A26B", "#D19416"];
 
 export default function Country() {
   const [countryList, setCountryList] = useState([]);
+  const navigate = useNavigate();
 
   const getListCountry = async () => {
     try {
@@ -30,7 +32,10 @@ export default function Country() {
             <div
               className="category-list-item list-item item1"
               key={`country-item-${index}`}
-              style={{background: COLOR_LIST[index % 4]}}
+              style={{ background: COLOR_LIST[index % 4] }}
+              onClick={() => {
+                navigate(`/country/${item?._id}`);
+              }}
             >
               {item?.name}
             </div>

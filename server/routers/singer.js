@@ -8,5 +8,6 @@ router.put('/:singerId', singerController.updateSinger);
 router.delete('/:singerId', singerController.deleteSinger);
 router.put('/effect/:singerId', singerController.changeSingerEffect);
 router.get('/effect/list', singerController.getPopularSinger);
+router.get('/:singerId', singerController.getSingerDetail);
 
 module.exports = router;

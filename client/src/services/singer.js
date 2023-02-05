@@ -1,9 +1,16 @@
 import { request } from "../utils/request";
 
-export async function getAllSinger() {
+export async function getAllSinger(limit, offset, country) {
   return request({
     method: "GET",
-    url: "/singer",
+    url: `/singer?limit=${limit}&offset=${offset}&country=${country}`,
+  });
+}
+
+export async function getSingerById(id) {
+  return request({
+    method: "GET",
+    url: `/singer/${id}`,
   });
 }
 
@@ -15,7 +22,7 @@ export async function createNewSinger(name, description, avatar, countryId) {
       name,
       description,
       avatar,
-      countryId
+      countryId,
     },
   });
 }
@@ -28,7 +35,7 @@ export async function updateSinger(id, name, description, avatar, countryId) {
       name,
       description,
       avatar,
-      countryId
+      countryId,
     },
   });
 }

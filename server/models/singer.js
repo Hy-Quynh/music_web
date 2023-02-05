@@ -1,12 +1,35 @@
 const { postgresql } = require("../config/connect");
+const { getByLimitAndOffset } = require("../utils/utils");
 
 module.exports = {
-  getListSinger: async () => {
+  getListSinger: async (limit, offset, country) => {
     try {
-      const result = await postgresql.query(`SELECT s.*, c.name as country_name FROM singers s LEFT JOIN countries c ON s.country_id = c._id ORDER BY s.created_day DESC`);
+      const limitOffset = getByLimitAndOffset(limit, offset);
+      const result = await postgresql.query(
+        `SELECT s.*, c.name as country_name 
+        FROM singers s LEFT JOIN countries c ON s.country_id = c._id 
+        WHERE ${
+          country && country !== "undefined"
+            ? `s.country_id = ${Number(country)}`
+            : "s._id is not null"
+        }
+        ORDER BY s.created_day DESC ${limitOffset}`
+      );
       return result?.rows || [];
     } catch (error) {
       return [];
+    }
+  },
+
+  getSingerById: async (singerId) => {
+    try {
+      const result = await postgresql.query(`SELECT s.*, c.name as country_name 
+      FROM singers s LEFT JOIN countries c ON s.country_id = c._id WHERE s._id=${Number(
+        singerId
+      )}`);
+      return result?.rows?.[0] || {};
+    } catch (error) {
+      return {};
     }
   },
 
@@ -63,7 +86,6 @@ module.exports = {
       const result = await postgresql.query(
         `SELECT * FROM singers WHERE effect = true`
       );
-      console.log("result >>> ", result);
       return result?.rows || [];
     } catch (error) {
       return [];

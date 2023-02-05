@@ -5,6 +5,7 @@ const {
   updateCategoryData,
   deleteCategoryData,
   getTotalCategory,
+  getCategoryById,
 } = require("../models/category");
 const { getListSong, getSongSinger } = require("../models/song");
 
@@ -87,21 +88,35 @@ module.exports = {
   getCategorySong: asyncHandler(async (req, res) => {
     try {
       const listCategory = await getListCategory();
+      const newCategory = [...listCategory]?.slice(0, 10)
       const categoryFullData = [];
 
-      for (let i = 0; i < listCategory?.length; i++) {
-        const song = await getListSong(10, 0, listCategory?.[i]?._id);
+      for (let i = 0; i < newCategory?.length; i++) {
+        const song = await getListSong(10, 0, newCategory?.[i]?._id);
 
         for (let j = 0; j < song?.length; j++) {
           const singer = await getSongSinger(song?.[j]?._id);
           song[j].singer = [...singer];
         }
         categoryFullData?.push({
-          ...listCategory?.[i],
+          ...newCategory?.[i],
           song,
         });
       }
       return res.send({ success: true, payload: categoryFullData });
+    } catch (error) {
+      return res.send({
+        success: false,
+        error: "Lấy danh sách bài hát thất bại",
+      });
+    }
+  }),
+
+  getCategoryDetail: asyncHandler(async (req, res) => {
+    try {
+      const { categoryId } = req?.params;
+      const categoryDetail = await getCategoryById(categoryId);
+      return res.send({ success: true, payload: categoryDetail });
     } catch (error) {
       return res.send({
         success: false,

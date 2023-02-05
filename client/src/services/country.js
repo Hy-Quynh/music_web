@@ -7,6 +7,13 @@ export async function getAllCountry() {
   });
 }
 
+export async function getCountryById(id) {
+  return request({
+    method: "GET",
+    url: `/country/${id}`,
+  });
+}
+
 export async function createNewCountry(name) {
   return request({
     method: "POST",

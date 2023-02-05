@@ -4,6 +4,7 @@ const {
   createNewCountry,
   updateCountryData,
   deleteCountryData,
+  getCountryById,
 } = require("../models/country");
 
 module.exports = {
@@ -15,6 +16,19 @@ module.exports = {
       return res.send({
         success: false,
         error: "Lấy danh sách quốc gia thất bại",
+      });
+    }
+  }),
+
+  getCountryDetail: asyncHandler(async (req, res) => {
+    try {
+      const { countryId } = req?.params;
+      const result = await getCountryById(countryId);
+      return res.send({ success: true, payload: result });
+    } catch (error) {
+      return res.send({
+        success: false,
+        error: "Lấy chi tiết thông tin quốc gia thất bại",
       });
     }
   }),
