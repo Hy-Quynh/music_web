@@ -178,4 +178,15 @@ module.exports = {
       return false;
     }
   },
+
+  getSongById: async(songId) => {
+    try {
+      const result = await postgresql.query(
+        `SELECT * FROM songs WHERE _id=${Number(songId)}`
+      );
+      return result?.rows?.[0] || {};
+    } catch (error) {
+      return {}
+    }
+  }
 };

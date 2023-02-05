@@ -1,19 +1,27 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setSongPlaying, setSongState, songData } from "../../../../slices/songSlice";
+import {
+  setSongPlaying,
+  setSongState,
+  songData,
+} from "../../../../slices/songSlice";
 import PlayMusicIcon from "../../../../assets/image/play-music.svg";
 import StopMusicIcon from "../../../../assets/image/stop-music.svg";
-
+import { useNavigate } from "react-router-dom";
 
 export default function SongList({ songList }) {
   const dispatch = useDispatch();
   const { song } = useSelector(songData);
+  const navigate = useNavigate();
 
   return (
     <div className="country-song">
       <div className="title">Bài hát</div>
-      <div className="category-song" style={{marginTop: '-20px'}}>
-        <div className="category-song-list" style={{ flexWrap: "wrap", gap: '40px'}} >
+      <div className="category-song" style={{ marginTop: "-20px" }}>
+        <div
+          className="category-song-list"
+          style={{ flexWrap: "wrap", gap: "40px" }}
+        >
           {songList?.map((it, id) => {
             return (
               <div class="card hover" key={`category-song-${id}`}>
@@ -71,7 +79,14 @@ export default function SongList({ songList }) {
                         ? it?.singer?.map((i) => i.name)?.join(", ")
                         : ""}
                     </p>
-                    <p style={{ fontWeight: 700, fontSize: "16px" }}>
+                    <p
+                      style={{
+                        fontWeight: 700,
+                        fontSize: "16px",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => navigate(`/song/${it?._id}`)}
+                    >
                       {it?.name}
                     </p>
                   </a>

@@ -8,7 +8,7 @@ import {
 } from "../../../slices/songSlice";
 import PlayMusicIcon from "../../../assets/image/play-music.svg";
 import StopMusicIcon from "../../../assets/image/stop-music.svg";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getAlbumById } from "../../../services/album";
 import "./style.scss";
 import PlayIcon from "../../../assets/image/play-music.svg";
@@ -24,6 +24,7 @@ export default function AlbumDetail() {
   const dispatch = useDispatch();
   const { song } = useSelector(songData);
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const getListSong = async () => {
     try {
@@ -54,7 +55,7 @@ export default function AlbumDetail() {
 
   useEffect(() => {
     getListSong();
-  }, [page])
+  }, [page]);
 
   return (
     <div style={{ marginBottom: "100px" }}>
@@ -122,7 +123,9 @@ export default function AlbumDetail() {
                                 height: "118px",
                                 border: "0.5px solid gray",
                                 maxWidth: "118px",
+                                cursor: "pointer",
                               }}
+                              onClick={() => navigate(`/song/${item?._id}`)}
                             >
                               <img
                                 src={item?.avatar}
@@ -141,7 +144,14 @@ export default function AlbumDetail() {
                             >
                               <div>
                                 <div className="song-name">
-                                  <p>{item?.name}</p>
+                                  <p
+                                    onClick={() =>
+                                      navigate(`/song/${item?._id}`)
+                                    }
+                                    style={{ cursor: "pointer" }}
+                                  >
+                                    {item?.name}
+                                  </p>
                                 </div>
                                 <div className="singer-name">
                                   <p>
@@ -208,9 +218,7 @@ export default function AlbumDetail() {
                                         }
                                       }}
                                     >
-                                      <a className="btn oneMusic-btn" >
-                                        Trước
-                                      </a>
+                                      <a className="btn oneMusic-btn">Trước</a>
                                     </div>
                                     <div className="load-more-btn text-center">
                                       <a
@@ -220,7 +228,6 @@ export default function AlbumDetail() {
                                           minWidth: "100px",
                                           width: "100px",
                                         }}
-                                        
                                       >
                                         {page + 1} / {totalPage}
                                       </a>
@@ -234,7 +241,9 @@ export default function AlbumDetail() {
                                         }
                                       }}
                                     >
-                                      <a className="btn oneMusic-btn" href='!#'>Sau</a>
+                                      <a className="btn oneMusic-btn" href="!#">
+                                        Sau
+                                      </a>
                                     </div>
                                   </div>
                                 </div>

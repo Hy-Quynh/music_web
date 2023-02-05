@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getCategoryDetail } from "../../../services/category";
 import { getAllSong } from "../../../services/song";
 import {
@@ -19,6 +19,7 @@ export default function CategoryDetail() {
   const [songList, setSongList] = useState([]);
   const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState(0);
+  const navigate = useNavigate();
 
   const dispatch = useDispatch();
   const { song } = useSelector(songData);
@@ -123,7 +124,14 @@ export default function CategoryDetail() {
                         ? it?.singer?.map((i) => i.name)?.join(", ")
                         : ""}
                     </p>
-                    <p style={{ fontWeight: 700, fontSize: "16px" }}>
+                    <p
+                      style={{
+                        fontWeight: 700,
+                        fontSize: "16px",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => navigate(`/song/${it?._id}`)}
+                    >
                       {it?.name}
                     </p>
                   </a>

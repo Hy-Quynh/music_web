@@ -106,6 +106,33 @@ create table song_singer (
 	REFERENCES singers(_id)
 )
 
+create table song_review (
+	_id serial PRIMARY key,
+    created_day timestamp,
+    user_id int,
+    review text,
+    song_id int,
+    status int,
+    CONSTRAINT fk_songreview_song FOREIGN KEY (song_id)
+	REFERENCES songs(_id),
+    
+    CONSTRAINT fk_songreview_user FOREIGN KEY (user_id)
+	REFERENCES users(_id)
+)
+
+create table song_review_children (
+	_id serial PRIMARY key,
+	review_id int,
+	user_id int,
+	review text,
+	status int,
+	created_day timestamp,
+	CONSTRAINT fk_songreviewchildren_songreview FOREIGN KEY (review_id)
+	REFERENCES song_review(_id),
+	
+	CONSTRAINT fk_songreviewchildren_user FOREIGN KEY (user_id)
+	REFERENCES users(_id)
+);
 
 
 

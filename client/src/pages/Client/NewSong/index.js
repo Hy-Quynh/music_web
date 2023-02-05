@@ -8,6 +8,7 @@ import {
 } from "../../../slices/songSlice";
 import PlayMusicIcon from "../../../assets/image/play-music.svg";
 import StopMusicIcon from "../../../assets/image/stop-music.svg";
+import { useNavigate } from "react-router-dom";
 
 const PAGE_LIMIT = 100;
 
@@ -15,6 +16,7 @@ export default function NewSong() {
   const [listSong, setListSong] = useState([]);
   const dispatch = useDispatch();
   const { song } = useSelector(songData);
+  const navigate = useNavigate();
 
   const getListSong = async () => {
     try {
@@ -56,12 +58,14 @@ export default function NewSong() {
                         height: "118px",
                         border: "0.5px solid gray",
                         maxWidth: "118px",
+                        cursor: "pointer",
                       }}
+                      onClick={() => navigate(`/song/${item?._id}`)}
                     >
                       <img
                         src={item?.avatar}
                         alt=""
-                        style={{ width: "118px", height: "118px" }}
+                        style={{ width: "118px", height: "117px" }}
                       />
                     </div>
                     <div
@@ -75,7 +79,12 @@ export default function NewSong() {
                     >
                       <div>
                         <div className="song-name">
-                          <p>{item?.name}</p>
+                          <p
+                            onClick={() => navigate(`/song/${item?._id}`)}
+                            style={{ cursor: "pointer" }}
+                          >
+                            {item?.name}
+                          </p>
                         </div>
                         <div className="singer-name">
                           <p>

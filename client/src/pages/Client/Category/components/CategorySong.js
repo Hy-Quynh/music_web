@@ -8,11 +8,13 @@ import {
   setSongState,
   songData,
 } from "../../../../slices/songSlice";
+import { useNavigate } from "react-router-dom";
 
 export default function CategorySong() {
   const [categorySong, setCategorySong] = useState([]);
   const dispatch = useDispatch();
   const { song } = useSelector(songData);
+  const navigate = useNavigate();
 
   const getSong = async () => {
     try {
@@ -102,7 +104,7 @@ export default function CategorySong() {
                               ? it?.singer?.map((i) => i.name)?.join(", ")
                               : ""}
                           </p>
-                          <p style={{ fontWeight: 700, fontSize: "16px" }}>
+                          <p style={{ fontWeight: 700, fontSize: "16px", cursor: 'pointer' }} onClick={() => navigate(`/song/${it?._id}`)}>
                             {it?.name}
                           </p>
                         </a>

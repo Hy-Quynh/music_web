@@ -3,7 +3,12 @@ import { getAllSong } from "../../../../services/song";
 import PlayIcon from "../../../../assets/image/play-music-black.svg";
 import StopIcon from "../../../../assets/image/stop-music-black.svg";
 import { useDispatch, useSelector } from "react-redux";
-import { setSongPlaying, setSongState, songData } from "../../../../slices/songSlice";
+import {
+  setSongPlaying,
+  setSongState,
+  songData,
+} from "../../../../slices/songSlice";
+import { useNavigate } from "react-router-dom";
 
 const PAGE_LIMIT = 6;
 
@@ -11,6 +16,7 @@ export default function NewHit() {
   const [listHit, setListHit] = useState([]);
   const dispatch = useDispatch();
   const { song } = useSelector(songData);
+  const navigate = useNavigate();
 
   const getListHit = async () => {
     try {
@@ -50,6 +56,10 @@ export default function NewHit() {
                   minWidth: "73px",
                   minHeight: "73px",
                   border: "0.5px solid gray",
+                  cursor: 'pointer'
+                }}
+                onClick={() => {
+                  navigate(`/song/${item?._id}`);
                 }}
               >
                 <img
@@ -59,7 +69,14 @@ export default function NewHit() {
                 />
               </div>
               <div className="content-">
-                <h6>{item?.name}</h6>
+                <h6
+                  onClick={() => {
+                    navigate(`/song/${item?._id}`);
+                  }}
+                  style={{cursor: 'pointer'}}
+                >
+                  {item?.name}
+                </h6>
                 <p>
                   {item?.singer?.length
                     ? item?.singer?.map((it) => it?.name).join(", ")
@@ -96,9 +113,6 @@ export default function NewHit() {
                 />
               )}
             </div>
-            {/* <audio preload="auto" controls>
-              <source src={item?.link} />
-            </audio> */}
           </div>
         );
       })}

@@ -21,6 +21,7 @@ import AlbumDetail from "../pages/Client/AlbumDetail";
 import CategoryDetail from "../pages/Client/CategoryDetail";
 import CountryDetail from "../pages/Client/CountryDetail";
 import SingerDetail from "../pages/Client/SingerDetail";
+import SongDetail from "../pages/Client/SongDetail";
 
 const ClientLayoutPage = [
   {
@@ -50,6 +51,10 @@ const ClientLayoutPage = [
   {
     path: "/country/:id",
     page: <CountryDetail />,
+  },
+  {
+    path: "/song/:id",
+    page: <SongDetail />,
   },
   {
     path: "/login",

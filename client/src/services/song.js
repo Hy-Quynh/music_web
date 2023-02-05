@@ -40,3 +40,10 @@ export async function deleteSongData(id) {
     url: `/song/${id}`,
   });
 }
+
+export async function getSongById(id) {
+  return request({
+    method: "GET",
+    url: `/song/${id}`,
+  });
+}

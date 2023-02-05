@@ -8,13 +8,21 @@ const {
   deleteSong,
   updateSongData,
   getTotalSong,
+  getSongById,
 } = require("../models/song");
 
 module.exports = {
   getAllSong: asyncHandler(async (req, res) => {
     try {
       const { limit, offset, album, category, country, singer } = req?.query;
-      const result = await getListSong(limit, offset, category, album, country, singer);
+      const result = await getListSong(
+        limit,
+        offset,
+        category,
+        album,
+        country,
+        singer
+      );
       const totalSong = await getTotalSong(category, album, country, singer);
       if (result) {
         for (let i = 0; i < result?.length; i++) {
@@ -123,5 +131,22 @@ module.exports = {
     }
   }),
 
+  getSongDetail: asyncHandler(async (req, res) => {
+    try {
+      const { songId } = req?.params;
+      const result = await getSongById(songId);
+      const singer = await getSongSinger(songId);
+      result.singer = [...singer];
 
+      return res.send({
+        success: true,
+        payload: result,
+      });
+    } catch (error) {
+      return res.send({
+        success: false,
+        error: "Lấy thông tin bài hát thất bại",
+      });
+    }
+  }),
 };
