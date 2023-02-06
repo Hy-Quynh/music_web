@@ -7,7 +7,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import { Button, Stack, Typography } from "@mui/material";
+import { Button, Stack, Tooltip, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SettingsIcon from "@mui/icons-material/Settings";
 import CustomPopover from "../../../components/CustomPopover";
@@ -19,6 +19,8 @@ import ControlMusicModal from "./components/ControlMusicModal";
 import { createNewSong } from "../../../services/song";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import PlayMusicModal from "./components/PlayMusicModal";
+import ChatIcon from "@mui/icons-material/Chat";
+import SongReviewDrawer from "./components/SongReviewDrawer";
 
 const columns = [
   { id: "stt", label: "#", minWidth: 50, align: "center" },
@@ -77,6 +79,7 @@ export default function AdminSong() {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [popoverId, setPopoverId] = useState("");
   const [visiblePlayMusic, setVisiblePlayMusic] = useState(false);
+  const [visibleReviewDrawer, setVisibleReviewDrawer] = useState(false);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -317,6 +320,18 @@ export default function AdminSong() {
                                 >
                                   <VolumeUpIcon />
                                 </Button>
+                                <Tooltip title="Bình luận" placement="top">
+                                  <Button
+                                    variant="contained"
+                                    size="small"
+                                    onClick={() => {
+                                      setEditSong({ ...row });
+                                      setVisibleReviewDrawer(true);
+                                    }}
+                                  >
+                                    <ChatIcon />
+                                  </Button>
+                                </Tooltip>
                               </Stack>
                             ) : column.id === "stt" ? (
                               <div
@@ -336,6 +351,7 @@ export default function AdminSong() {
                                 alt="avatar"
                                 width={70}
                                 height={70}
+                                style={{ border: "0.5px solid gray" }}
                               />
                             ) : column.id === "singer" ? (
                               <div>
@@ -383,6 +399,14 @@ export default function AdminSong() {
           musicData={editSong}
           onClose={() => setVisiblePlayMusic(false)}
           visible={visiblePlayMusic}
+        />
+      )}
+
+      {visibleReviewDrawer && (
+        <SongReviewDrawer
+          visible={visibleReviewDrawer}
+          initData={editSong}
+          onClose={() => setVisibleReviewDrawer(false)}
         />
       )}
     </>

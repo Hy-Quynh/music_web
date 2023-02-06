@@ -87,7 +87,7 @@ export default function AdminSinger() {
     singerImage: "",
     description: "",
     singerId: -1,
-    countryId: -1
+    countryId: -1,
   });
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -133,11 +133,11 @@ export default function AdminSinger() {
 
   const handleCreateUpdateSinger = async () => {
     const { singerName, description, singerImage, countryId } = editSinger;
-    console.log('editSinger >> ', editSinger);
+    console.log("editSinger >> ", editSinger);
     if (
       !singerName.trim().length ||
       !description.trim().length ||
-      countryId === -1 || 
+      countryId === -1 ||
       (typeof singerImage === "string" && !singerImage?.length)
     ) {
       return toast.error("Data can not blank ");
@@ -376,7 +376,7 @@ export default function AdminSinger() {
                 singerName: "",
                 description: "",
                 singerImage: "",
-                countryId: -1
+                countryId: -1,
               });
               setAddSingerModal({ status: true, type: "add" });
             }}
@@ -451,7 +451,7 @@ export default function AdminSinger() {
                                       singerImage: row?.avatar,
                                       description: row?.description,
                                       singerId: row?._id,
-                                      countryId: row?.country_id || -1
+                                      countryId: row?.country_id || -1,
                                     });
                                     setAddSingerModal({
                                       status: true,
@@ -489,6 +489,7 @@ export default function AdminSinger() {
                                 alt="avatar"
                                 width={70}
                                 height={70}
+                                style={{ border: "0.5px solid gray" }}
                               />
                             ) : column.id === "effect" ? (
                               <Checkbox

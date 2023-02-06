@@ -37,6 +37,7 @@ export default function AdminLogin() {
             email: payload?.email,
             role: payload?.role,
             name: payload?.name,
+            _id: payload?._id
           })
         );
         toast.success('Successful account login, you will be redirected to the dashboard in 2s')

@@ -7,7 +7,14 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import { Button, MenuItem, Select, Stack, TextareaAutosize, Typography } from "@mui/material";
+import {
+  Button,
+  MenuItem,
+  Select,
+  Stack,
+  TextareaAutosize,
+  Typography,
+} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LoadingButton from "@mui/lab/LoadingButton";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -141,7 +148,7 @@ export default function AdminAlbum() {
     if (
       !albumName.trim().length ||
       !description.trim().length ||
-      singerId === -1 || 
+      singerId === -1 ||
       countryId === -1 ||
       (typeof avatar === "string" && !avatar?.length)
     ) {
@@ -263,7 +270,7 @@ export default function AdminAlbum() {
                   setEditAlbum({
                     ...editAlbum,
                     countryId: event.target.value,
-                  })
+                  });
                 }}
               >
                 {countryList?.map((item, index) => {
@@ -296,7 +303,7 @@ export default function AdminAlbum() {
                   setEditAlbum({
                     ...editAlbum,
                     singerId: event.target.value,
-                  })
+                  });
                 }}
               >
                 {singerList?.map((item, index) => {
@@ -503,6 +510,7 @@ export default function AdminAlbum() {
                                 alt="avatar"
                                 width={70}
                                 height={70}
+                                style={{ border: "0.5px solid gray" }}
                               />
                             ) : (
                               value

@@ -241,7 +241,7 @@ export default function AlbumDetail() {
                                         }
                                       }}
                                     >
-                                      <a className="btn oneMusic-btn" href="!#">
+                                      <a className="btn oneMusic-btn">
                                         Sau
                                       </a>
                                     </div>

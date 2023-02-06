@@ -23,6 +23,7 @@ export default function Login() {
             email: payload?.email,
             role: payload?.role,
             name: payload?.name,
+            _id: payload?._id
           })
         );
         toast.success('Successful account login, you will be redirected to the home page in 2s')
