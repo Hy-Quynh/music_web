@@ -22,6 +22,7 @@ import CategoryDetail from "../pages/Client/CategoryDetail";
 import CountryDetail from "../pages/Client/CountryDetail";
 import SingerDetail from "../pages/Client/SingerDetail";
 import SongDetail from "../pages/Client/SongDetail";
+import AdminPrivateRouter from "./PrivateRouter/AdminPrivateRouter";
 
 const ClientLayoutPage = [
   {
@@ -119,13 +120,14 @@ export default function MainRouter() {
           </Routes>
         );
       })}
+
       {AdminLayoutPage?.map((item, index) => {
         return (
           <Routes key={`admin-router-${index}`}>
             <Route
               exact
               path={item.path}
-              element={<AdminLayout>{item?.page}</AdminLayout>}
+              element={<AdminPrivateRouter>{item?.page}</AdminPrivateRouter>}
             />
           </Routes>
         );

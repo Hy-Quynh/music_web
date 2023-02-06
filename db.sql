@@ -106,6 +106,7 @@ create table song_singer (
 	REFERENCES singers(_id)
 )
 
+select * from song_review ;
 create table song_review (
 	_id serial PRIMARY key,
     created_day timestamp,

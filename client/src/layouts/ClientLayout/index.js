@@ -1,12 +1,19 @@
+import { Popover } from "@mui/material";
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { setSongPlaying, songData } from "../../slices/songSlice";
+import { USER_KEY } from "../../utils/constants";
+import { parseJSON } from "../../utils/utils";
 import "./style.scss";
 
 export default function ClientLayout(props) {
   const { song } = useSelector(songData);
   const audioRef = useRef(null);
   const dispatch = useDispatch();
+  const userData = parseJSON(localStorage.getItem(USER_KEY));
+  const navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = React.useState(null);
 
   const pauseAndPlaySong = () => {
     if (song.playing) {
@@ -28,7 +35,7 @@ export default function ClientLayout(props) {
       pauseAndPlaySong();
     }
   }, [song._id]);
-
+  const open = Boolean(anchorEl);
   return (
     <>
       <header className="header-area">
@@ -90,9 +97,45 @@ export default function ClientLayout(props) {
 
                     <div className="login-register-cart-button d-flex align-items-center">
                       <div className="login-register-btn mr-50">
-                        <a href="/login" id="loginBtn">
-                          Login / Register
-                        </a>
+                        {userData?._id ? (
+                          <>
+                            <a
+                              id="loginBtn"
+                              onClick={(event) => {
+                                setAnchorEl(event.currentTarget);
+                              }}
+                            >
+                              {userData?.email}
+                            </a>
+                            <Popover
+                              id={"user-info-popover"}
+                              open={open}
+                              anchorEl={anchorEl}
+                              onClose={() => setAnchorEl(null)}
+                              anchorOrigin={{
+                                vertical: "bottom",
+                                horizontal: "left",
+                              }}
+                              style={{ marginTop: "10px",}}
+                            >
+                              <div
+                                style={{
+                                  minWidth: "150px",
+                                  minHeight: "80px",
+                                  padding: '10px 20px'
+                                }}
+                              >
+                                <div style={{cursor: 'pointer'}} className='user-link'>Trang cá nhân</div>
+                                <hr style={{margin: '10px 0'}}/>
+                                <div style={{cursor: 'pointer'}} className='user-link'>Đăng xuất</div>
+                              </div>
+                            </Popover>
+                          </>
+                        ) : (
+                          <a href="/login" id="loginBtn">
+                            Đăng nhập / Đăng kí
+                          </a>
+                        )}
                       </div>
                     </div>
                   </div>
