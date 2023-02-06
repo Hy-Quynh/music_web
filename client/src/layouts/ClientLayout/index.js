@@ -127,7 +127,10 @@ export default function ClientLayout(props) {
                               >
                                 <div style={{cursor: 'pointer'}} className='user-link'>Trang cá nhân</div>
                                 <hr style={{margin: '10px 0'}}/>
-                                <div style={{cursor: 'pointer'}} className='user-link'>Đăng xuất</div>
+                                <div style={{cursor: 'pointer'}} className='user-link' onClick={() => {
+                                  navigate('/')
+                                  localStorage.clear()
+                                }}>Đăng xuất</div>
                               </div>
                             </Popover>
                           </>
