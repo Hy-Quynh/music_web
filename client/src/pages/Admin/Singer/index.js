@@ -108,7 +108,7 @@ export default function AdminSinger() {
     try {
       const res = await getAllSinger();
       if (res?.data?.success) {
-        setListSinger(res?.data?.payload);
+        setListSinger(res?.data?.payload?.singer);
       }
     } catch (error) {
       console.log("get list singer error >>> ", error);

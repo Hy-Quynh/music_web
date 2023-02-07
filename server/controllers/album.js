@@ -11,9 +11,9 @@ const {
 module.exports = {
   getAllAlbum: asyncHandler(async (req, res) => {
     try {
-      const { limit, offset, keyFilter, country, singer } = req?.query;
-      const listAlbum = await getListAlbum(limit, offset, keyFilter, country, singer);
-      const totalAlbum = await getTotalAlbum(keyFilter, country, singer);
+      const { limit, offset, keyFilter, country, singer, searchText } = req?.query;
+      const listAlbum = await getListAlbum(limit, offset, keyFilter, country, singer, searchText);
+      const totalAlbum = await getTotalAlbum(keyFilter, country, singer, searchText);
       return res.send({
         success: true,
         payload: { album: listAlbum, totalItem: totalAlbum },

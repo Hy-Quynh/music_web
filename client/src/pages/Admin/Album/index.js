@@ -119,7 +119,7 @@ export default function AdminAlbum() {
     try {
       const res = await getAllSinger();
       if (res?.data?.success) {
-        setSingerList(res?.data?.payload);
+        setSingerList(res?.data?.payload?.singer);
       }
     } catch (error) {
       console.log("get singer error >>> ", error);

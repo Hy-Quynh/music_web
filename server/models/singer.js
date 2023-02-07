@@ -2,7 +2,7 @@ const { postgresql } = require("../config/connect");
 const { getByLimitAndOffset } = require("../utils/utils");
 
 module.exports = {
-  getListSinger: async (limit, offset, country) => {
+  getListSinger: async (limit, offset, country, searchText) => {
     try {
       const limitOffset = getByLimitAndOffset(limit, offset);
       const result = await postgresql.query(
@@ -12,12 +12,38 @@ module.exports = {
           country && country !== "undefined"
             ? `s.country_id = ${Number(country)}`
             : "s._id is not null"
-        }
+        } AND 
+        ${
+          searchText && searchText !== "undefined"
+            ? `lower(s.name) LIKE '%${searchText.toLowerCase()}%'`
+            : "s._id is not null"
+        } 
         ORDER BY s.created_day DESC ${limitOffset}`
       );
       return result?.rows || [];
     } catch (error) {
       return [];
+    }
+  },
+
+  getTotalSinger: async (country, searchText) => {
+    try {
+      const result = await postgresql.query(
+        `SELECT s.* FROM singers s
+        WHERE ${
+          country && country !== "undefined"
+            ? `s.country_id = ${Number(country)}`
+            : "s._id is not null"
+        } AND 
+        ${
+          searchText && searchText !== "undefined"
+            ? `lower(s.name) LIKE '%${searchText.toLowerCase()}%'`
+            : "s._id is not null"
+        }`
+      );
+      return result?.rows?.length || 0;
+    } catch (error) {
+      return 0;
     }
   },
 

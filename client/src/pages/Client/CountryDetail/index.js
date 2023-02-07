@@ -33,7 +33,7 @@ export default function CountryDetail() {
     try {
       const result = await getAllSinger(PAGE_LIMIT, 0, id);
       if (result?.data?.success) {
-        setSingerList(result?.data?.payload);
+        setSingerList(result?.data?.payload?.singer);
       }
     } catch (error) {
       console.log("country singer error >>> ", error);

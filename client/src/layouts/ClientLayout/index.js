@@ -1,11 +1,14 @@
-import { Popover } from "@mui/material";
+import { Popover, TextField } from "@mui/material";
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setSongPlaying, songData } from "../../slices/songSlice";
 import { USER_KEY } from "../../utils/constants";
 import { parseJSON } from "../../utils/utils";
+import SearchIcon from "@mui/icons-material/Search";
 import "./style.scss";
+import { InputAdornment } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
 
 export default function ClientLayout(props) {
   const { song } = useSelector(songData);
@@ -14,6 +17,11 @@ export default function ClientLayout(props) {
   const userData = parseJSON(localStorage.getItem(USER_KEY));
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [searchAnchorEl, setSearchAnchorEl] = React.useState(null);
+  const searchText = useRef("");
+
+  const open = Boolean(anchorEl);
+  const searchOpen = Boolean(searchAnchorEl);
 
   const pauseAndPlaySong = () => {
     if (song.playing) {
@@ -35,7 +43,7 @@ export default function ClientLayout(props) {
       pauseAndPlaySong();
     }
   }, [song._id]);
-  const open = Boolean(anchorEl);
+
   return (
     <>
       <header className="header-area">
@@ -85,13 +93,57 @@ export default function ClientLayout(props) {
                         <a href="/new-song">Nhạc mới</a>
                       </li>
                       <li>
-                        <a href="event.html">Sự kiện</a>
-                      </li>
-                      <li>
-                        <a href="blog.html">Bài viết</a>
-                      </li>
-                      <li>
                         <a href="contact.html">Liên hệ</a>
+                      </li>
+                      <li>
+                        <SearchIcon
+                          style={{ color: "white", cursor: "pointer" }}
+                          onClick={(event) => {
+                            setSearchAnchorEl(event.currentTarget);
+                          }}
+                        />
+                        <Popover
+                          id={"user-info-popover"}
+                          open={searchOpen}
+                          anchorEl={searchAnchorEl}
+                          onClose={() => setSearchAnchorEl(null)}
+                          anchorOrigin={{
+                            vertical: "bottom",
+                            horizontal: "left",
+                          }}
+                          style={{ marginTop: "10px", marginLeft: "-100px" }}
+                        >
+                          <div
+                            style={{
+                              minWidth: "300px",
+                              minHeight: "80px",
+                              padding: "20px 20px",
+                            }}
+                          >
+                            <TextField
+                              sx={{ width: "280px" }}
+                              style={{ width: "280px" }}
+                              onChange={(event) =>
+                                (searchText.current = event.target.value)
+                              }
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment>
+                                    <IconButton
+                                      onClick={() => {
+                                        navigate(
+                                          `/search?search=${searchText.current}`
+                                        );
+                                      }}
+                                    >
+                                      <SearchIcon />
+                                    </IconButton>
+                                  </InputAdornment>
+                                ),
+                              }}
+                            />
+                          </div>
+                        </Popover>
                       </li>
                     </ul>
 
@@ -116,21 +168,32 @@ export default function ClientLayout(props) {
                                 vertical: "bottom",
                                 horizontal: "left",
                               }}
-                              style={{ marginTop: "10px",}}
+                              style={{ marginTop: "10px" }}
                             >
                               <div
                                 style={{
                                   minWidth: "150px",
                                   minHeight: "80px",
-                                  padding: '10px 20px'
+                                  padding: "10px 20px",
                                 }}
                               >
-                                <div style={{cursor: 'pointer'}} className='user-link'>Trang cá nhân</div>
-                                <hr style={{margin: '10px 0'}}/>
-                                <div style={{cursor: 'pointer'}} className='user-link' onClick={() => {
-                                  navigate('/')
-                                  localStorage.clear()
-                                }}>Đăng xuất</div>
+                                <div
+                                  style={{ cursor: "pointer" }}
+                                  className="user-link"
+                                >
+                                  Trang cá nhân
+                                </div>
+                                <hr style={{ margin: "10px 0" }} />
+                                <div
+                                  style={{ cursor: "pointer" }}
+                                  className="user-link"
+                                  onClick={() => {
+                                    navigate("/");
+                                    localStorage.clear();
+                                  }}
+                                >
+                                  Đăng xuất
+                                </div>
                               </div>
                             </Popover>
                           </>

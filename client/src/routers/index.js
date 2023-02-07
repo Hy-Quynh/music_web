@@ -23,6 +23,7 @@ import CountryDetail from "../pages/Client/CountryDetail";
 import SingerDetail from "../pages/Client/SingerDetail";
 import SongDetail from "../pages/Client/SongDetail";
 import AdminPrivateRouter from "./PrivateRouter/AdminPrivateRouter";
+import SearchPage from "../pages/Client/SearchPage";
 
 const ClientLayoutPage = [
   {
@@ -56,6 +57,10 @@ const ClientLayoutPage = [
   {
     path: "/song/:id",
     page: <SongDetail />,
+  },
+  {
+    path: "/search",
+    page: <SearchPage />,
   },
   {
     path: "/login",

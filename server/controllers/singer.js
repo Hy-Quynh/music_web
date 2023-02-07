@@ -7,14 +7,24 @@ const {
   changeSingerEffect,
   getPopularSingerData,
   getSingerById,
+  getTotalSinger,
 } = require("../models/singer");
 
 module.exports = {
   getAllSinger: asyncHandler(async (req, res) => {
     try {
-      const { limit, offset, country } = req?.query;
-      const listSinger = await getListSinger(limit, offset, country);
-      return res.send({ success: true, payload: listSinger });
+      const { limit, offset, country, searchText } = req?.query;
+      const listSinger = await getListSinger(
+        limit,
+        offset,
+        country,
+        searchText
+      );
+      const totalSinger = await getTotalSinger(country, searchText);
+      return res.send({
+        success: true,
+        payload: { singer: listSinger, totalItem: totalSinger },
+      });
     } catch (error) {
       return res.send({
         success: false,

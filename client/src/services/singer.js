@@ -1,9 +1,9 @@
 import { request } from "../utils/request";
 
-export async function getAllSinger(limit, offset, country) {
+export async function getAllSinger(limit, offset, country, searchText) {
   return request({
     method: "GET",
-    url: `/singer?limit=${limit}&offset=${offset}&country=${country}`,
+    url: `/singer?limit=${limit}&offset=${offset}&country=${country}&searchText=${searchText}`,
   });
 }
 

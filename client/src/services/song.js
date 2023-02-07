@@ -6,11 +6,12 @@ export async function getAllSong(
   album,
   category,
   country,
-  singer
+  singer,
+  searchText,
 ) {
   return request({
     method: "GET",
-    url: `/song?limit=${limit}&offset=${offset}&album=${album}&category=${category}&country=${country}&singer=${singer}`,
+    url: `/song?limit=${limit}&offset=${offset}&album=${album}&category=${category}&country=${country}&singer=${singer}&searchText=${searchText}`,
   });
 }
 

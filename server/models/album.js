@@ -2,7 +2,14 @@ const { postgresql } = require("../config/connect");
 const { getByLimitAndOffset } = require("../utils/utils");
 
 module.exports = {
-  getListAlbum: async (limit, offset, keyFilter, country, singer) => {
+  getListAlbum: async (
+    limit,
+    offset,
+    keyFilter,
+    country,
+    singer,
+    searchText
+  ) => {
     try {
       const limitOffset = getByLimitAndOffset(limit, offset);
       const result = await postgresql.query(
@@ -25,7 +32,12 @@ module.exports = {
           singer && singer !== "undefined"
             ? `al.singer_id = ${Number(singer)}`
             : "al._id is not null"
-        }
+        } AND 
+        ${
+          searchText && searchText !== "undefined"
+            ? `lower(al.name) LIKE '%${searchText.toLowerCase()}%'`
+            : "al._id is not null"
+        } 
         ORDER BY al.created_day DESC ${limitOffset}`
       );
       return result?.rows || [];
@@ -45,7 +57,7 @@ module.exports = {
     }
   },
 
-  getTotalAlbum: async (keyFilter, country, singer) => {
+  getTotalAlbum: async (keyFilter, country, singer, searchText) => {
     try {
       const result = await postgresql.query(
         `SELECT * FROM albums WHERE ${
@@ -64,7 +76,12 @@ module.exports = {
           singer && singer !== "undefined"
             ? `singer_id = ${Number(singer)}`
             : "_id is not null"
-        }`
+        } AND 
+        ${
+          searchText && searchText !== "undefined"
+            ? `lower(name) LIKE '%${searchText.toLowerCase()}%'`
+            : "_id is not null"
+        }  `
       );
       return result?.rows?.length || 0;
     } catch (error) {

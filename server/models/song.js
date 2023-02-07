@@ -70,7 +70,15 @@ module.exports = {
     }
   },
 
-  getListSong: async (limit, offset, category, album, country, singer) => {
+  getListSong: async (
+    limit,
+    offset,
+    category,
+    album,
+    country,
+    singer,
+    searchText
+  ) => {
     try {
       const limitOffset = getByLimitAndOffset(limit, offset);
       const result = await postgresql.query(
@@ -100,6 +108,11 @@ module.exports = {
                 " IN (SELECT ss.singer_id FROM song_singer ss WHERE ss.song_id = s._id)"
               }`
             : "s._id is not null"
+        } AND 
+        ${
+          searchText && searchText !== "undefined"
+            ? `lower(s.name) LIKE '%${searchText.toLowerCase()}%'`
+            : "s._id is not null"
         }
         ORDER BY s.created_day DESC ${limitOffset}`
       );
@@ -109,7 +122,7 @@ module.exports = {
     }
   },
 
-  getTotalSong: async (category, album, country, singer) => {
+  getTotalSong: async (category, album, country, singer, searchText) => {
     try {
       const result = await postgresql.query(
         `SELECT COUNT(_id) as total_song 
@@ -135,6 +148,11 @@ module.exports = {
                 Number(singer) +
                 " IN (SELECT ss.singer_id FROM song_singer ss WHERE ss.song_id = _id)"
               }`
+            : "_id is not null"
+        } AND 
+        ${
+          searchText && searchText !== "undefined"
+            ? `lower(name) LIKE '%${searchText.toLowerCase()}%'`
             : "_id is not null"
         }`
       );
@@ -179,14 +197,14 @@ module.exports = {
     }
   },
 
-  getSongById: async(songId) => {
+  getSongById: async (songId) => {
     try {
       const result = await postgresql.query(
         `SELECT * FROM songs WHERE _id=${Number(songId)}`
       );
       return result?.rows?.[0] || {};
     } catch (error) {
-      return {}
+      return {};
     }
-  }
+  },
 };

@@ -14,16 +14,17 @@ const {
 module.exports = {
   getAllSong: asyncHandler(async (req, res) => {
     try {
-      const { limit, offset, album, category, country, singer } = req?.query;
+      const { limit, offset, album, category, country, singer, searchText } = req?.query;
       const result = await getListSong(
         limit,
         offset,
         category,
         album,
         country,
-        singer
+        singer,
+        searchText
       );
-      const totalSong = await getTotalSong(category, album, country, singer);
+      const totalSong = await getTotalSong(category, album, country, singer, searchText);
       if (result) {
         for (let i = 0; i < result?.length; i++) {
           const singer = await getSongSinger(result?.[i]?._id);
