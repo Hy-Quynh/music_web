@@ -134,6 +134,14 @@ create table song_review_children (
 	REFERENCES users(_id)
 );
 
+CREATE EXTENSION unaccent;
+
+create table keyword_search (
+	_id serial NOT null PRIMARY KEY,
+	keyword text,
+	search_number int,
+	created_day timestamp
+)
 
 
 

@@ -1,5 +1,6 @@
 import React from "react";
 import AlbumList from "./components/AlbumList";
+import MostSearchList from "./components/MostSearchList";
 import NewHit from "./components/NewHit";
 import PopularArtist from "./components/PopularArtist";
 
@@ -82,6 +83,16 @@ export default function HomePage() {
       </section>
 
       <section className="miscellaneous-area section-padding-100-0">
+        <div className="container">
+          <div className="row">
+            <div className="col-12 col-lg-12">
+              <MostSearchList />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="miscellaneous-area ">
         <div className="container">
           <div className="row">
             <div className="col-12 col-lg-8">

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { getAllSong } from "../../../../services/song";
 import PlayIcon from "../../../../assets/image/play-music-black.svg";
 import StopIcon from "../../../../assets/image/stop-music-black.svg";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,38 +8,36 @@ import {
   songData,
 } from "../../../../slices/songSlice";
 import { useNavigate } from "react-router-dom";
+import { getSongMostSearch } from "../../../../services/search";
 
-const PAGE_LIMIT = 6;
-
-export default function NewHit() {
+export default function MostSearchList() {
   const [listHit, setListHit] = useState([]);
   const dispatch = useDispatch();
   const { song } = useSelector(songData);
   const navigate = useNavigate();
 
-  const getListHit = async () => {
+  const getListSong = async () => {
     try {
-      const hit = await getAllSong(PAGE_LIMIT, 0);
+      const hit = await getSongMostSearch();
       if (hit?.data?.success) {
-        setListHit(hit?.data?.payload?.song);
+        setListHit(hit?.data?.payload);
       }
     } catch (error) {
-      console.log("get list hit error ", error);
+      console.log("get most search song ", error);
     }
   };
 
   useEffect(() => {
-    getListHit();
+    getListSong();
   }, []);
 
   return (
-    <div className="new-hits-area mb-100" style={{minHeight: '750px'}}>
+    <div className="new-hits-area mb-100">
       <div
         className="section-heading text-left mb-50 wow fadeInUp"
         data-wow-delay="50ms"
       >
-        <p>Điều gì mới</p>
-        <h2>Bài hát mới nhất</h2>
+        <h2>Bài hát được tìm kiếm nhiều nhất</h2>
       </div>
       {listHit?.map((item, index) => {
         return (

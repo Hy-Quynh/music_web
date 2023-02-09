@@ -12,6 +12,7 @@ const singerRouter = require("./routers/singer");
 const countryRouter = require("./routers/country");
 const songRouter = require("./routers/song");
 const reviewRouter = require("./routers/review");
+const searchRouter = require("./routers/search");
 
 app.use(
   cookieSession({
@@ -51,6 +52,7 @@ app.use("/api/singer", singerRouter);
 app.use("/api/country", countryRouter);
 app.use("/api/song", songRouter);
 app.use("/api/song/review", reviewRouter);
+app.use("/api/search", searchRouter);
 
 let PORT = process.env.PORT || 5005;
 app.listen(PORT, () => console.log(`App running on port: ${PORT}`));

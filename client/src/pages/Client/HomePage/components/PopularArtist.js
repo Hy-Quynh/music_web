@@ -22,7 +22,7 @@ export default function PopularArtist() {
   }, []);
 
   return (
-    <div className="popular-artists-area mb-100">
+    <div className="popular-artists-area mb-100" style={{minHeight: '750px'}}>
       <div
         className="section-heading text-left mb-50 wow fadeInUp"
         data-wow-delay="50ms"

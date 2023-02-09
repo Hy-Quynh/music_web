@@ -9,6 +9,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import "./style.scss";
 import { InputAdornment } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
+import { createKeyWordSearch } from "../../services/search";
 
 export default function ClientLayout(props) {
   const { song } = useSelector(songData);
@@ -130,7 +131,10 @@ export default function ClientLayout(props) {
                                 endAdornment: (
                                   <InputAdornment>
                                     <IconButton
-                                      onClick={() => {
+                                      onClick={async () => {
+                                        await createKeyWordSearch(
+                                          searchText.current
+                                        );
                                         navigate(
                                           `/search?search=${searchText.current}`
                                         );
