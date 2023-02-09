@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { getAllSong } from "../../../../services/song";
+import React from "react";
 import PlayIcon from "../../../../assets/image/play-music-black.svg";
 import StopIcon from "../../../../assets/image/stop-music-black.svg";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,28 +9,10 @@ import {
 } from "../../../../slices/songSlice";
 import { useNavigate } from "react-router-dom";
 
-const PAGE_LIMIT = 6;
-
-export default function NewHit() {
-  const [listHit, setListHit] = useState([]);
+export default function NewHit({listHit}) {
   const dispatch = useDispatch();
   const { song } = useSelector(songData);
   const navigate = useNavigate();
-
-  const getListHit = async () => {
-    try {
-      const hit = await getAllSong(PAGE_LIMIT, 0);
-      if (hit?.data?.success) {
-        setListHit(hit?.data?.payload?.song);
-      }
-    } catch (error) {
-      console.log("get list hit error ", error);
-    }
-  };
-
-  useEffect(() => {
-    getListHit();
-  }, []);
 
   return (
     <div className="new-hits-area mb-100" style={{minHeight: '750px'}}>

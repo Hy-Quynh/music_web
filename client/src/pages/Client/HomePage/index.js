@@ -1,10 +1,38 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { getAllSong } from "../../../services/song";
+import { setSongPlaying, setSongState, songData } from "../../../slices/songSlice";
 import AlbumList from "./components/AlbumList";
 import MostSearchList from "./components/MostSearchList";
 import NewHit from "./components/NewHit";
 import PopularArtist from "./components/PopularArtist";
+import PlayIcon from "../../../assets/image/play-music.svg";
+import StopIcon from "../../../assets/image/stop-music.svg";
+
+const PAGE_LIMIT = 6;
 
 export default function HomePage() {
+  const [listHit, setListHit] = useState([]);
+  const dispatch = useDispatch();
+  const { song } = useSelector(songData);
+  const navigate = useNavigate();
+
+  const getListHit = async () => {
+    try {
+      const hit = await getAllSong(PAGE_LIMIT, 0);
+      if (hit?.data?.success) {
+        setListHit(hit?.data?.payload?.song);
+      }
+    } catch (error) {
+      console.log("get list hit error ", error);
+    }
+  };
+
+  useEffect(() => {
+    getListHit();
+  }, []);
+
   return (
     <>
       <section className="hero-area">
@@ -50,31 +78,62 @@ export default function HomePage() {
           <div className="row align-items-end">
             <div className="col-12 col-md-5 col-lg-4">
               <div className="featured-artist-thumb">
-                <img src="img/bg-img/fa.jpg" alt="" />
+                <img
+                  src={listHit?.[0]?.avatar}
+                  alt=""
+                  style={{ width: "350px", height: "350px" }}
+                />
               </div>
             </div>
             <div className="col-12 col-md-7 col-lg-8">
               <div className="featured-artist-content">
                 {/* Section Heading */}
                 <div className="section-heading white text-left mb-30">
-                  <p>See what’s new</p>
-                  <h2>Buy What’s New</h2>
+                  <p>Điều gì mới</p>
+                  <h2>Bài hát mới nhất</h2>
                 </div>
-                <p>
-                  Nam tristique ex vel magna tincidunt, ut porta nisl finibus.
-                  Vivamus eu dolor eu quam varius rutrum. Fusce nec justo id sem
-                  aliquam fringilla nec non lacus. Suspendisse eget lobortis
-                  nisi, ac cursus odio. Vivamus nibh velit, rutrum at ipsum ac,
-                  dignissim iaculis ante. Donec in velit non elit pulvinar
-                  pellentesque et non eros.
+                <p
+                  style={{
+                    height: "140px",
+                    overflow: "hidden",
+                  }}
+                >
+                  {listHit?.[0]?.description}
                 </p>
-                <div className="song-play-area">
+                <div className="song-play-area" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                   <div className="song-name">
-                    <p>01. Main Hit Song</p>
+                    <p style={{fontSize: '16px', fontWeight: 700}}>{listHit?.[0]?.name}</p>
+                    <p style={{fontSize: '14px'}}>{listHit?.[0]?.singer?.length ? listHit?.[0]?.singer?.map((item) => item?.name)?.join(', '): ''}</p>
                   </div>
-                  <audio preload="auto" controls>
-                    <source src="audio/dummy-audio.mp3" />
-                  </audio>
+                  <div>
+                    {song?._id === listHit?.[0]?._id && song?.playing ? (
+                      <img
+                        src={StopIcon}
+                        alt="play music"
+                        style={{
+                          width: "50px",
+                          height: "50px",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => {
+                          dispatch(setSongState(false));
+                        }}
+                      />
+                    ) : (
+                      <img
+                        src={PlayIcon}
+                        alt="play music"
+                        style={{
+                          width: "50px",
+                          height: "50px",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => {
+                          dispatch(setSongPlaying({ ...listHit?.[0], playing: true }));
+                        }}
+                      />
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -96,7 +155,7 @@ export default function HomePage() {
         <div className="container">
           <div className="row">
             <div className="col-12 col-lg-8">
-              <NewHit />
+              <NewHit listHit={listHit} />
             </div>
             <div className="col-12 col-lg-4">
               <PopularArtist />

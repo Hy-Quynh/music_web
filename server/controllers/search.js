@@ -11,6 +11,8 @@ module.exports = {
   getSongMostSearch: asyncHandler(async (req, res) => {
     try {
       const result = await getSongMostSearch();
+      const singer = await getSongSinger(songId);
+      result.singer = [...singer];
       res.send({ success: true, payload: result });
     } catch (error) {
       return res.send({
