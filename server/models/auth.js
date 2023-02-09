@@ -6,7 +6,7 @@ module.exports = {
     try {
       const hash = bcrypt.hashSync(password, 10);
       const signupRes = await postgresql.query(
-        `INSERT INTO users(email, password, status, created_day) VALUES('${email}', '${hash}', true, now())`
+        `INSERT INTO users(email, password, status, created_day, rank) VALUES('${email}', '${hash}', true, now(), 'COPPER')`
       );
       if (signupRes) return true;
       return false;

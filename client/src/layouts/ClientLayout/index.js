@@ -180,6 +180,9 @@ export default function ClientLayout(props) {
                                 <div
                                   style={{ cursor: "pointer" }}
                                   className="user-link"
+                                  onClick={() => {
+                                    navigate("/personal-info");
+                                  }}
                                 >
                                   Trang cá nhân
                                 </div>

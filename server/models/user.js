@@ -49,4 +49,29 @@ module.exports = {
       return false;
     }
   },
+
+  getUserById: async (userId) => {
+    try {
+      const result = await postgresql.query(
+        `SELECT * FROM users WHERE _id=${Number(userId)}`
+      );
+
+      return result?.rows?.[0] || {};
+    } catch (error) {
+      return {};
+    }
+  },
+
+  updateUserInfo: async (id, name, email, birdthday) => {
+    try {
+      const result = await postgresql.query(
+        `UPDATE users SET name='${name}', email='${email}', birdthday=${
+          birdthday?.toString()?.length ? `'${birdthday}'` : null
+        }  WHERE _id=${Number(id)}`
+      );
+      return result?.rows ? true : false;
+    } catch (error) {
+      return false;
+    }
+  },
 };
