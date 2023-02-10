@@ -19,6 +19,7 @@ export default function MostSearchList() {
   const getListSong = async () => {
     try {
       const hit = await getSongMostSearch();
+      console.log('hit >>> ', hit);
       if (hit?.data?.success) {
         setListHit(hit?.data?.payload);
       }
