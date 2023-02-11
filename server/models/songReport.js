@@ -6,7 +6,10 @@ module.exports = {
     try {
       const limitOffset = getByLimitAndOffset(limit, offset);
       const result = await postgresql.query(
-        `SELECT rsl.*, rsl.created_day as report_date, s.* FROM report_song_list rsl JOIN songs s ON rsl.song_id=s._id ${limitOffset}`
+        `SELECT rsl.*, s.name as song_name, ur.email as user_email
+        FROM report_song_list rsl JOIN songs s ON rsl.song_id=s._id 
+        JOIN users ur ON ur._id = rsl.user_id
+        ${limitOffset}`
       );
       return result?.rows || [];
     } catch (error) {

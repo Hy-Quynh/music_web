@@ -23,6 +23,7 @@ import {
 } from "../../../../services/playlist";
 import AddIcon from "@mui/icons-material/Add";
 import RTextField from "../../../../components/RedditTextField";
+import { createNewReportSong } from "../../../../services/songReport";
 
 export default function ControlList({ songId }) {
   const [visiblePlaylistModal, setVisiblePlaylistModal] = useState(false);
@@ -31,6 +32,7 @@ export default function ControlList({ songId }) {
   const [listPlaylist, setListPlayList] = useState([]);
   const [playListAdd, setPlayListAdd] = useState(-1);
   const [playListName, setPlayListName] = useState("");
+  const [reportReason, setReportReason] = useState("");
 
   const userData = parseJSON(localStorage.getItem(USER_KEY), {});
 
@@ -84,6 +86,30 @@ export default function ControlList({ songId }) {
     } catch (error) {
       toast.error("Thêm bài nhạc vào playlist thất bại");
       console.log("create playlist error >>> ", error);
+    }
+  };
+
+  const handleCreateSongReport = async () => {
+    try {
+      if (!reportReason?.trim()?.length) {
+        return toast.error("Lí do báo cáo không thể bỏ trống");
+      }
+
+      const result = await createNewReportSong(
+        userData?._id,
+        songId,
+        reportReason
+      );
+      if (result?.data?.success) {
+        toast.success(
+          "Báo cáo bài hát thành công, đang đợi quản trị viên duyệt"
+        );
+        setVisibleReportModal(false);
+        return setReportReason("");
+      }
+      toast.error("Báo cáo bài hát thất bại");
+    } catch (error) {
+      toast.error("Báo cáo bài hát thất bại");
     }
   };
 
@@ -194,6 +220,38 @@ export default function ControlList({ songId }) {
         />
       )}
 
+      {visibleReportModal && (
+        <CustomModal
+          visible={visibleReportModal}
+          onClose={() => {
+            setVisibleReportModal(false);
+          }}
+          title={"Báo cáo bài hát"}
+          content={
+            <div>
+              <RTextField
+                label="Name"
+                value={reportReason || ""}
+                id="post-title"
+                variant="filled"
+                style={{ marginTop: 11, textAlign: "left" }}
+                onChange={(event) => setReportReason(event?.target?.value)}
+              />
+            </div>
+          }
+          action={
+            <LoadingButton
+              autoFocus
+              onClick={() => {
+                handleCreateSongReport();
+              }}
+            >
+              {"Thêm mới"}
+            </LoadingButton>
+          }
+        />
+      )}
+
       <div className="control-item">
         <Tooltip title="Thêm vào playlist" placement="top">
           <PlaylistAddCircleIcon
@@ -211,7 +269,16 @@ export default function ControlList({ songId }) {
       </div>
       <div className="control-item">
         <Tooltip title="Báo cáo bài nhạc" placement="top">
-          <ReportIcon />
+          <ReportIcon
+            onClick={() => {
+              if (!userData?._id) {
+                return toast.error(
+                  "Cần đăng nhập để thực hiện chức năng này ???"
+                );
+              }
+              setVisibleReportModal(true);
+            }}
+          />
         </Tooltip>
       </div>
     </div>

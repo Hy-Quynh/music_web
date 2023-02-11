@@ -25,6 +25,7 @@ import AlbumIcon from "@mui/icons-material/Album";
 import InterpreterModeIcon from "@mui/icons-material/InterpreterMode";
 import LibraryMusicIcon from "@mui/icons-material/LibraryMusic";
 import LanguageIcon from "@mui/icons-material/Language";
+import BugReportIcon from '@mui/icons-material/BugReport';
 
 import { useLocation } from "react-router-dom";
 const drawerWidth = 240;
@@ -163,7 +164,7 @@ export function AdminLayout(props) {
                 <ListItemIcon>
                   <CategoryIcon />
                 </ListItemIcon>
-                <ListItemText primary="Category" />
+                <ListItemText primary="Thể loại" />
               </ListItemButton>
 
               <ListItemButton
@@ -175,7 +176,7 @@ export function AdminLayout(props) {
                 <ListItemIcon>
                   <LanguageIcon />
                 </ListItemIcon>
-                <ListItemText primary="Country" />
+                <ListItemText primary="Quốc gia" />
               </ListItemButton>
 
               <ListItemButton
@@ -199,7 +200,7 @@ export function AdminLayout(props) {
                 <ListItemIcon>
                   <InterpreterModeIcon />
                 </ListItemIcon>
-                <ListItemText primary="Singer" />
+                <ListItemText primary="Ca sĩ" />
               </ListItemButton>
 
               <ListItemButton
@@ -211,7 +212,19 @@ export function AdminLayout(props) {
                 <ListItemIcon>
                   <LibraryMusicIcon />
                 </ListItemIcon>
-                <ListItemText primary="Song" />
+                <ListItemText primary="Bài hát" />
+              </ListItemButton>
+
+              <ListItemButton
+                onClick={() => navigate("/admin/song-report")}
+                sx={
+                  pathName === "/admin/song-report" ? { background: "#b0b0b0" } : {}
+                }
+              >
+                <ListItemIcon>
+                  <BugReportIcon />
+                </ListItemIcon>
+                <ListItemText primary="Báo cáo bài hát" />
               </ListItemButton>
 
               <ListItemButton
@@ -225,7 +238,7 @@ export function AdminLayout(props) {
                 <ListItemIcon>
                   <ManageAccountsIcon />
                 </ListItemIcon>
-                <ListItemText primary="Employee Account" />
+                <ListItemText primary="Tài khoản nhân viên" />
               </ListItemButton>
 
               <ListItemButton
@@ -239,7 +252,7 @@ export function AdminLayout(props) {
                 <ListItemIcon>
                   <PersonIcon />
                 </ListItemIcon>
-                <ListItemText primary="Customer Account" />
+                <ListItemText primary="Tài khoản khách hàng" />
               </ListItemButton>
             </React.Fragment>
           </List>
