@@ -143,6 +143,39 @@ create table keyword_search (
 	created_day timestamp
 )
 
+create table playlist (
+	_id serial NOT null PRIMARY KEY,
+	user_id int,
+	name varchar(255),
+	created_day timestamp,
+	CONSTRAINT fk_playlist_user FOREIGN KEY (user_id)
+	REFERENCES users(_id)
+);
+
+create table playlist_detail (
+	playlist_id int,
+	song_id int,
+	created_day timestamp,
+	primary key (playlist_id, song_id),
+	
+	CONSTRAINT fk_playlistdetail_playlist FOREIGN KEY (playlist_id)
+	REFERENCES playlist(_id),
+	CONSTRAINT fk_playlist_song FOREIGN KEY (song_id)
+	REFERENCES songs(_id)
+);
+
+create table report_song_list (
+	_id serial NOT null PRIMARY KEY,
+	user_id int,
+	song_id int,
+	reason text,
+	created_day timestamp,
+	CONSTRAINT fk_reportsonglist_user FOREIGN KEY (user_id)
+	REFERENCES users(_id),
+	CONSTRAINT fk_reportsonglist_song FOREIGN KEY (song_id)
+	REFERENCES songs(_id)
+)
+
 
 
 

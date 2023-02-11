@@ -51,7 +51,10 @@ BootstrapDialogTitle.propTypes = {
 export default function CustomModal(props) {
   return (
     <BootstrapDialog
-      onClose={props.onClose}
+      onClose={(event, reason) => {
+        if (reason && reason === "backdropClick" && "escapeKeyDown") return;
+        props.onClose();
+      }}
       aria-labelledby="customized-dialog-title"
       open={props.visible}
     >

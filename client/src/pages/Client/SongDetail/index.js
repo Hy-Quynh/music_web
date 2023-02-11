@@ -11,6 +11,7 @@ import {
   songData,
 } from "../../../slices/songSlice";
 import SongReview from "./components/SongReview";
+import ControlList from "./components/ControlList";
 
 export default function SongDetail() {
   const [songDetail, setSongDetail] = useState({});
@@ -58,6 +59,7 @@ export default function SongDetail() {
           </div>
           <div className="col-12 col-sm-8 col-md-9">
             <div className="song-desc">{songDetail?.description}</div>
+            <ControlList songId={id}/>
             <div className="song-player-button">
               <button>
                 <div>Phát nhạc</div>

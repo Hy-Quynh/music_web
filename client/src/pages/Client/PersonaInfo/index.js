@@ -5,6 +5,7 @@ import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Personal from "./components/PersonalInfo";
+import PersonalPlaylist from "./components/PlaylistList";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -57,7 +58,7 @@ export default function PersonalInfo() {
         </div>
       </section>
 
-      <div style={{padding: '20px 40px'}}>
+      <div style={{ padding: "20px 40px" }}>
         <Box sx={{ width: "100%" }}>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
             <Tabs
@@ -77,7 +78,7 @@ export default function PersonalInfo() {
             Theo dõi
           </TabPanel>
           <TabPanel value={value} index={2}>
-            Playlist cá nhân
+            <PersonalPlaylist />
           </TabPanel>
         </Box>
       </div>
