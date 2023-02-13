@@ -79,7 +79,7 @@ export default function UserAccount() {
     try {
       const listAccount = await getAllUserAccount();
       if (listAccount?.data?.success) {
-        setTableData(listAccount?.data?.payload);
+        setTableData(listAccount?.data?.payload?.user);
       }
     } catch (error) {
       console.log("get user account error >>> ", error);

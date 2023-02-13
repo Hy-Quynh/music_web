@@ -45,6 +45,12 @@ export default function ClientLayout(props) {
     }
   }, [song._id]);
 
+  useEffect(() => {
+    if (userData?.role === 2){
+      localStorage.clear()
+    }
+  }, [])
+
   return (
     <>
       <header className="header-area">
@@ -92,6 +98,9 @@ export default function ClientLayout(props) {
                       </li>
                       <li>
                         <a href="/new-song">Nhạc mới</a>
+                      </li>
+                      <li>
+                        <a href="/member">Thành viên</a>
                       </li>
                       <li>
                         <a href="contact.html">Liên hệ</a>

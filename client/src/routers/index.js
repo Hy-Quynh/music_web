@@ -26,6 +26,8 @@ import AdminPrivateRouter from "./PrivateRouter/AdminPrivateRouter";
 import SearchPage from "../pages/Client/SearchPage";
 import PersonalInfo from "../pages/Client/PersonaInfo";
 import SongReport from "../pages/Admin/SongReport";
+import Member from "../pages/Client/Member";
+import MemberDetail from "../pages/Client/MemberDetail";
 
 const ClientLayoutPage = [
   {
@@ -79,6 +81,14 @@ const ClientLayoutPage = [
   {
     path: "/new-song",
     page: <NewSong />,
+  },
+  {
+    path: "/member",
+    page: <Member />,
+  },
+  {
+    path: "/member/:id",
+    page: <MemberDetail />,
   },
 ];
 

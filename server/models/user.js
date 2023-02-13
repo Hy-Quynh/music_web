@@ -1,4 +1,5 @@
 const { postgresql } = require("../config/connect");
+const { getByLimitAndOffset } = require("../utils/utils");
 
 module.exports = {
   getUserByEmail: async (email) => {
@@ -16,15 +17,37 @@ module.exports = {
     }
   },
 
-  getAllUserAccount: async () => {
+  getAllUserAccount: async (limit, offset, except_id) => {
     try {
+      const limitOffset = getByLimitAndOffset(limit, offset);
+
       const result = await postgresql.query(
-        `SELECT * FROM users ORDER BY created_day DESC`
+        `SELECT * FROM users WHERE ${
+          except_id && except_id !== "undefined"
+            ? `_id != ${Number(except_id)}`
+            : "_id is not null"
+        } 
+        ORDER BY created_day DESC ${limitOffset}`
       );
       return result?.rows || [];
     } catch (error) {
       console.log("getAllUserAccount >>>> ", error);
       return [];
+    }
+  },
+
+  getTotalAccount: async (except_id) => {
+    try {
+      const result = await postgresql.query(
+        `SELECT COUNT(*) as total_item FROM users WHERE ${
+          except_id && except_id !== "undefined"
+            ? `_id != ${Number(except_id)}`
+            : "_id is not null"
+        } `
+      );
+      return result?.rows?.[0]?.total_item || 0;
+    } catch (error) {
+      return 0;
     }
   },
 

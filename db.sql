@@ -163,7 +163,7 @@ create table playlist_detail (
 	CONSTRAINT fk_playlist_song FOREIGN KEY (song_id)
 	REFERENCES songs(_id)
 );
-
+    
 create table report_song_list (
 	_id serial NOT null PRIMARY KEY,
 	user_id int,
@@ -174,6 +174,32 @@ create table report_song_list (
 	REFERENCES users(_id),
 	CONSTRAINT fk_reportsonglist_song FOREIGN KEY (song_id)
 	REFERENCES songs(_id)
+);
+
+create table user_flow (
+	user_id int,
+	followed int,
+	created_day timestamp,
+	primary key (user_id, followed),
+	CONSTRAINT fk_userflow_user FOREIGN KEY (user_id)
+	REFERENCES users(_id),
+	CONSTRAINT fk_followed_user FOREIGN KEY (followed)
+	REFERENCES users(_id)
+);
+
+
+
+CREATE TABLE user_chat (
+  _id serial NOT null PRIMARY KEY,
+  user_id int NOT NULL,
+  owner_reply int DEFAULT NULL,
+  message text NOT NULL,
+  created_day timestamp,
+  
+  CONSTRAINT fk_userChat_user FOREIGN KEY (user_id)
+	REFERENCES users(_id),
+  CONSTRAINT fk_ownerReply_user FOREIGN KEY (owner_reply)
+	REFERENCES users(_id)
 )
 
 

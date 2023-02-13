@@ -1,9 +1,9 @@
 import { request } from "../utils/request";
 
-export async function getAllUserAccount() {
+export async function getAllUserAccount(limit, offset, except_id) {
   return request({
     method: "GET",
-    url: "/user/account",
+    url: `/user/account?limit=${limit}&offset=${offset}&except_id=${except_id}`,
   });
 }
 
@@ -35,9 +35,9 @@ export async function updateUserInfo(id, name, email, birthday) {
     method: "PUT",
     url: `/user/${id}/info`,
     body: {
-      name, 
+      name,
       email,
-      birthday
-    }
+      birthday,
+    },
   });
 }

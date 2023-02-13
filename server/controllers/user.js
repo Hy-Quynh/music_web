@@ -6,13 +6,19 @@ const {
   getUserByEmail,
   getUserById,
   updateUserInfo,
+  getTotalAccount,
 } = require("../models/user");
 
 module.exports = {
   getAllAccount: asyncHandler(async (req, res) => {
     try {
-      const listAccount = await getAllUserAccount();
-      return res.send({ success: true, payload: listAccount });
+      const { limit, offset, except_id } = req?.query;
+      const listAccount = await getAllUserAccount(limit, offset, except_id);
+      const totalAccount = await getTotalAccount(except_id);
+      return res.send({
+        success: true,
+        payload: { user: listAccount, totalItem: totalAccount },
+      });
     } catch (error) {
       return res.send({
         success: false,
