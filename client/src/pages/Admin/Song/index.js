@@ -167,11 +167,11 @@ export default function AdminSong() {
         };
         const createRes = await createNewSong(song);
         if (createRes?.data?.success) {
-          toast.success("Add new song success");
+          toast.success("Thêm mới bài hát thành công");
           getListSong();
           return setAddSongModal({ status: false, type: "" });
         } else {
-          return toast.error(createRes?.data?.error || "Add new song failed");
+          return toast.error(createRes?.data?.error || "Thêm mới bài hát thất bại");
         }
       }
 
@@ -225,7 +225,7 @@ export default function AdminSong() {
           gutterBottom
           sx={{ textAlign: "left" }}
         >
-          Manage song
+          Quản lí bài hát
         </Typography>
         <div>
           <Button
@@ -235,7 +235,7 @@ export default function AdminSong() {
               setAddSongModal({ status: true, type: "add" });
             }}
           >
-            Add new
+            Thêm mới
           </Button>
         </div>
       </Stack>

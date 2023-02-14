@@ -169,11 +169,11 @@ export default function AdminSinger() {
           countryId
         );
         if (createRes?.data?.success) {
-          toast.success("Add new singer succes");
+          toast.success("Thêm mới ca sĩ thành công");
           getListSinger();
           return setAddSingerModal({ status: false, type: "" });
         } else {
-          return toast.error(createRes?.data?.error || "Add new singer failed");
+          return toast.error(createRes?.data?.error || "Thêm mới ca sĩ thất  bại");
         }
       } else {
         const updateRes = await updateSinger(
@@ -245,7 +245,7 @@ export default function AdminSinger() {
             setAddSingerModal({ ...addSingerModal, status: false })
           }
           title={
-            addSingerModal.type === "add" ? "Add new singer" : "Update singer"
+            addSingerModal.type === "add" ? "Thêm mới ca sĩ" : "Cập nhật ca sĩ"
           }
           content={
             <>
@@ -348,7 +348,7 @@ export default function AdminSinger() {
               }}
               loading={submitLoading}
             >
-              {addSingerModal.type === "add" ? "Add new" : "Update"}
+              {addSingerModal.type === "add" ? "Thêm mới" : "Cập nhật"}
             </LoadingButton>
           }
         />
@@ -366,7 +366,7 @@ export default function AdminSinger() {
           gutterBottom
           sx={{ textAlign: "left" }}
         >
-          Manage singer
+          Quản lí ca sĩ
         </Typography>
         <div>
           <Button
@@ -381,7 +381,7 @@ export default function AdminSinger() {
               setAddSingerModal({ status: true, type: "add" });
             }}
           >
-            Add new
+            Thêm mới
           </Button>
         </div>
       </Stack>

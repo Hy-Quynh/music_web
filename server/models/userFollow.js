@@ -1,4 +1,5 @@
 const { postgresql } = require("../config/connect");
+const { getByLimitAndOffset } = require("../utils/utils");
 
 module.exports = {
   createUserFollow: async (user_id, followed) => {
@@ -27,14 +28,32 @@ module.exports = {
     }
   },
 
-  getUserFollow: async (user_id) => {
+  getUserFollow: async (limit, offset, user_id) => {
     try {
+      const limitOffset = getByLimitAndOffset(limit, offset);
+
       const result = await postgresql.query(
-        `SELECT * FROM user_flow WHERE user_id=${Number(user_id)}`
+        `SELECT uf.*, ur.name as follower_name, ur.email as follower_email 
+        FROM user_flow uf JOIN users ur ON uf.followed = ur._id 
+        WHERE uf.user_id=${Number(
+          user_id
+        )} ORDER BY uf.created_day DESC ${limitOffset}`
       );
       return result?.rows || [];
     } catch (error) {
       return [];
+    }
+  },
+
+  getTotalUserFollow: async (user_id) => {
+    try {
+      const result = await postgresql.query(
+        `SELECT COUNT(*) as total_item FROM user_flow
+        WHERE uf.user_id=${Number(user_id)}`
+      );
+      return result?.rows?.[0]?.total_item || 0;
+    } catch (error) {
+      return 0;
     }
   },
 

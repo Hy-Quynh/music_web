@@ -224,13 +224,14 @@ export default function ControlList({ songId }) {
         <CustomModal
           visible={visibleReportModal}
           onClose={() => {
+            setReportReason("")
             setVisibleReportModal(false);
           }}
           title={"Báo cáo bài hát"}
           content={
             <div>
               <RTextField
-                label="Name"
+                label="Lí do"
                 value={reportReason || ""}
                 id="post-title"
                 variant="filled"
@@ -246,7 +247,7 @@ export default function ControlList({ songId }) {
                 handleCreateSongReport();
               }}
             >
-              {"Thêm mới"}
+              {"Báo cáo"}
             </LoadingButton>
           }
         />

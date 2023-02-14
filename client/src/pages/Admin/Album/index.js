@@ -182,11 +182,11 @@ export default function AdminAlbum() {
           countryId
         );
         if (createRes?.data?.success) {
-          toast.success("Add new album succes");
+          toast.success("Thêm mới album thành công");
           getListAlbum();
           return setAddAlbumModal({ status: false, type: "" });
         } else {
-          return toast.error(createRes?.data?.error || "Add new album failed");
+          return toast.error(createRes?.data?.error || "Thêm mới album thất bại");
         }
       } else {
         const updateRes = await updateAlbum(
@@ -199,11 +199,11 @@ export default function AdminAlbum() {
         );
 
         if (updateRes?.data?.success) {
-          toast.success("Update album success");
+          toast.success("Cập nhật album thành công");
           getListAlbum();
           setAddAlbumModal({ status: false, type: "" });
         } else {
-          toast.error(updateRes?.data?.error || "Update album failed");
+          toast.error(updateRes?.data?.error || "Cập nhật album thất bại");
         }
       }
     }
@@ -231,7 +231,7 @@ export default function AdminAlbum() {
           visible={addAlbumModal.status}
           onClose={() => setAddAlbumModal({ ...addAlbumModal, status: false })}
           title={
-            addAlbumModal.type === "add" ? "Add new album" : "Update album"
+            addAlbumModal.type === "add" ? "Thêm mới album" : "Cập nhật album"
           }
           content={
             <>
@@ -367,7 +367,7 @@ export default function AdminAlbum() {
               }}
               loading={submitLoading}
             >
-              {addAlbumModal.type === "add" ? "Add new" : "Update"}
+              {addAlbumModal.type === "add" ? "Thêm mới" : "Cập nhật"}
             </LoadingButton>
           }
         />
@@ -385,7 +385,7 @@ export default function AdminAlbum() {
           gutterBottom
           sx={{ textAlign: "left" }}
         >
-          Manage Album
+          Quản lí Album
         </Typography>
         <div>
           <Button
@@ -401,7 +401,7 @@ export default function AdminAlbum() {
               setAddAlbumModal({ status: true, type: "add" });
             }}
           >
-            Add new
+            Thêm mới
           </Button>
         </div>
       </Stack>

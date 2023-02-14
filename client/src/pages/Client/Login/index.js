@@ -26,7 +26,7 @@ export default function Login() {
             _id: payload?._id
           })
         );
-        toast.success('Successful account login, you will be redirected to the home page in 2s')
+        toast.success('Đăng nhập tài khoản thành công, bạn sẽ chuyển sang trang chủ trong 2s')
         setTimeout(() => {
           navigate("/");
         }, 2000)

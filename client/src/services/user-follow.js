@@ -21,10 +21,10 @@ export async function deleteUserFollow(user_id, followed) {
   });
 }
 
-export async function getUserFollow(user_id) {
+export async function getUserFollow(limit, offset, user_id) {
   return request({
     method: "GET",
-    url: `/user-follow/${user_id}`,
+    url: `/user-follow/${user_id}?limit=${limit}&offset=${offset}`,
   });
 }
 

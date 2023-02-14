@@ -68,7 +68,7 @@ export default function AddManagerModal(props) {
         open={visible}
       >
         <BootstrapDialogTitle id="customized-dialog-title" onClose={onClose}>
-          Add new management staff
+          Thêm mới nhân viên quản lí
         </BootstrapDialogTitle>
         <DialogContent dividers>
           <RTextField

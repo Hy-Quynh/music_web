@@ -16,38 +16,39 @@ import { useNavigate } from "react-router-dom";
 const theme = createTheme();
 
 export default function AdminLogin() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const handleSubmit = async(event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const email = data.get("email")
-    const password = data.get("password")
+    const email = data.get("email");
+    const password = data.get("password");
 
     if (!email?.trim()?.length || !password?.trim()?.length) {
       return toast.error("Email or Password can not blank");
     }
 
     const loginResult = await adminLogin(email, password);
-      if (loginResult?.data?.success) {
-        const { payload } = loginResult?.data;
-        localStorage.setItem(
-          USER_KEY,
-          JSON.stringify({
-            email: payload?.email,
-            role: payload?.role,
-            name: payload?.name,
-            _id: payload?._id
-          })
-        );
-        toast.success('Successful account login, you will be redirected to the dashboard in 2s')
-        setTimeout(() => {
-          navigate("/admin");
-        }, 2000)
-      } else {
-        return toast.error(loginResult?.data?.error || "Đăng nhập thất bại");
-      }
-
+    if (loginResult?.data?.success) {
+      const { payload } = loginResult?.data;
+      localStorage.setItem(
+        USER_KEY,
+        JSON.stringify({
+          email: payload?.email,
+          role: payload?.role,
+          name: payload?.name,
+          _id: payload?._id,
+        })
+      );
+      toast.success(
+        "Đăng nhập tài khoản thành công, bạn sẽ chuyển sang trang dashboard trong 2 giây"
+      );
+      setTimeout(() => {
+        navigate("/admin");
+      }, 2000);
+    } else {
+      return toast.error(loginResult?.data?.error || "Đăng nhập thất bại");
+    }
   };
 
   return (
@@ -66,7 +67,7 @@ export default function AdminLogin() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Admin Login
+            Trang quản trị
           </Typography>
           <Box
             component="form"
@@ -75,12 +76,12 @@ export default function AdminLogin() {
             sx={{ mt: 1 }}
           >
             <TextField
-              type={'email'}
+              type={"email"}
               margin="normal"
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label="Email"
               name="email"
               autoComplete="email"
               autoFocus
@@ -90,7 +91,7 @@ export default function AdminLogin() {
               required
               fullWidth
               name="password"
-              label="Password"
+              label="Mật khẩu"
               type="password"
               id="password"
               autoComplete="current-password"
@@ -101,7 +102,7 @@ export default function AdminLogin() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Login
+              Đăng nhập
             </Button>
           </Box>
         </Box>

@@ -41,13 +41,13 @@ export default function CustomPopover(props) {
               }}
               onClick={handleSubmit}
             >
-              Confirm
+              Xác nhận
             </button>
             <button
               style={{ padding: "3px 20px", border: "gray 1px solid" }}
               onClick={onClose}
             >
-              Cancel
+              Huỷ
             </button>
           </div>
         </div>

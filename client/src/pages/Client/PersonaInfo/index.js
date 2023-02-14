@@ -6,6 +6,8 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Personal from "./components/PersonalInfo";
 import PersonalPlaylist from "./components/PlaylistList";
+import FlowList from "./components/FlowList";
+import './style.scss';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -75,7 +77,7 @@ export default function PersonalInfo() {
             <Personal />
           </TabPanel>
           <TabPanel value={value} index={1}>
-            Theo dõi
+            <FlowList />
           </TabPanel>
           <TabPanel value={value} index={2}>
             <PersonalPlaylist />

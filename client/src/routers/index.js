@@ -28,6 +28,7 @@ import PersonalInfo from "../pages/Client/PersonaInfo";
 import SongReport from "../pages/Admin/SongReport";
 import Member from "../pages/Client/Member";
 import MemberDetail from "../pages/Client/MemberDetail";
+import UserReport from "../pages/Admin/UserReport";
 
 const ClientLayoutPage = [
   {
@@ -128,6 +129,10 @@ const AdminLayoutPage = [
   {
     path: "/admin/song-report",
     page: <SongReport />,
+  },
+  {
+    path: "/admin/user-report",
+    page: <UserReport />,
   },
 ];
 

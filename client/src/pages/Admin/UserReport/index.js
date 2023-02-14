@@ -11,11 +11,8 @@ import { Button, Stack, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CustomPopover from "../../../components/CustomPopover";
 import { toast } from "react-hot-toast";
-import {
-  deleteReportSong,
-  getAllReportSong,
-} from "../../../services/songReport";
 import { dateTimeConverter } from "../../../utils/utils";
+import { deleteReportUser, getAllReportUser } from "../../../services/userReport";
 
 const columns = [
   { id: "stt", label: "#", minWidth: 50, align: "center" },
@@ -26,8 +23,8 @@ const columns = [
     align: "left",
   },
   {
-    id: "song_name",
-    label: "Tên bài hát",
+    id: "reported_email",
+    label: "Email người bị báo cáo",
     minWidth: 170,
     maxWidth: 200,
     align: "left",
@@ -54,8 +51,8 @@ const columns = [
   },
 ];
 
-export default function SongReport() {
-  const [listSongReport, setListSongReport] = useState([]);
+export default function UserReport() {
+  const [listUserReport, setListUserReport] = useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [popoverId, setPopoverId] = useState("");
@@ -69,11 +66,11 @@ export default function SongReport() {
     setPage(0);
   };
 
-  const getListSongReport = async () => {
+  const getListUserReport = async () => {
     try {
-      const res = await getAllReportSong();
+      const res = await getAllReportUser();
       if (res?.data?.success) {
-        setListSongReport(res?.data?.payload?.songReport);
+        setListUserReport(res?.data?.payload?.userReport);
       }
     } catch (error) {
       console.log("get list song report error >>> ", error);
@@ -81,15 +78,15 @@ export default function SongReport() {
   };
 
   useEffect(() => {
-    getListSongReport();
+    getListUserReport();
   }, []);
 
-  const deleteSongReport = async (reportId) => {
+  const deleteUserReport = async (reportId) => {
     try {
-      const deleteRes = await deleteReportSong(reportId);
+      const deleteRes = await deleteReportUser(reportId);
       if (deleteRes?.data?.success) {
         toast.success("Xoá báo cáo thành công");
-        getListSongReport();
+        getListUserReport();
         setPopoverId("");
       } else {
         toast.error(deleteRes?.data?.error || "Xoá báo cáo thất bại");
@@ -114,7 +111,7 @@ export default function SongReport() {
           gutterBottom
           sx={{ textAlign: "left" }}
         >
-          Quản lí báo cáo bài hát
+          Quản lí báo cáo tài khoản
         </Typography>
       </Stack>
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
@@ -134,7 +131,7 @@ export default function SongReport() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {listSongReport
+              {listUserReport
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   return (
@@ -157,7 +154,7 @@ export default function SongReport() {
                                   open={popoverId === row?._id}
                                   onClose={() => setPopoverId("")}
                                   handleSubmit={() =>
-                                    deleteSongReport(row?._id)
+                                    deleteUserReport(row?._id)
                                   }
                                   noti="Bạn có xác nhận xoá bản báo này?"
                                 >
@@ -204,7 +201,7 @@ export default function SongReport() {
         <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component="div"
-          count={listSongReport.length}
+          count={listUserReport.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

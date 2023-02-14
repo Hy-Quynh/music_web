@@ -99,12 +99,12 @@ export default function AdminCategory() {
           description
         );
         if (createRes?.data?.success) {
-          toast.success("Add new category succes");
+          toast.success("Thêm mới thể loại thành công");
           getListCategory();
           return setAddCategoryModal({ status: false, type: "" });
         } else {
           return toast.error(
-            createRes?.data?.error || "Add new category failed"
+            createRes?.data?.error || "Thêm mới thể loại thất bại"
           );
         }
       } else {
@@ -150,8 +150,8 @@ export default function AdminCategory() {
           }
           title={
             addCategoryModal.type === "add"
-              ? "Add new category"
-              : "Update category"
+              ? "Thêm mới thể loại"
+              : "Cập nhật thể loại"
           }
           content={
             <>
@@ -191,7 +191,7 @@ export default function AdminCategory() {
                 handleCreateUpdateCategory();
               }}
             >
-              {addCategoryModal.type === "add" ? "Add new" : "Update"}
+              {addCategoryModal.type === "add" ? "Thêm mới" : "Cập nhật"}
             </LoadingButton>
           }
         />
@@ -209,7 +209,7 @@ export default function AdminCategory() {
           gutterBottom
           sx={{ textAlign: "left" }}
         >
-          Manage categories
+          Quản lí thể loại
         </Typography>
         <div>
           <Button
@@ -219,7 +219,7 @@ export default function AdminCategory() {
               setAddCategoryModal({ status: true, type: "add" });
             }}
           >
-            Add new
+            Thêm mới
           </Button>
         </div>
       </Stack>

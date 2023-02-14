@@ -96,10 +96,12 @@ export default function AdminAccount() {
     if (createRes?.data?.success) {
       getAllAccount();
       setVisibleAddModal(false);
-      toast.success("New successful management staff");
+      toast.success("Thêm mới nhân viên quản lí thành công");
       return { success: true };
     } else {
-      toast.error(createRes?.data?.error || "Add new failed management staff");
+      toast.error(
+        createRes?.data?.error || "Thêm mới nhân viên quản lí thất bại"
+      );
       return createRes;
     }
   };
@@ -130,11 +132,11 @@ export default function AdminAccount() {
           gutterBottom
           sx={{ textAlign: "left" }}
         >
-          Employee Account Management
+          Quản lí tài khoản nhân viên
         </Typography>
         <div>
           <Button variant="contained" onClick={() => setVisibleAddModal(true)}>
-            Add new
+            Thêm mới
           </Button>
         </div>
       </Stack>

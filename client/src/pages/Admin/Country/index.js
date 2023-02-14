@@ -86,12 +86,12 @@ export default function AdminCountry() {
       if (addCountryModal.type === "add") {
         const createRes = await createNewCountry(countryName);
         if (createRes?.data?.success) {
-          toast.success("Add new country succes");
+          toast.success("Thêm mới quốc gia thành công");
           getListCountry();
           return setAddCountryModal({ status: false, type: "" });
         } else {
           return toast.error(
-            createRes?.data?.error || "Add new country failed"
+            createRes?.data?.error || "Thêm mới quốc gia thất bại"
           );
         }
       } else {
@@ -136,8 +136,8 @@ export default function AdminCountry() {
           }
           title={
             addCountryModal.type === "add"
-              ? "Add new country"
-              : "Update country"
+              ? "Thêm mới quốc gia"
+              : "Cập nhật quốc gia"
           }
           content={
             <>
@@ -163,7 +163,7 @@ export default function AdminCountry() {
                 handleCreateUpdateCountry();
               }}
             >
-              {addCountryModal.type === "add" ? "Add new" : "Update"}
+              {addCountryModal.type === "add" ? "Thêm mới" : "Cập nhật"}
             </LoadingButton>
           }
         />
@@ -181,7 +181,7 @@ export default function AdminCountry() {
           gutterBottom
           sx={{ textAlign: "left" }}
         >
-          Manage countries
+          Quản lí thông tin quốc gia
         </Typography>
         <div>
           <Button
@@ -191,7 +191,7 @@ export default function AdminCountry() {
               setAddCountryModal({ status: true, type: "add" });
             }}
           >
-            Add new
+            Thêm mới
           </Button>
         </div>
       </Stack>

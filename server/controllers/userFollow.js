@@ -4,16 +4,22 @@ const {
   createUserFollow,
   deleteUserFollow,
   checkUserFollower,
+  getTotalUserFollow,
 } = require("../models/userFollow");
 
 module.exports = {
   getUserFollower: asyncHandler(async (req, res) => {
     try {
       const { userId } = req?.params;
-      const result = await getUserFollow(userId);
+      const {limit, offset} = req?.query
+      const result = await getUserFollow(limit, offset, userId);
+      const totalItem = await getTotalUserFollow(userId);
       return res.send({
         success: true,
-        payload: result,
+        payload: {
+          follower: result,
+          totalItem: totalItem,
+        },
       });
     } catch (error) {
       return res.send({

@@ -15,7 +15,7 @@ export default function ClientLayout(props) {
   const { song } = useSelector(songData);
   const audioRef = useRef(null);
   const dispatch = useDispatch();
-  const userData = parseJSON(localStorage.getItem(USER_KEY));
+  const userData = parseJSON(localStorage.getItem(USER_KEY), {});
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [searchAnchorEl, setSearchAnchorEl] = React.useState(null);
@@ -46,10 +46,11 @@ export default function ClientLayout(props) {
   }, [song._id]);
 
   useEffect(() => {
-    if (userData?.role === 2){
-      localStorage.clear()
+    if (userData?.role === 2) {
+      window.location.reload();
+      localStorage.clear();
     }
-  }, [])
+  }, []);
 
   return (
     <>

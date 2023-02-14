@@ -112,7 +112,7 @@ export default function ControlMusicModal({
     <CustomModal
       visible={visible}
       onClose={() => onClose()}
-      title={type === "add" ? "Add new song" : "Update song"}
+      title={type === "add" ? "Thêm mới bài hát" : "Cập nhật bài hát"}
       content={
         <>
           <RTextField
@@ -416,7 +416,7 @@ export default function ControlMusicModal({
           }}
           loading={submitLoading}
         >
-          {type === "add" ? "Add new" : "Update"}
+          {type === "add" ? "Thêm mới" : "Cập nhật"}
         </LoadingButton>
       }
     />

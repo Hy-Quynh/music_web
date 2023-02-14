@@ -25,7 +25,8 @@ import AlbumIcon from "@mui/icons-material/Album";
 import InterpreterModeIcon from "@mui/icons-material/InterpreterMode";
 import LibraryMusicIcon from "@mui/icons-material/LibraryMusic";
 import LanguageIcon from "@mui/icons-material/Language";
-import BugReportIcon from '@mui/icons-material/BugReport';
+import BugReportIcon from "@mui/icons-material/BugReport";
+import PersonOffIcon from "@mui/icons-material/PersonOff";
 
 import { useLocation } from "react-router-dom";
 const drawerWidth = 240;
@@ -114,7 +115,7 @@ export function AdminLayout(props) {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              ADMIN PAGE
+              TRANG QUẢN TRỊ
             </Typography>
             <IconButton
               color="inherit"
@@ -218,13 +219,29 @@ export function AdminLayout(props) {
               <ListItemButton
                 onClick={() => navigate("/admin/song-report")}
                 sx={
-                  pathName === "/admin/song-report" ? { background: "#b0b0b0" } : {}
+                  pathName === "/admin/song-report"
+                    ? { background: "#b0b0b0" }
+                    : {}
                 }
               >
                 <ListItemIcon>
                   <BugReportIcon />
                 </ListItemIcon>
                 <ListItemText primary="Báo cáo bài hát" />
+              </ListItemButton>
+
+              <ListItemButton
+                onClick={() => navigate("/admin/user-report")}
+                sx={
+                  pathName === "/admin/user-report"
+                    ? { background: "#b0b0b0" }
+                    : {}
+                }
+              >
+                <ListItemIcon>
+                  <PersonOffIcon />
+                </ListItemIcon>
+                <ListItemText primary="Báo cáo tài khoản" />
               </ListItemButton>
 
               <ListItemButton

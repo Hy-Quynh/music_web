@@ -16,6 +16,7 @@ const searchRouter = require("./routers/search");
 const playlistRouter = require("./routers/playlist");
 const songReportRouter = require("./routers/songReport");
 const userFollowRouter = require("./routers/userFollow");
+const userReportRouter = require("./routers/userReport");
 
 app.use(
   cookieSession({
@@ -59,6 +60,7 @@ app.use("/api/search", searchRouter);
 app.use("/api/playlist", playlistRouter);
 app.use("/api/song-report", songReportRouter);
 app.use("/api/user-follow", userFollowRouter);
+app.use("/api/user-report", userReportRouter);
 
 let PORT = process.env.PORT || 5005;
 app.listen(PORT, () => console.log(`App running on port: ${PORT}`));

@@ -187,7 +187,17 @@ create table user_flow (
 	REFERENCES users(_id)
 );
 
-
+create table user_report (
+	_id serial NOT null PRIMARY KEY,
+	user_id int,
+	reported int,
+	reason text,
+	created_day timestamp,
+	CONSTRAINT fk_userreport_user FOREIGN KEY (user_id)
+	REFERENCES users(_id),
+	CONSTRAINT fk_userreported_user FOREIGN KEY (reported)
+	REFERENCES users(_id)
+)
 
 CREATE TABLE user_chat (
   _id serial NOT null PRIMARY KEY,

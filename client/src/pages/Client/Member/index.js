@@ -36,17 +36,15 @@ export default function Member() {
   const getUserFollower = async () => {
     try {
       if (userData?._id) {
-        const result = await getUserFollow(userData?._id);
+        const result = await getUserFollow(undefined, undefined, userData?._id);
         if (result?.data?.success) {
-          setUsetFollower(result?.data?.payload);
+          setUsetFollower(result?.data?.payload?.follower);
         }
       }
     } catch (error) {
       console.log("get user follower error >>> ", error);
     }
   };
-
-  console.log("userFollower >>> ", userFollower);
 
   useEffect(() => {
     getUserFollower();
@@ -97,7 +95,7 @@ export default function Member() {
           onClose={() => {
             setVisibleConfirmModal(false);
           }}
-          title={"Báo cáo bài hát"}
+          title={"Xác nhận"}
           content={
             <div style={{ minWidth: "400px", textAlign: "center" }}>
               Xác nhận thực hiện tác vụ

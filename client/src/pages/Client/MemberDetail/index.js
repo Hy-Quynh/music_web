@@ -19,6 +19,8 @@ import PersonalPlaylist from "./components/PlaylistList";
 import { toast } from "react-hot-toast";
 import CustomModal from "../../../components/CustomModal";
 import LoadingButton from "@mui/lab/LoadingButton";
+import RTextField from "../../../components/RedditTextField";
+import { createNewReportUser } from "../../../services/userReport";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -60,6 +62,8 @@ export default function MemberDetail() {
   const userData = parseJSON(localStorage.getItem(USER_KEY), {});
   const [tabValue, setTabValue] = React.useState(0);
   const [visibleConfirmModal, setVisibleConfirmModal] = useState(false);
+  const [visibleReportModal, setVisibleReportModal] = useState(false);
+  const [reportReason, setReportReason] = useState("");
 
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
@@ -115,6 +119,26 @@ export default function MemberDetail() {
     }
   };
 
+  const handleCreateUserReport = async () => {
+    try {
+      if (!reportReason?.trim()?.length) {
+        return toast.error("Lí do báo cáo không thể bỏ trống");
+      }
+
+      const result = await createNewReportUser(userData?._id, id, reportReason);
+      if (result?.data?.success) {
+        toast.success(
+          "Báo cáo tài khoản thành công, đang đợi quản trị viên duyệt"
+        );
+        setVisibleReportModal(false);
+        return setReportReason("");
+      }
+      toast.error("Báo cáo tài khoản thất bại");
+    } catch (error) {
+      toast.error("Báo cáo tài khoản thất bại");
+    }
+  };
+
   return (
     <div>
       {visibleConfirmModal && (
@@ -123,7 +147,7 @@ export default function MemberDetail() {
           onClose={() => {
             setVisibleConfirmModal(false);
           }}
-          title={"Báo cáo bài hát"}
+          title={"Xác nhận"}
           content={
             <div style={{ minWidth: "400px", textAlign: "center" }}>
               Xác nhận thực hiện tác vụ
@@ -137,6 +161,39 @@ export default function MemberDetail() {
               }}
             >
               {"Xác nhận"}
+            </LoadingButton>
+          }
+        />
+      )}
+
+      {visibleReportModal && (
+        <CustomModal
+          visible={visibleReportModal}
+          onClose={() => {
+            setReportReason("");
+            setVisibleReportModal(false);
+          }}
+          title={"Báo cáo tài khoản"}
+          content={
+            <div>
+              <RTextField
+                label="Lí do"
+                value={reportReason || ""}
+                id="post-title"
+                variant="filled"
+                style={{ marginTop: 11, textAlign: "left" }}
+                onChange={(event) => setReportReason(event?.target?.value)}
+              />
+            </div>
+          }
+          action={
+            <LoadingButton
+              autoFocus
+              onClick={() => {
+                handleCreateUserReport();
+              }}
+            >
+              {"Báo cáo"}
             </LoadingButton>
           }
         />
@@ -170,7 +227,12 @@ export default function MemberDetail() {
               <button style={{ cursor: "pointer" }}>Nhắn tin</button>
             </div>
             <div>
-              <button style={{ cursor: "pointer" }}>Báo cáo thành viên</button>
+              <button
+                style={{ cursor: "pointer" }}
+                onClick={() => setVisibleReportModal(true)}
+              >
+                Báo cáo thành viên
+              </button>
             </div>
           </div>
         </div>
