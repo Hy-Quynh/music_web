@@ -49,7 +49,7 @@ module.exports = {
     try {
       const result = await postgresql.query(
         `SELECT COUNT(*) as total_item FROM user_flow
-        WHERE uf.user_id=${Number(user_id)}`
+        WHERE user_id=${Number(user_id)}`
       );
       return result?.rows?.[0]?.total_item || 0;
     } catch (error) {

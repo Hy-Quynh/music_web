@@ -12,9 +12,9 @@ const {
 module.exports = {
   getAllAccount: asyncHandler(async (req, res) => {
     try {
-      const { limit, offset, except_id } = req?.query;
-      const listAccount = await getAllUserAccount(limit, offset, except_id);
-      const totalAccount = await getTotalAccount(except_id);
+      const { limit, offset, except_id, keySearch } = req?.query;
+      const listAccount = await getAllUserAccount(limit, offset, except_id, keySearch);
+      const totalAccount = await getTotalAccount(except_id, keySearch);
       return res.send({
         success: true,
         payload: { user: listAccount, totalItem: totalAccount },

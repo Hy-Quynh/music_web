@@ -224,9 +224,6 @@ export default function MemberDetail() {
               </button>
             </div>
             <div>
-              <button style={{ cursor: "pointer" }}>Nhắn tin</button>
-            </div>
-            <div>
               <button
                 style={{ cursor: "pointer" }}
                 onClick={() => setVisibleReportModal(true)}

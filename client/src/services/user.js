@@ -1,9 +1,9 @@
 import { request } from "../utils/request";
 
-export async function getAllUserAccount(limit, offset, except_id) {
+export async function getAllUserAccount(limit, offset, except_id, keySearch) {
   return request({
     method: "GET",
-    url: `/user/account?limit=${limit}&offset=${offset}&except_id=${except_id}`,
+    url: `/user/account?limit=${limit}&offset=${offset}&except_id=${except_id}&keySearch=${keySearch}`,
   });
 }
 

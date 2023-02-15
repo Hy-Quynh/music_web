@@ -17,6 +17,15 @@ const playlistRouter = require("./routers/playlist");
 const songReportRouter = require("./routers/songReport");
 const userFollowRouter = require("./routers/userFollow");
 const userReportRouter = require("./routers/userReport");
+const chatRouter = require("./routers/chat");
+const http = require("http");
+const { getUserChatMessage, getAllUserHaveChat } = require("./models/chat");
+const server = http.createServer(app);
+const socketIo = require("socket.io")(server, {
+  cors: {
+    origin: "*",
+  },
+});
 
 app.use(
   cookieSession({
@@ -41,6 +50,26 @@ app.use(function (req, res, next) {
   next();
 });
 
+// ! ================== connect socket ... ================== //
+socketIo.on("connection", (socket) => {
+  console.log("New client connected" + socket.id);
+  socket.on("sendDataClient", async function (data) {
+    const { userId, ownerId } = data;
+    const chatData = await getUserChatMessage(userId, ownerId);
+    chatData.sort(function (x, y) {
+      return x.created_day - y.created_day;
+    });
+    const userChat = await getAllUserHaveChat(userId);
+    socketIo.emit("sendDataServer", {
+      data: { chat: chatData, listUser: { user: userChat, owner: userId } },
+    });
+  });
+
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+  });
+});
+
 app.use(cors());
 
 require("dotenv").config();
@@ -61,6 +90,7 @@ app.use("/api/playlist", playlistRouter);
 app.use("/api/song-report", songReportRouter);
 app.use("/api/user-follow", userFollowRouter);
 app.use("/api/user-report", userReportRouter);
+app.use("/api/chat", chatRouter);
 
 let PORT = process.env.PORT || 5005;
-app.listen(PORT, () => console.log(`App running on port: ${PORT}`));
+server.listen(PORT, () => console.log(`App running on port: ${PORT}`));

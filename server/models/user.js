@@ -17,7 +17,7 @@ module.exports = {
     }
   },
 
-  getAllUserAccount: async (limit, offset, except_id) => {
+  getAllUserAccount: async (limit, offset, except_id, keySearch) => {
     try {
       const limitOffset = getByLimitAndOffset(limit, offset);
 
@@ -26,7 +26,11 @@ module.exports = {
           except_id && except_id !== "undefined"
             ? `_id != ${Number(except_id)}`
             : "_id is not null"
-        } 
+        } AND ${
+          keySearch && keySearch !== "undefined"
+            ? `lower(email) LIKE '%${keySearch.toLowerCase()}%'`
+            : "_id is not null"
+        }
         ORDER BY created_day DESC ${limitOffset}`
       );
       return result?.rows || [];
@@ -36,14 +40,18 @@ module.exports = {
     }
   },
 
-  getTotalAccount: async (except_id) => {
+  getTotalAccount: async (except_id, keySearch) => {
     try {
       const result = await postgresql.query(
         `SELECT COUNT(*) as total_item FROM users WHERE ${
           except_id && except_id !== "undefined"
             ? `_id != ${Number(except_id)}`
             : "_id is not null"
-        } `
+        } AND ${
+          keySearch && keySearch !== "undefined"
+            ? `lower(email) LIKE '%${keySearch.toLowerCase()}%'`
+            : "_id is not null"
+        }`
       );
       return result?.rows?.[0]?.total_item || 0;
     } catch (error) {

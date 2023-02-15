@@ -8,6 +8,7 @@ import Personal from "./components/PersonalInfo";
 import PersonalPlaylist from "./components/PlaylistList";
 import FlowList from "./components/FlowList";
 import './style.scss';
+import ChatList from "./components/ChatList";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -71,6 +72,7 @@ export default function PersonalInfo() {
               <Tab label="Thông tin cá nhân" {...a11yProps(0)} />
               <Tab label="Theo dõi" {...a11yProps(1)} />
               <Tab label="Playlist cá nhân" {...a11yProps(2)} />
+              <Tab label="Tin nhắn" {...a11yProps(3)} />
             </Tabs>
           </Box>
           <TabPanel value={value} index={0}>
@@ -80,7 +82,10 @@ export default function PersonalInfo() {
             <FlowList />
           </TabPanel>
           <TabPanel value={value} index={2}>
-            <PersonalPlaylist />
+            <PersonalPlaylist  />
+          </TabPanel>
+          <TabPanel value={value} index={3}>
+            <ChatList />
           </TabPanel>
         </Box>
       </div>

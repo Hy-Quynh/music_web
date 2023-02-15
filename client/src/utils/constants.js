@@ -11,3 +11,4 @@ export const RANK_ENUM = {
   GOLD: 'Vàng',
   DIAMOND: 'Kim cương'
 }
+export const CHAT_HOST = "http://localhost:5005";

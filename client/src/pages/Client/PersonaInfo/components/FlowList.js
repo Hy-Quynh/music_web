@@ -179,9 +179,6 @@ export default function FlowList() {
                   </button>
                 </div>
                 <div>
-                  <button style={{ cursor: "pointer" }}>Nhắn tin</button>
-                </div>
-                <div>
                   <button
                     style={{ cursor: "pointer" }}
                     onClick={() => {
