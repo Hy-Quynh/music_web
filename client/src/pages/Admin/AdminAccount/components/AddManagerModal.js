@@ -128,7 +128,7 @@ export default function AddManagerModal(props) {
                 fullName.length <= 0 ||
                 password.length <= 0
               ) {
-                return toast.error("Data can not blank");
+                return toast.error("Dữ liệu không được bỏ trống");
               } else if (!validateEmail(email)) {
                 return toast.error("Wrong email format");
               } else if (fullName.trim().length <= 5) {

@@ -87,7 +87,7 @@ export default function AdminCategory() {
   const handleCreateUpdateCategory = async () => {
     const { categoryName, description } = editCategory;
     if (!categoryName.trim().length || !description.trim().length) {
-      return toast.error("Data can not blank ");
+      return toast.error("Dữ liệu không được bỏ trống ");
     } else if (categoryName.trim().length <= 3) {
       return toast.error("Name must be more than 3 characters");
     } else if (description.length <= 10) {

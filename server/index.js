@@ -18,6 +18,7 @@ const songReportRouter = require("./routers/songReport");
 const userFollowRouter = require("./routers/userFollow");
 const userReportRouter = require("./routers/userReport");
 const chatRouter = require("./routers/chat");
+const userSongRouter = require("./routers/userSong");
 const http = require("http");
 const { getUserChatMessage, getAllUserHaveChat } = require("./models/chat");
 const server = http.createServer(app);
@@ -91,6 +92,7 @@ app.use("/api/song-report", songReportRouter);
 app.use("/api/user-follow", userFollowRouter);
 app.use("/api/user-report", userReportRouter);
 app.use("/api/chat", chatRouter);
+app.use("/api/user-song", userSongRouter);
 
 let PORT = process.env.PORT || 5005;
 server.listen(PORT, () => console.log(`App running on port: ${PORT}`));

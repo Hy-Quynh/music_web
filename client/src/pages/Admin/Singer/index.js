@@ -140,7 +140,7 @@ export default function AdminSinger() {
       countryId === -1 ||
       (typeof singerImage === "string" && !singerImage?.length)
     ) {
-      return toast.error("Data can not blank ");
+      return toast.error("Dữ liệu không được bỏ trống ");
     } else if (singerName.trim().length < 3) {
       return toast.error("Name must be more than 2 characters");
     } else if (description.length <= 10) {

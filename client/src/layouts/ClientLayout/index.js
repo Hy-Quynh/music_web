@@ -122,7 +122,7 @@ export default function ClientLayout(props) {
                             vertical: "bottom",
                             horizontal: "left",
                           }}
-                          style={{ marginTop: "10px", marginLeft: "-100px" }}
+                          style={{ marginTop: "30px", marginLeft: "-430px" }}
                         >
                           <div
                             style={{
@@ -132,8 +132,8 @@ export default function ClientLayout(props) {
                             }}
                           >
                             <TextField
-                              sx={{ width: "280px" }}
-                              style={{ width: "280px" }}
+                              sx={{ width: "500px" }}
+                              style={{ width: "500px" }}
                               onChange={(event) =>
                                 (searchText.current = event.target.value)
                               }
@@ -148,6 +148,7 @@ export default function ClientLayout(props) {
                                         navigate(
                                           `/search?search=${searchText.current}`
                                         );
+                                        window.location.reload()
                                       }}
                                     >
                                       <SearchIcon />
@@ -255,7 +256,7 @@ export default function ClientLayout(props) {
                 />
               </div>
               <div className="content-">
-                <h6 style={{ color: "white" }}>{song?.name}</h6>
+                <h6 style={{ color: "white" }}>{song?.name || song?.song_name}</h6>
                 <p style={{ color: "white" }}>
                   {song?.singer?.length
                     ? song?.singer?.map((it) => it?.name).join(", ")

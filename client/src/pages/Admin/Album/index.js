@@ -152,7 +152,7 @@ export default function AdminAlbum() {
       countryId === -1 ||
       (typeof avatar === "string" && !avatar?.length)
     ) {
-      return toast.error("Data can not blank ");
+      return toast.error("Dữ liệu không được bỏ trống ");
     } else if (albumName.trim().length <= 3) {
       return toast.error("Name must be more than 3 characters");
     } else if (description.length <= 10) {

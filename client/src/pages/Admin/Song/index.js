@@ -126,7 +126,7 @@ export default function AdminSong() {
         (typeof link === "string" && !link?.length) ||
         !singer?.length
       ) {
-        return toast.error("Data can not blank ");
+        return toast.error("Dữ liệu không được bỏ trống ");
       }
 
       let newAvatar = avatar;

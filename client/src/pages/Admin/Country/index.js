@@ -79,7 +79,7 @@ export default function AdminCountry() {
   const handleCreateUpdateCountry = async () => {
     const { countryName } = editCountry;
     if (!countryName.trim().length) {
-      return toast.error("Data can not blank ");
+      return toast.error("Dữ liệu không được bỏ trống ");
     } else if (countryName.trim().length <= 1) {
       return toast.error("Name must be more than 1 characters");
     } else {
