@@ -198,7 +198,7 @@ create table user_report (
 	CONSTRAINT fk_userreported_user FOREIGN KEY (reported)
 	REFERENCES users(_id)
 )
-
+ 
 CREATE TABLE user_chat (
   _id serial NOT null PRIMARY KEY,
   user_id int NOT NULL,
@@ -209,6 +209,17 @@ CREATE TABLE user_chat (
   CONSTRAINT fk_userChat_user FOREIGN KEY (user_id)
 	REFERENCES users(_id),
   CONSTRAINT fk_ownerReply_user FOREIGN KEY (owner_reply)
+	REFERENCES users(_id)
+)
+
+create table user_upload_song (
+	_id serial NOT null PRIMARY KEY,
+	user_id int,
+	song_name text,
+	link text,
+	avatar text,
+	created_day timestamp,
+	CONSTRAINT fk_userUploadSong_user FOREIGN KEY (user_id)
 	REFERENCES users(_id)
 )
 

@@ -9,6 +9,7 @@ import PersonalPlaylist from "./components/PlaylistList";
 import FlowList from "./components/FlowList";
 import './style.scss';
 import ChatList from "./components/ChatList";
+import UploadMusic from "./components/UploadMusic";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -73,6 +74,7 @@ export default function PersonalInfo() {
               <Tab label="Theo dõi" {...a11yProps(1)} />
               <Tab label="Playlist cá nhân" {...a11yProps(2)} />
               <Tab label="Tin nhắn" {...a11yProps(3)} />
+              <Tab label="Upload nhạc" {...a11yProps(4)} />
             </Tabs>
           </Box>
           <TabPanel value={value} index={0}>
@@ -86,6 +88,9 @@ export default function PersonalInfo() {
           </TabPanel>
           <TabPanel value={value} index={3}>
             <ChatList />
+          </TabPanel>
+          <TabPanel value={value} index={4}>
+            <UploadMusic />
           </TabPanel>
         </Box>
       </div>
