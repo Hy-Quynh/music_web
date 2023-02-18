@@ -7,6 +7,7 @@ const {
   deleteAdminAccount,
   changeAdminStatus,
 } = require("../models/admin");
+const { getSongDownloadData } = require("../models/song");
 
 module.exports = {
   LOGIN: asyncHandler(async (req, res) => {
@@ -96,6 +97,19 @@ module.exports = {
       return res.send({
         success: false,
         error: "Thay đổi trạng thái thất bại",
+      });
+    }
+  }),
+
+  getAdminStatistical: asyncHandler(async (req, res) => {
+    try {
+      const { fromDate, toDate } = req?.query;
+      const songDownload = await getSongDownloadData(fromDate, toDate);
+      return res.send({ success: true, payload: { songDownload } });
+    } catch (error) {
+      return res.send({
+        success: false,
+        error: "Lấy thông tin thống kê thất bại",
       });
     }
   }),

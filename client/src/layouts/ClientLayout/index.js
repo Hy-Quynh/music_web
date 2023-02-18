@@ -14,6 +14,7 @@ import ControlList from "../../pages/Client/SongDetail/components/ControlList";
 import DownloadIcon from "@mui/icons-material/Download";
 import { getBase64 } from "../../services/user";
 import { toast } from "react-hot-toast";
+import { createSongDownload } from "../../services/song";
 
 export default function ClientLayout(props) {
   const { song } = useSelector(songData);
@@ -346,6 +347,12 @@ export default function ClientLayout(props) {
                           a.download = `${song?.name || song?.song_name}.mp3`;
                           a.click();
                           toast.success("Tải về thành công");
+                          if (!song?.song_name) {
+                            await createSongDownload(
+                              song?._id,
+                              userData?._id || -1
+                            );
+                          }
                         }
                         setDownloadLoading(false);
                       }

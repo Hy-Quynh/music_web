@@ -12,6 +12,7 @@ const {
   getSongView,
   updateSongView,
   getHotSongData,
+  createSongDownloadData,
 } = require("../models/song");
 
 module.exports = {
@@ -204,6 +205,26 @@ module.exports = {
       return res.send({
         success: false,
         error: "Lấy danh sách bài hát hot thất bại",
+      });
+    }
+  }),
+
+  addSongDownloadData: asyncHandler(async (req, res) => {
+    try {
+      const { songId } = req?.params;
+      const { userId } = req?.body;
+      const result = await createSongDownloadData(songId, userId);
+      if (result) {
+        return res.send({ success: true });
+      }
+      return res.send({
+        success: false,
+        error: "Thêm dữ liệu thất bại",
+      });
+    } catch (error) {
+      return res.send({
+        success: false,
+        error: "Thêm dữ liệu thất bại",
       });
     }
   }),

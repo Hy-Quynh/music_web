@@ -1,5 +1,6 @@
 const { postgresql } = require("../config/connect");
 const { getByLimitAndOffset } = require("../utils/utils");
+const moment = require("moment");
 
 module.exports = {
   createNewSong: async (songData) => {
@@ -242,6 +243,52 @@ module.exports = {
       return result?.rows || [];
     } catch (error) {
       return [];
+    }
+  },
+
+  createSongDownloadData: async (songId, userId) => {
+    try {
+      const result = await postgresql.query(
+        `INSERT INTO song_download(created_day, song_id, user_id) VALUES(now(), ${Number(
+          songId
+        )}, ${Number(userId) === -1 ? null : Number(userId)})`
+      );
+      return result?.rows ? true : false;
+    } catch (error) {
+      return false;
+    }
+  },
+
+  getSongDownloadData: async (fromDate, toDate) => {
+    try {
+      const date_from =
+        fromDate && fromDate !== "undefined"
+          ? moment(
+              moment(fromDate, "YYYY-MM-DD")?.startOf("day").toDate()
+            ).format("YYYY-MM-DD hh:mm:ss")
+          : "";
+
+      const date_to =
+        toDate && toDate !== "undefined"
+          ? moment(moment(toDate, "YYYY-MM-DD")?.endOf("day").toDate()).format(
+              "YYYY-MM-DD hh:mm:ss"
+            )
+          : "";
+
+      const result = await postgresql.query(
+        `SELECT COUNT(song_id) as total_download FROM song_download WHERE ${
+          date_from && date_from !== "undefined"
+            ? `date(created_day) >= date('${date_from}')`
+            : " created_day is not null "
+        } AND ${
+          date_to && date_to !== "undefined"
+            ? `date(created_day) <= date('${date_to}')`
+            : "created_day is not null "
+        } `
+      );
+      return result?.rows?.[0]?.total_download || 0;
+    } catch (error) {
+      return 0;
     }
   },
 };

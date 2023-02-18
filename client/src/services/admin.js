@@ -45,3 +45,10 @@ export async function changeAdminStatus(adminId, status) {
     body: {status}
   });
 }
+
+export async function getAdminStatistical(fromDate, toDate) {
+  return request({
+    method: "get",
+    url: `/admin/statistical?fromDate=${fromDate}&toDate=${toDate}`,
+  });
+}

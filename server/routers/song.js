@@ -9,5 +9,6 @@ router.delete("/:songId", songController.deleteSong);
 router.get("/:songId", songController.getSongDetail);
 router.get("/view/:songId", songController.updateSongView);
 router.get("/hot/list", songController.getHotSong);
+router.post("/:songId/download", songController.addSongDownloadData);
 
 module.exports = router;

@@ -62,3 +62,13 @@ export async function getHotSongList() {
     url: `/song/hot/list`,
   });
 }
+
+export async function createSongDownload(songId, userId) {
+  return request({
+    method: "POST",
+    url: `/song/${songId}/download`,
+    body: {
+      userId,
+    },
+  });
+}

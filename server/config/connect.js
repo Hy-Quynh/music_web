@@ -24,6 +24,7 @@ const pool = new Pool(pgConfig)
 const query = async (queryStr) => {
   const client = await pool.connect()
   try {
+    console.log('queryStr >>> ', queryStr);
     return await client.query(queryStr)
   } catch (error) {
     console.log('error >>>> ', error);
