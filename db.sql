@@ -64,6 +64,8 @@ create table countries (
 	created_day timestamp
 );
 
+update songs set view = 0 where view is null;
+
 create table songs (
 	_id serial PRIMARY key,
 	name varchar(255),
@@ -220,6 +222,17 @@ create table user_upload_song (
 	avatar text,
 	created_day timestamp,
 	CONSTRAINT fk_userUploadSong_user FOREIGN KEY (user_id)
+	REFERENCES users(_id)
+)
+
+create table song_download (
+	_id serial NOT null PRIMARY KEY,
+	created_day timestamp,
+	song_id int,
+	user_id int null,
+	CONSTRAINT fk_songdownload_song FOREIGN KEY (song_id)
+	REFERENCES songs(_id),
+	CONSTRAINT fk_songdownload_user FOREIGN KEY (user_id)
 	REFERENCES users(_id)
 )
 
