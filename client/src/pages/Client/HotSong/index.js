@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllSong } from "../../../services/song";
+import { getAllSong, getHotSongList } from "../../../services/song";
 import {
   setListSongPlaying,
   setListType,
@@ -15,28 +15,26 @@ import "./style.scss";
 import PlayIcon from "../../../assets/image/play-music.svg";
 import StopIcon from "../../../assets/image/stop-music.svg";
 
-const PAGE_LIMIT = 100;
-
-export default function NewSong() {
+export default function HotSong() {
   const [listSong, setListSong] = useState([]);
   const dispatch = useDispatch();
   const { song } = useSelector(songData);
   const navigate = useNavigate();
   const { listType } = useSelector(songData);
 
-  const getListSong = async () => {
+  const getHotSong = async () => {
     try {
-      const result = await getAllSong(PAGE_LIMIT, 0);
+      const result = await getHotSongList();
       if (result?.data?.success) {
-        setListSong(result?.data?.payload?.song);
+        setListSong(result?.data?.payload);
       }
     } catch (error) {
-      console.log("get song error >>> ", error);
+      console.log("get hot song error >>> ", error);
     }
   };
 
   useEffect(() => {
-    getListSong();
+    getHotSong();
   }, []);
 
   return (
@@ -46,33 +44,33 @@ export default function NewSong() {
         style={{ backgroundImage: "url(img/bg-img/breadcumb3.jpg)" }}
       >
         <div className="bradcumbContent">
-          <h2>Nhạc mới</h2>
+          <h2>Top 100</h2>
         </div>
       </section>
 
-      <div className="hotsong-player-button">
+      <div className="newsong-player-button">
         <button
           onClick={() => {
             if (
-              listType?.type !== "new-song" ||
-              (listType?.type === "new-song" && listType?.id !== "new-song")
+              listType?.type !== "hot-song" ||
+              (listType?.type === "hot-song" && listType?.id !== "hot-song")
             ) {
               dispatch(setListSongPlaying(listSong));
               dispatch(
                 setListType({
-                  type: "new-song",
-                  id: "new-song",
+                  type: "hot-song",
+                  id: "hot-song",
                   playing: true,
                 })
               );
             }
 
-            if (listType?.type === "new-song" && listType?.id === "new-song") {
+            if (listType?.type === "hot-song" && listType?.id === "hot-song") {
               if (listType?.playing) {
                 dispatch(
                   setListType({
-                    type: "new-song",
-                    id: "new-song",
+                    type: "hot-song",
+                    id: "hot-song",
                     playing: false,
                   })
                 );
@@ -80,8 +78,8 @@ export default function NewSong() {
               } else {
                 dispatch(
                   setListType({
-                    type: "new-song",
-                    id: "new-song",
+                    type: "hot-song",
+                    id: "hot-song",
                     playing: true,
                   })
                 );
@@ -92,8 +90,8 @@ export default function NewSong() {
         >
           <div>Phát nhạc</div>
           <div style={{ marginLeft: "10px" }}>
-            {listType?.type === "new-song" &&
-            listType?.id === "new-song" &&
+            {listType?.type === "hot-song" &&
+            listType?.id === "hot-song" &&
             listType?.playing ? (
               <img
                 src={StopIcon}
@@ -176,8 +174,8 @@ export default function NewSong() {
                               if (listType?.playing) {
                                 dispatch(
                                   setListType({
-                                    type: "new-song",
-                                    id: "new-song",
+                                    type: "hot-song",
+                                    id: "hot-song",
                                     playing: false,
                                   })
                                 );
@@ -196,13 +194,13 @@ export default function NewSong() {
                             onClick={() => {
                               if (
                                 !listType?.playing &&
-                                listType?.type === "new-song" &&
-                                listType?.id === "new-song"
+                                listType?.type === "hot-song" &&
+                                listType?.id === "hot-song"
                               ) {
                                 dispatch(
                                   setListType({
-                                    type: "new-song",
-                                    id: "new-song",
+                                    type: "hot-song",
+                                    id: "hot-song",
                                     playing: true,
                                   })
                                 );

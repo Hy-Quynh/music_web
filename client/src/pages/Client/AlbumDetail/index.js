@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllSong } from "../../../services/song";
 import {
+  setListSongPlaying,
+  setListType,
   setSongPlaying,
   setSongState,
   songData,
@@ -12,6 +14,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getAlbumById } from "../../../services/album";
 import "./style.scss";
 import PlayIcon from "../../../assets/image/play-music.svg";
+import StopIcon from "../../../assets/image/stop-music.svg";
 
 const PAGE_LIMIT = 20;
 
@@ -23,12 +26,31 @@ export default function AlbumDetail() {
 
   const dispatch = useDispatch();
   const { song } = useSelector(songData);
+  const { listType } = useSelector(songData);
   const { id } = useParams();
   const navigate = useNavigate();
 
+  const getAllListSong = async () => {
+    try {
+      const result = await getAllSong(undefined, undefined, id);
+      if (result?.data?.success) {
+        dispatch(setListSongPlaying(result?.data?.payload?.song));
+        dispatch(
+          setListType({
+            type: "album",
+            id,
+            playing: true,
+          })
+        );
+      }
+    } catch (error) {
+      console.log("get song error >>> ", error);
+    }
+  };
+
   const getListSong = async () => {
     try {
-      const result = await getAllSong(PAGE_LIMIT, 0, id);
+      const result = await getAllSong(PAGE_LIMIT, page, id);
       if (result?.data?.success) {
         setListSong(result?.data?.payload?.song);
         setTotalPage(Math.ceil(result?.data?.payload?.totalItem / PAGE_LIMIT));
@@ -82,14 +104,55 @@ export default function AlbumDetail() {
             <div className="album-detail-name">{albumDetail?.name}</div>
 
             <div className="album-player-button">
-              <button>
+              <button
+                onClick={() => {
+                  if (
+                    listType?.type !== "album" ||
+                    (listType?.type === "album" && listType?.id !== id)
+                  ) {
+                    return getAllListSong();
+                  }
+
+                  if (listType?.type === "album" && listType?.id === id) {
+                    if (listType?.playing) {
+                      dispatch(
+                        setListType({
+                          type: "album",
+                          id,
+                          playing: false,
+                        })
+                      );
+                      dispatch(setSongState(false));
+                    } else {
+                      dispatch(
+                        setListType({
+                          type: "album",
+                          id,
+                          playing: true,
+                        })
+                      );
+                      dispatch(setSongState(true));
+                    }
+                  }
+                }}
+              >
                 <div>Phát nhạc</div>
                 <div style={{ marginLeft: "10px" }}>
-                  <img
-                    src={PlayIcon}
-                    alt=""
-                    style={{ width: "25px", height: "25px" }}
-                  />
+                  {listType?.type === "album" &&
+                  listType?.id === id &&
+                  listType?.playing ? (
+                    <img
+                      src={StopIcon}
+                      alt=""
+                      style={{ width: "25px", height: "25px" }}
+                    />
+                  ) : (
+                    <img
+                      src={PlayIcon}
+                      alt=""
+                      style={{ width: "25px", height: "25px" }}
+                    />
+                  )}
                 </div>
               </button>
             </div>
@@ -130,7 +193,7 @@ export default function AlbumDetail() {
                               <img
                                 src={item?.avatar}
                                 alt=""
-                                style={{ width: "118px", height: "118px" }}
+                                style={{ width: "118px", height: "117px" }}
                               />
                             </div>
                             <div
@@ -175,6 +238,15 @@ export default function AlbumDetail() {
                                     }}
                                     onClick={() => {
                                       dispatch(setSongState(false));
+                                      if (listType?.playing) {
+                                        dispatch(
+                                          setListType({
+                                            type: "album",
+                                            id,
+                                            playing: false,
+                                          })
+                                        );
+                                      }
                                     }}
                                   />
                                 ) : (
@@ -187,6 +259,20 @@ export default function AlbumDetail() {
                                       cursor: "pointer",
                                     }}
                                     onClick={() => {
+                                      if (
+                                        !listType?.playing &&
+                                        listType?.type === "playlist" &&
+                                        listType?.id === item?._id
+                                      ) {
+                                        dispatch(
+                                          setListType({
+                                            type: "playlist",
+                                            id: item?._id,
+                                            playing: true,
+                                          })
+                                        );
+                                      }
+
                                       dispatch(
                                         setSongPlaying({
                                           ...item,
@@ -241,9 +327,7 @@ export default function AlbumDetail() {
                                         }
                                       }}
                                     >
-                                      <a className="btn oneMusic-btn">
-                                        Sau
-                                      </a>
+                                      <a className="btn oneMusic-btn">Sau</a>
                                     </div>
                                   </div>
                                 </div>

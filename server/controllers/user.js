@@ -8,12 +8,18 @@ const {
   updateUserInfo,
   getTotalAccount,
 } = require("../models/user");
+const axios = require("axios");
 
 module.exports = {
   getAllAccount: asyncHandler(async (req, res) => {
     try {
       const { limit, offset, except_id, keySearch } = req?.query;
-      const listAccount = await getAllUserAccount(limit, offset, except_id, keySearch);
+      const listAccount = await getAllUserAccount(
+        limit,
+        offset,
+        except_id,
+        keySearch
+      );
       const totalAccount = await getTotalAccount(except_id, keySearch);
       return res.send({
         success: true,
@@ -102,6 +108,23 @@ module.exports = {
       return res.send({
         success: false,
         error: "Cập nhật thông tin khách hàng thất bại",
+      });
+    }
+  }),
+
+  getBase64: asyncHandler(async (req, res) => {
+    try {
+      const { url } = req?.body;
+      const response = await axios.get(url, { responseType: "arraybuffer" });
+      const base64 = Buffer.from(response.data, "binary").toString("base64");
+      const result = "data:" + response.headers["content-type"] + ";base64," + base64;
+      if (result) {
+        return res.send({ success: true, payload: result });
+      }
+    } catch (error) {
+      return res.send({
+        success: false,
+        error: "Convert thất bại",
       });
     }
   }),

@@ -18,6 +18,16 @@ export async function createNewPlaylist(user_id, name) {
   });
 }
 
+export async function updatePlaylistName(id, name) {
+  return request({
+    method: "PUT",
+    url: `/playlist/${id}`,
+    body: {
+      name
+    },
+  });
+}
+
 export async function deletePlaylistData(id) {
   return request({
     method: "DELETE",

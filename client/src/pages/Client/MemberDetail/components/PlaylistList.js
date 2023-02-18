@@ -14,12 +14,15 @@ import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  setListSongPlaying,
+  setListType,
   setSongPlaying,
   setSongState,
   songData,
 } from "../../../../slices/songSlice";
 import PlayMusicIcon from "../../../../assets/image/play-music.svg";
 import StopMusicIcon from "../../../../assets/image/stop-music.svg";
+import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 
 export default function PersonalPlaylist({ userId }) {
   const [listPlaylist, setListPlayList] = useState([]);
@@ -28,6 +31,7 @@ export default function PersonalPlaylist({ userId }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { song } = useSelector(songData);
+  const { listType } = useSelector(songData);
 
   const getUserPlayList = async () => {
     try {
@@ -40,13 +44,29 @@ export default function PersonalPlaylist({ userId }) {
     }
   };
 
+  const playAllListSong = async (playListId) => {
+    try {
+      const result = await getPlaylistSong(playListId);
+      if (result?.data?.success) {
+        dispatch(setListSongPlaying(result?.data?.payload));
+        dispatch(
+          setListType({
+            type: "member-playlist",
+            id: playListId,
+            playing: true,
+          })
+        );
+      }
+    } catch (error) {
+      console.log("get song error >>> ", error);
+    }
+  };
+
   useEffect(() => {
     if (userId) {
       getUserPlayList();
     }
   }, []);
-
-  console.log('listPlaylist >>> ', listPlaylist);
 
   const getPlayListSong = async (playListId) => {
     try {
@@ -109,9 +129,56 @@ export default function PersonalPlaylist({ userId }) {
                       ".css-10hburv-MuiTypography-root": { fontSize: "20px" },
                     }}
                   />
-                  <ListItemIcon>
+                  {/* <ListItemIcon>
                     <PlayCircleOutlineIcon />
+                  </ListItemIcon> */}
+                  <ListItemIcon>
+                    <div
+                      onClick={() => {
+                        if (
+                          listType?.type !== "member-playlist" ||
+                          (listType?.type === "member-playlist" &&
+                            listType?.id !== item?._id)
+                        ) {
+                          return playAllListSong(item?._id);
+                        }
+
+                        if (
+                          listType?.type === "member-playlist" &&
+                          listType?.id === item?._id
+                        ) {
+                          if (listType?.playing) {
+                            dispatch(
+                              setListType({
+                                type: "member-playlist",
+                                id: item?._id,
+                                playing: false,
+                              })
+                            );
+                            dispatch(setSongState(false));
+                          } else {
+                            dispatch(
+                              setListType({
+                                type: "member-playlist",
+                                id: item?._id,
+                                playing: true,
+                              })
+                            );
+                            dispatch(setSongState(true));
+                          }
+                        }
+                      }}
+                    >
+                      {listType?.type === "member-playlist" &&
+                      listType?.id === item?._id &&
+                      listType?.playing ? (
+                        <PauseCircleOutlineIcon />
+                      ) : (
+                        <PlayCircleOutlineIcon />
+                      )}
+                    </div>
                   </ListItemIcon>
+
                   {expandPlaylist === item?._id ? (
                     <ExpandLess
                       onClick={() => {
@@ -194,6 +261,36 @@ export default function PersonalPlaylist({ userId }) {
                               >
                                 <div style={{ marginLeft: "20px" }}>
                                   {song?._id === it?._id && song?.playing ? (
+                                    //   <img
+                                    //     src={StopMusicIcon}
+                                    //     alt="play music"
+                                    //     style={{
+                                    //       width: "50px",
+                                    //       height: "50px",
+                                    //       cursor: "pointer",
+                                    //     }}
+                                    //     onClick={() => {
+                                    //       dispatch(setSongState(false));
+                                    //     }}
+                                    //   />
+                                    // ) : (
+                                    //   <img
+                                    //     src={PlayMusicIcon}
+                                    //     alt="play music"
+                                    //     style={{
+                                    //       width: "50px",
+                                    //       height: "50px",
+                                    //       cursor: "pointer",
+                                    //     }}
+                                    //     onClick={() => {
+                                    //       dispatch(
+                                    //         setSongPlaying({
+                                    //           ...it,
+                                    //           playing: true,
+                                    //         })
+                                    //       );
+                                    //     }}
+                                    //   />
                                     <img
                                       src={StopMusicIcon}
                                       alt="play music"
@@ -203,6 +300,16 @@ export default function PersonalPlaylist({ userId }) {
                                         cursor: "pointer",
                                       }}
                                       onClick={() => {
+                                        if (listType?.playing) {
+                                          dispatch(
+                                            setListType({
+                                              type: "member-playlist",
+                                              id: item?._id,
+                                              playing: false,
+                                            })
+                                          );
+                                        }
+
                                         dispatch(setSongState(false));
                                       }}
                                     />
@@ -216,6 +323,37 @@ export default function PersonalPlaylist({ userId }) {
                                         cursor: "pointer",
                                       }}
                                       onClick={() => {
+                                        if (
+                                          listType?.playing &&
+                                          listType?.type ===
+                                            "member-playlist" &&
+                                          listType?.id !== item?._id
+                                        ) {
+                                          dispatch(
+                                            setListType({
+                                              type: "",
+                                              id: -1,
+                                              playing: false,
+                                            })
+                                          );
+                                          dispatch(setListSongPlaying([]));
+                                        }
+
+                                        if (
+                                          !listType?.playing &&
+                                          listType?.type ===
+                                            "member-playlist" &&
+                                          listType?.id === item?._id
+                                        ) {
+                                          dispatch(
+                                            setListType({
+                                              type: "member-playlist",
+                                              id: item?._id,
+                                              playing: true,
+                                            })
+                                          );
+                                        }
+
                                         dispatch(
                                           setSongPlaying({
                                             ...it,

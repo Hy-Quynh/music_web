@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getAllAlbum } from "../../../../services/album";
 
 const PAGE_LIMIT = 12;
 
 export default function AlbumList() {
   const [albumList, setAlbumList] = useState([]);
+  const navigate = useNavigate();
 
   const getAlbumList = async () => {
     try {
@@ -50,6 +52,10 @@ export default function AlbumList() {
                       minWidth: "192px",
                       minHeight: "192px",
                       border: "0.5px solid gray",
+                       cursor: 'pointer'
+                    }}
+                    onClick={() => {
+                      navigate(`/album/${item?._id}`);
                     }}
                   >
                     <img
@@ -59,7 +65,7 @@ export default function AlbumList() {
                     />
                   </div>
                   <div className="album-info">
-                    <a href="#">
+                    <a href={`/album/${item?._id}`}>
                       <h5>{item?.name}</h5>
                     </a>
                   </div>

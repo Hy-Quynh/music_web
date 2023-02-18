@@ -36,7 +36,6 @@ app.use(
   })
 );
 
-process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb" }));
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getSongById } from "../../../services/song";
+import { getSongById, updateSongView } from "../../../services/song";
 import "./style.scss";
 import PlayIcon from "../../../assets/image/play-music.svg";
 import StopIcon from "../../../assets/image/stop-music.svg";
@@ -34,6 +34,12 @@ export default function SongDetail() {
     getSongDetail();
   }, []);
 
+  useEffect(() => {
+    (async () => {
+      await updateSongView(id);
+    })();
+  }, []);
+
   return (
     <div>
       <section
@@ -59,7 +65,7 @@ export default function SongDetail() {
           </div>
           <div className="col-12 col-sm-8 col-md-9">
             <div className="song-desc">{songDetail?.description}</div>
-            <ControlList songId={id}/>
+            <ControlList songId={id} />
             <div className="song-player-button">
               <button>
                 <div>Phát nhạc</div>

@@ -1,5 +1,5 @@
-import { Popover, TextField } from "@mui/material";
-import React, { useEffect, useRef } from "react";
+import { CircularProgress, Popover, TextField, Tooltip } from "@mui/material";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setSongPlaying, songData } from "../../slices/songSlice";
@@ -10,6 +10,10 @@ import "./style.scss";
 import { InputAdornment } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import { createKeyWordSearch } from "../../services/search";
+import ControlList from "../../pages/Client/SongDetail/components/ControlList";
+import DownloadIcon from "@mui/icons-material/Download";
+import { getBase64 } from "../../services/user";
+import { toast } from "react-hot-toast";
 
 export default function ClientLayout(props) {
   const { song } = useSelector(songData);
@@ -20,6 +24,9 @@ export default function ClientLayout(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [searchAnchorEl, setSearchAnchorEl] = React.useState(null);
   const searchText = useRef("");
+  const { listSongPlaying } = useSelector(songData);
+  const [songPlayingIndex, setSongPlayingIndex] = useState(0);
+  const [downloadLoading, setDownloadLoading] = useState(false);
 
   const open = Boolean(anchorEl);
   const searchOpen = Boolean(searchAnchorEl);
@@ -40,6 +47,12 @@ export default function ClientLayout(props) {
 
   useEffect(() => {
     if (audioRef) {
+      const findIndex = [...listSongPlaying]?.findIndex(
+        (item) => item?._id === song?._id
+      );
+      if (findIndex >= 0 && findIndex !== songPlayingIndex) {
+        setSongPlayingIndex(findIndex);
+      }
       audioRef?.current?.load();
       pauseAndPlaySong();
     }
@@ -51,6 +64,13 @@ export default function ClientLayout(props) {
       localStorage.clear();
     }
   }, []);
+
+  useEffect(() => {
+    if (listSongPlaying?.length) {
+      setSongPlayingIndex(0);
+      dispatch(setSongPlaying({ ...listSongPlaying[0], playing: true }));
+    }
+  }, [listSongPlaying]);
 
   return (
     <>
@@ -148,7 +168,7 @@ export default function ClientLayout(props) {
                                         navigate(
                                           `/search?search=${searchText.current}`
                                         );
-                                        window.location.reload()
+                                        window.location.reload();
                                       }}
                                     >
                                       <SearchIcon />
@@ -256,7 +276,9 @@ export default function ClientLayout(props) {
                 />
               </div>
               <div className="content-">
-                <h6 style={{ color: "white" }}>{song?.name || song?.song_name}</h6>
+                <h6 style={{ color: "white" }}>
+                  {song?.name || song?.song_name}
+                </h6>
                 <p style={{ color: "white" }}>
                   {song?.singer?.length
                     ? song?.singer?.map((it) => it?.name).join(", ")
@@ -264,19 +286,82 @@ export default function ClientLayout(props) {
                 </p>
               </div>
             </div>
-            <audio
-              preload="auto"
-              controls
-              ref={audioRef}
-              onPlay={(event) => {
-                dispatch(setSongPlaying({ ...song, playing: true }));
-              }}
-              onPause={(event) => {
-                dispatch(setSongPlaying({ ...song, playing: false }));
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-start",
+                alignItems: "center",
+                gap: "20px",
               }}
             >
-              <source src={song?.link} />
-            </audio>
+              <audio
+                preload="auto"
+                controls
+                ref={audioRef}
+                onPlay={(event) => {
+                  dispatch(setSongPlaying({ ...song, playing: true }));
+                }}
+                onPause={(event) => {
+                  dispatch(setSongPlaying({ ...song, playing: false }));
+                }}
+                controlsList="nodownload"
+                onEnded={() => {
+                  if (listSongPlaying?.length) {
+                    if (songPlayingIndex === listSongPlaying?.length - 1) {
+                      setSongPlayingIndex(0);
+                      dispatch(
+                        setSongPlaying({ ...listSongPlaying[0], playing: true })
+                      );
+                    } else {
+                      setSongPlayingIndex(songPlayingIndex + 1);
+                      dispatch(
+                        setSongPlaying({
+                          ...listSongPlaying[songPlayingIndex + 1],
+                          playing: true,
+                        })
+                      );
+                    }
+                  }
+                }}
+                on
+              >
+                <source src={song?.link} />
+              </audio>
+
+              <div className="song-control-list">
+                {!song?.song_name ? (
+                  <ControlList songId={song?._id} color="white" />
+                ) : (
+                  <></>
+                )}
+                <Tooltip title="Tải xuống" placement="top">
+                  <div
+                    onClick={async () => {
+                      if (!downloadLoading) {
+                        setDownloadLoading(true);
+                        const result = await getBase64(song?.link);
+                        if (result?.data?.success) {
+                          var a = document.createElement("a");
+                          a.href = result?.data?.payload;
+                          a.download = `${song?.name || song?.song_name}.mp3`;
+                          a.click();
+                          toast.success("Tải về thành công");
+                        }
+                        setDownloadLoading(false);
+                      }
+                    }}
+                  >
+                    {downloadLoading ? (
+                      <CircularProgress size={"20px"} sx={{ color: "white" }} />
+                    ) : (
+                      <DownloadIcon
+                        sx={{ color: "white", cursor: "pointer" }}
+                      />
+                    )}
+                  </div>
+                </Tooltip>
+              </div>
+            </div>
           </div>
         </div>
       ) : (

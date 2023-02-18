@@ -19,7 +19,6 @@ export default function MostSearchList() {
   const getListSong = async () => {
     try {
       const hit = await getSongMostSearch();
-      console.log('hit >>> ', hit);
       if (hit?.data?.success) {
         setListHit(hit?.data?.payload);
       }
@@ -54,7 +53,7 @@ export default function MostSearchList() {
                   minWidth: "73px",
                   minHeight: "73px",
                   border: "0.5px solid gray",
-                  cursor: 'pointer'
+                  cursor: "pointer",
                 }}
                 onClick={() => {
                   navigate(`/song/${item?._id}`);
@@ -71,7 +70,7 @@ export default function MostSearchList() {
                   onClick={() => {
                     navigate(`/song/${item?._id}`);
                   }}
-                  style={{cursor: 'pointer'}}
+                  style={{ cursor: "pointer" }}
                 >
                   {item?.name}
                 </h6>

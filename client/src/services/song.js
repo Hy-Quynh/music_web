@@ -7,7 +7,7 @@ export async function getAllSong(
   category,
   country,
   singer,
-  searchText,
+  searchText
 ) {
   return request({
     method: "GET",
@@ -46,5 +46,19 @@ export async function getSongById(id) {
   return request({
     method: "GET",
     url: `/song/${id}`,
+  });
+}
+
+export async function updateSongView(id) {
+  return request({
+    method: "GET",
+    url: `/song/view/${id}`,
+  });
+}
+
+export async function getHotSongList() {
+  return request({
+    method: "GET",
+    url: `/song/hot/list`,
   });
 }

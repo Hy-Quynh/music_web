@@ -9,6 +9,7 @@ const {
   getPlayListDetail,
   getSongPlayList,
   deleteSongPlayListDetail,
+  updatePlaylistName,
 } = require("../models/playlist");
 
 module.exports = {
@@ -145,6 +146,26 @@ module.exports = {
       return res.send({
         success: false,
         error: "Xoá bài nhạc trong playlist thất bại",
+      });
+    }
+  }),
+
+  updatePlaylistName: asyncHandler(async (req, res) => {
+    try {
+      const { playlistId } = req?.params;
+      const { name } = req?.body;
+      const result = await updatePlaylistName(playlistId, name);
+      if (result) {
+        return res.send({ success: true });
+      }
+      return res.send({
+        success: false,
+        error: "Cập nhật playlist thất bại",
+      });
+    } catch (error) {
+      return res.send({
+        success: false,
+        error: "Cập nhật playlist thất bại",
       });
     }
   }),

@@ -9,12 +9,16 @@ const {
   updateSongData,
   getTotalSong,
   getSongById,
+  getSongView,
+  updateSongView,
+  getHotSongData,
 } = require("../models/song");
 
 module.exports = {
   getAllSong: asyncHandler(async (req, res) => {
     try {
-      const { limit, offset, album, category, country, singer, searchText } = req?.query;
+      const { limit, offset, album, category, country, singer, searchText } =
+        req?.query;
       const result = await getListSong(
         limit,
         offset,
@@ -24,7 +28,13 @@ module.exports = {
         singer,
         searchText
       );
-      const totalSong = await getTotalSong(category, album, country, singer, searchText);
+      const totalSong = await getTotalSong(
+        category,
+        album,
+        country,
+        singer,
+        searchText
+      );
       if (result) {
         for (let i = 0; i < result?.length; i++) {
           const singer = await getSongSinger(result?.[i]?._id);
@@ -147,6 +157,53 @@ module.exports = {
       return res.send({
         success: false,
         error: "Lấy thông tin bài hát thất bại",
+      });
+    }
+  }),
+
+  updateSongView: asyncHandler(async (req, res) => {
+    try {
+      const { songId } = req?.params;
+      const view = await getSongView(songId);
+      const result = await updateSongView(songId, view + 1);
+      if (result) {
+        return res.send({ success: true });
+      }
+      return res.send({
+        success: false,
+        error: "Cập nhật lượt view bài hát thất bại",
+      });
+    } catch (error) {
+      return res.send({
+        success: false,
+        error: "Cập nhật lượt view bài hát thất bại",
+      });
+    }
+  }),
+
+  getHotSong: asyncHandler(async (req, res) => {
+    try {
+      const result = await getHotSongData();
+      if (result) {
+        for (let i = 0; i < result?.length; i++) {
+          const singer = await getSongSinger(result?.[i]?._id);
+          result[i].singer = [...singer];
+        }
+
+        return res.send({
+          success: true,
+          payload: result,
+        });
+      }
+
+      return res.send({
+        success: false,
+        error: "Lấy danh sách bài hát thất bại",
+      });
+    } catch (error) {
+      return res.send({
+        success: false,
+        error: "Lấy danh sách bài hát hot thất bại",
       });
     }
   }),

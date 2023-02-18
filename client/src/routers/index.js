@@ -29,6 +29,7 @@ import SongReport from "../pages/Admin/SongReport";
 import Member from "../pages/Client/Member";
 import MemberDetail from "../pages/Client/MemberDetail";
 import UserReport from "../pages/Admin/UserReport";
+import HotSong from "../pages/Client/HotSong";
 
 const ClientLayoutPage = [
   {
@@ -82,6 +83,10 @@ const ClientLayoutPage = [
   {
     path: "/new-song",
     page: <NewSong />,
+  },
+  {
+    path: "/top-100",
+    page: <HotSong />,
   },
   {
     path: "/member",

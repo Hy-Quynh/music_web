@@ -133,7 +133,6 @@ export default function AdminSinger() {
 
   const handleCreateUpdateSinger = async () => {
     const { singerName, description, singerImage, countryId } = editSinger;
-    console.log("editSinger >> ", editSinger);
     if (
       !singerName.trim().length ||
       !description.trim().length ||

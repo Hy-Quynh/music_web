@@ -2,6 +2,12 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   song: {},
+  listSongPlaying: [],
+  listType: {
+    type: '',
+    id: -1,
+    playing: false
+  }
 }
 
 export const songSlice = createSlice({
@@ -14,11 +20,19 @@ export const songSlice = createSlice({
 
     setSongState: (state, action) => {
       state.song.playing = action.payload
+    },
+
+    setListSongPlaying: (state, action) => {
+      state.listSongPlaying = action.payload
+    },
+
+    setListType: (state, action) => {
+      state.listType = action.payload
     }
   },
 })
 
-export const { setSongPlaying, setSongState } = songSlice.actions
+export const { setSongPlaying, setSongState, setListSongPlaying, setListType } = songSlice.actions
 
 export const songData = (state) => state.song
 export default songSlice.reducer

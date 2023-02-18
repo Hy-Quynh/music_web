@@ -13,3 +13,15 @@
     color: blue;
   }
 }
+.song-control-list {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  gap: 2px;
+  .control-list {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    gap: 2px;
+  }
+}

@@ -41,3 +41,13 @@ export async function updateUserInfo(id, name, email, birthday) {
     },
   });
 }
+
+export async function getBase64(url) {
+  return request({
+    method: "POST",
+    url: `/user/get/base64`,
+    body: {
+      url,
+    },
+  });
+}

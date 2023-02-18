@@ -14,6 +14,7 @@ import {
   deletePlaylistSong,
   getAllPlaylist,
   getPlaylistSong,
+  updatePlaylistName,
 } from "../../../../services/playlist";
 import { USER_KEY } from "../../../../utils/constants";
 import { parseJSON } from "../../../../utils/utils";
@@ -29,12 +30,16 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  setListSongPlaying,
+  setListType,
   setSongPlaying,
   setSongState,
   songData,
 } from "../../../../slices/songSlice";
 import PlayMusicIcon from "../../../../assets/image/play-music.svg";
 import StopMusicIcon from "../../../../assets/image/stop-music.svg";
+import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
+import EditIcon from "@mui/icons-material/Edit";
 
 export default function PersonalPlaylist() {
   const [listPlaylist, setListPlayList] = useState([]);
@@ -50,6 +55,12 @@ export default function PersonalPlaylist() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { song } = useSelector(songData);
+  const { listType } = useSelector(songData);
+  const [visibleEditModal, setVisibleEditModal] = useState(false);
+  const [editData, setEditData] = useState({
+    _id: -1,
+    name: "",
+  });
 
   const userData = parseJSON(localStorage.getItem(USER_KEY), {});
 
@@ -83,6 +94,41 @@ export default function PersonalPlaylist() {
     }
   };
 
+  const handleUpdatePlaylist = async () => {
+    try {
+      if (!editData?.name?.trim()?.length) {
+        return toast.error("Tên playlist không được bỏ trống");
+      }
+
+      const result = await updatePlaylistName(
+        editData?._id,
+        editData?.name?.trim()
+      );
+      if (result?.data?.success) {
+        setVisibleEditModal(false);
+        setEditData({
+          _id: -1,
+          name: "",
+        });
+        setListPlayList(
+          listPlaylist?.map((item, index) => {
+            if (item?._id === editData?._id) {
+              return {
+                ...item,
+                name: editData?.name,
+              };
+            }
+            return item;
+          })
+        );
+        return toast.success("Cập nhật playlist thành công");
+      }
+      toast.error("Cập nhật playlist thất bại");
+    } catch (error) {
+      toast.error("Cập nhật playlist thất bại");
+    }
+  };
+
   useEffect(() => {
     if (userData?._id) {
       getUserPlayList();
@@ -97,6 +143,24 @@ export default function PersonalPlaylist() {
       }
     } catch (error) {
       console.log("get playlist song error >>> ", error);
+    }
+  };
+
+  const playAllListSong = async (playListId) => {
+    try {
+      const result = await getPlaylistSong(playListId);
+      if (result?.data?.success) {
+        dispatch(setListSongPlaying(result?.data?.payload));
+        dispatch(
+          setListType({
+            type: "playlist",
+            id: playListId,
+            playing: true,
+          })
+        );
+      }
+    } catch (error) {
+      console.log("get song error >>> ", error);
     }
   };
 
@@ -186,6 +250,43 @@ export default function PersonalPlaylist() {
         />
       )}
 
+      {visibleEditModal && (
+        <CustomModal
+          visible={visibleEditModal}
+          onClose={() => {
+            setVisibleEditModal(false);
+          }}
+          title={"Sửa Playlist"}
+          content={
+            <div>
+              <RTextField
+                label="Name"
+                value={editData?.name || ""}
+                id="post-title"
+                variant="filled"
+                style={{ marginTop: 11, textAlign: "left" }}
+                onChange={(event) =>
+                  setEditData({
+                    ...editData,
+                    name: event?.target?.value,
+                  })
+                }
+              />
+            </div>
+          }
+          action={
+            <LoadingButton
+              autoFocus
+              onClick={() => {
+                handleUpdatePlaylist();
+              }}
+            >
+              {"Cập nhật"}
+            </LoadingButton>
+          }
+        />
+      )}
+
       {visibleDeleteModal && (
         <CustomModal
           visible={visibleDeleteModal}
@@ -198,8 +299,7 @@ export default function PersonalPlaylist() {
             <LoadingButton
               autoFocus
               onClick={() => {
-                console.log('deleteData >>> ', deleteData);
-                if (deleteData?.songId === -1 || !deleteData?.songId ) {
+                if (deleteData?.songId === -1 || !deleteData?.songId) {
                   handleDeletePlaylist();
                 } else {
                   handleDeletePlaylistSong();
@@ -248,7 +348,50 @@ export default function PersonalPlaylist() {
                     }}
                   />
                   <ListItemIcon>
-                    <PlayCircleOutlineIcon />
+                    <div
+                      onClick={() => {
+                        if (
+                          listType?.type !== "playlist" ||
+                          (listType?.type === "playlist" &&
+                            listType?.id !== item?._id)
+                        ) {
+                          return playAllListSong(item?._id);
+                        }
+
+                        if (
+                          listType?.type === "playlist" &&
+                          listType?.id === item?._id
+                        ) {
+                          if (listType?.playing) {
+                            dispatch(
+                              setListType({
+                                type: "playlist",
+                                id: item?._id,
+                                playing: false,
+                              })
+                            );
+                            dispatch(setSongState(false));
+                          } else {
+                            dispatch(
+                              setListType({
+                                type: "playlist",
+                                id: item?._id,
+                                playing: true,
+                              })
+                            );
+                            dispatch(setSongState(true));
+                          }
+                        }
+                      }}
+                    >
+                      {listType?.type === "playlist" &&
+                      listType?.id === item?._id &&
+                      listType?.playing ? (
+                        <PauseCircleOutlineIcon />
+                      ) : (
+                        <PlayCircleOutlineIcon />
+                      )}
+                    </div>
                   </ListItemIcon>
                   <ListItemIcon>
                     <DeleteOutlineIcon
@@ -257,6 +400,18 @@ export default function PersonalPlaylist() {
                         setVisibleDeleteModal(true);
                         setDeleteData({
                           playlistId: item?._id,
+                        });
+                      }}
+                    />
+                  </ListItemIcon>
+                  <ListItemIcon sx={{ color: "blue", cursor: "pointer" }}>
+                    <EditIcon
+                      sx={{ color: "#1976D2", cursor: "pointer" }}
+                      onClick={() => {
+                        setVisibleEditModal(true);
+                        setEditData({
+                          _id: item?._id,
+                          name: item?.name,
                         });
                       }}
                     />
@@ -310,7 +465,7 @@ export default function PersonalPlaylist() {
                                 alt=""
                                 style={{
                                   width: "80px",
-                                  height: "80px",
+                                  height: "79px",
                                 }}
                               />
                             </div>
@@ -364,6 +519,16 @@ export default function PersonalPlaylist() {
                                         cursor: "pointer",
                                       }}
                                       onClick={() => {
+                                        if (listType?.playing) {
+                                          dispatch(
+                                            setListType({
+                                              type: "playlist",
+                                              id: item?._id,
+                                              playing: false,
+                                            })
+                                          );
+                                        }
+
                                         dispatch(setSongState(false));
                                       }}
                                     />
@@ -377,6 +542,35 @@ export default function PersonalPlaylist() {
                                         cursor: "pointer",
                                       }}
                                       onClick={() => {
+                                        if (
+                                          listType?.playing &&
+                                          listType?.type === "playlist" &&
+                                          listType?.id !== item?._id
+                                        ) {
+                                          dispatch(
+                                            setListType({
+                                              type: "",
+                                              id: -1,
+                                              playing: false,
+                                            })
+                                          );
+                                          dispatch(setListSongPlaying([]));
+                                        }
+
+                                        if (
+                                          !listType?.playing &&
+                                          listType?.type === "playlist" &&
+                                          listType?.id === item?._id
+                                        ) {
+                                          dispatch(
+                                            setListType({
+                                              type: "playlist",
+                                              id: item?._id,
+                                              playing: true,
+                                            })
+                                          );
+                                        }
+
                                         dispatch(
                                           setSongPlaying({
                                             ...it,
@@ -393,7 +587,15 @@ export default function PersonalPlaylist() {
                         );
                       })
                     ) : (
-                      <div style={{fontSize: '18px', fontWeight: 600, marginTop: '-20px'}}>Không tồn tại bản nhạc trong playlist</div>
+                      <div
+                        style={{
+                          fontSize: "18px",
+                          fontWeight: 600,
+                          marginTop: "-20px",
+                        }}
+                      >
+                        Không tồn tại bản nhạc trong playlist
+                      </div>
                     )}
                   </List>
                 </Collapse>
@@ -402,7 +604,16 @@ export default function PersonalPlaylist() {
           })}
         </List>
       ) : (
-        <div style={{fontSize: '18px', fontWeight: 600, marginTop: '20px', marginBottom: '20px'}}>Không tồn tại playlist cá nhân</div>
+        <div
+          style={{
+            fontSize: "18px",
+            fontWeight: 600,
+            marginTop: "20px",
+            marginBottom: "20px",
+          }}
+        >
+          Không tồn tại playlist cá nhân
+        </div>
       )}
 
       <div style={{ paddingLeft: "20px" }}>

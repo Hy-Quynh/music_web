@@ -7,5 +7,5 @@ router.put("/status/:userId", userController.changeStatus);
 router.put("/rank/:userId", userController.changeRank);
 router.get("/:id/info", userController.getUserById);
 router.put("/:id/info", userController.updateUserInfo);
-
+router.post("/get/base64", userController.getBase64)
 module.exports = router;

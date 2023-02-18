@@ -12,6 +12,8 @@ import { parseJSON } from "../../../../utils/utils";
 import { USER_KEY } from "../../../../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  setListSongPlaying,
+  setListType,
   setSongPlaying,
   setSongState,
   songData,
@@ -19,7 +21,7 @@ import {
 import PlayMusicIcon from "../../../../assets/image/play-music.svg";
 import StopMusicIcon from "../../../../assets/image/stop-music.svg";
 import PlayIcon from "../../../../assets/image/play-music.svg";
-
+import StopIcon from "../../../../assets/image/stop-music.svg";
 
 const PAGE_LIMIT = 20;
 
@@ -36,7 +38,25 @@ export default function UploadMusic() {
   const [totalPage, setTotalPage] = useState(0);
   const [userSong, setUserSong] = useState([]);
   const dispatch = useDispatch();
-  const { song } = useSelector(songData);
+  const { song, listType } = useSelector(songData);
+
+  const getAllListSong = async () => {
+    try {
+      const result = await getUserSong(undefined, undefined, userInfo?._id);
+      if (result?.data?.success) {
+        dispatch(setListSongPlaying(result?.data?.payload?.userSong));
+        dispatch(
+          setListType({
+            type: "user-upload",
+            id: userInfo?._id,
+            playing: true,
+          })
+        );
+      }
+    } catch (error) {
+      console.log("get song error >>> ", error);
+    }
+  };
 
   const getListUserSong = async () => {
     try {
@@ -49,8 +69,6 @@ export default function UploadMusic() {
       console.log("get list user song error >>> ", error);
     }
   };
-
-  console.log("userSong userSong userSong >>> ", userSong);
 
   useEffect(() => {
     getListUserSong();
@@ -231,14 +249,59 @@ export default function UploadMusic() {
       </div>
       <div style={{ paddingLeft: "20px" }}>
         <div className="upload-song-play-button">
-          <button>
+          <button
+            onClick={() => {
+              if (
+                listType?.type !== "user-upload" ||
+                (listType?.type === "user-upload" &&
+                  listType?.id !== userInfo?._id)
+              ) {
+                return getAllListSong();
+              }
+
+              if (
+                listType?.type === "user-upload" &&
+                listType?.id === userInfo?._id
+              ) {
+                if (listType?.playing) {
+                  dispatch(
+                    setListType({
+                      type: "user-upload",
+                      id: userInfo?._id,
+                      playing: false,
+                    })
+                  );
+                  dispatch(setSongState(false));
+                } else {
+                  dispatch(
+                    setListType({
+                      type: "user-upload",
+                      id: userInfo?._id,
+                      playing: true,
+                    })
+                  );
+                  dispatch(setSongState(true));
+                }
+              }
+            }}
+          >
             <div>Phát nhạc</div>
             <div style={{ marginLeft: "10px" }}>
-              <img
-                src={PlayIcon}
-                alt=""
-                style={{ width: "25px", height: "25px" }}
-              />
+              {listType?.type === "user-upload" &&
+              listType?.id === userInfo?._id &&
+              listType?.playing ? (
+                <img
+                  src={StopIcon}
+                  alt=""
+                  style={{ width: "25px", height: "25px" }}
+                />
+              ) : (
+                <img
+                  src={PlayIcon}
+                  alt=""
+                  style={{ width: "25px", height: "25px" }}
+                />
+              )}
             </div>
           </button>
         </div>
@@ -290,6 +353,15 @@ export default function UploadMusic() {
                             }}
                             onClick={() => {
                               dispatch(setSongState(false));
+                              if (listType?.playing) {
+                                dispatch(
+                                  setListType({
+                                    type: "user-upload",
+                                    id: userInfo?._id,
+                                    playing: false,
+                                  })
+                                );
+                              }
                             }}
                           />
                         ) : (
@@ -302,6 +374,19 @@ export default function UploadMusic() {
                               cursor: "pointer",
                             }}
                             onClick={() => {
+                              if (
+                                !listType?.playing &&
+                                listType?.type === "user-upload" &&
+                                listType?.id === userInfo?._id
+                              ) {
+                                dispatch(
+                                  setListType({
+                                    type: "user-upload",
+                                    id: userInfo?._id,
+                                    playing: true,
+                                  })
+                                );
+                              }
                               dispatch(
                                 setSongPlaying({ ...item, playing: true })
                               );
@@ -316,6 +401,58 @@ export default function UploadMusic() {
             })}
           </div>
         </div>
+
+        {totalPage > 1 ? (
+          <div className="container">
+            <div className="row">
+              <div className="col-12">
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <div
+                    className="load-more-btn text-center"
+                    onClick={() => {
+                      if (page > 0) {
+                        setPage(page - 1);
+                      }
+                    }}
+                  >
+                    <a className="btn oneMusic-btn">Trước</a>
+                  </div>
+                  <div className="load-more-btn text-center">
+                    <a
+                      className="btn oneMusic-btn"
+                      style={{
+                        padding: 0,
+                        minWidth: "100px",
+                        width: "100px",
+                      }}
+                    >
+                      {page + 1} / {totalPage}
+                    </a>
+                  </div>
+
+                  <div
+                    className="load-more-btn text-center"
+                    onClick={() => {
+                      if (page + 1 < totalPage) {
+                        setPage(page + 1);
+                      }
+                    }}
+                  >
+                    <a className="btn oneMusic-btn">Sau</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   );

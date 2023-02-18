@@ -10,7 +10,7 @@ module.exports = {
           user_id && user_id !== "undefined"
             ? `pl.user_id = ${Number(user_id)}`
             : "pl._id is not null"
-        } ${limitOffset}`
+        } ORDER BY created_day DESC ${limitOffset}`
       );
       return result?.rows || [];
     } catch (error) {
@@ -117,6 +117,17 @@ module.exports = {
       return result?.rows?.[0] || {};
     } catch (error) {
       return {};
+    }
+  },
+
+  updatePlaylistName: async (playlistId, name) => {
+    try {
+      const result = await postgresql.query(
+        `UPDATE playlist SET name='${name}' WHERE _id=${Number(playlistId)}`
+      );
+      return result?.rows ? true : false;
+    } catch (error) {
+      return false;
     }
   },
 };

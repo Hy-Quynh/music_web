@@ -25,7 +25,7 @@ import AddIcon from "@mui/icons-material/Add";
 import RTextField from "../../../../components/RedditTextField";
 import { createNewReportSong } from "../../../../services/songReport";
 
-export default function ControlList({ songId }) {
+export default function ControlList({ songId, color }) {
   const [visiblePlaylistModal, setVisiblePlaylistModal] = useState(false);
   const [visibleReportModal, setVisibleReportModal] = useState(false);
   const [visibleCreatePlModal, setVisibleCreatePlModal] = useState(false);
@@ -224,7 +224,7 @@ export default function ControlList({ songId }) {
         <CustomModal
           visible={visibleReportModal}
           onClose={() => {
-            setReportReason("")
+            setReportReason("");
             setVisibleReportModal(false);
           }}
           title={"Báo cáo bài hát"}
@@ -265,6 +265,7 @@ export default function ControlList({ songId }) {
               getUserPlayList();
               setVisiblePlaylistModal(true);
             }}
+            sx={{ color: color || "" }}
           />
         </Tooltip>
       </div>
@@ -279,6 +280,7 @@ export default function ControlList({ songId }) {
               }
               setVisibleReportModal(true);
             }}
+            sx={{ color: color || "" }}
           />
         </Tooltip>
       </div>

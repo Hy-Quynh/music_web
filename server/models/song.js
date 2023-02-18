@@ -14,10 +14,10 @@ module.exports = {
         avatar,
       } = songData;
       const result =
-        await postgresql.query(`INSERT INTO songs(name, link, description, category_id, album_id, country_id, status, created_day, avatar) 
+        await postgresql.query(`INSERT INTO songs(name, link, description, category_id, album_id, country_id, status, created_day, avatar, view) 
       VALUES('${name}', '${link}', '${description}', ${Number(category_id)}, ${
           album_id === -1 ? null : Number(album_id)
-        }, ${Number(country_id)}, true, Now(), '${avatar}')`);
+        }, ${Number(country_id)}, true, Now(), '${avatar}', 0)`);
 
       if (result) {
         const getLast = await postgresql.query(
@@ -205,6 +205,43 @@ module.exports = {
       return result?.rows?.[0] || {};
     } catch (error) {
       return {};
+    }
+  },
+
+  getSongView: async (songId) => {
+    try {
+      const result = await postgresql.query(
+        `SELECT view FROM songs WHERE _id=${Number(songId)}`
+      );
+      return result?.rows?.[0]?.view || 0;
+    } catch (error) {
+      return 0;
+    }
+  },
+
+  updateSongView: async (songId, view) => {
+    try {
+      const result = await postgresql.query(
+        `UPDATE songs SET view=${Number(view)} WHERE _id=${Number(songId)}`
+      );
+      return result?.rows ? true : false;
+    } catch (error) {
+      return false;
+    }
+  },
+
+  getHotSongData: async () => {
+    try {
+      const result = await postgresql.query(
+        `SELECT s.*, c.name as country_name, al.name as album_name, ct.name as category_name
+        FROM songs s JOIN countries c ON s.country_id = c._id 
+        LEFT JOIN albums al ON s.album_id = al._id  
+        JOIN categorys ct ON s.category_id = ct._id
+        ORDER BY s.view DESC LIMIT 100 OFFSET 0`
+      );
+      return result?.rows || [];
+    } catch (error) {
+      return [];
     }
   },
 };
