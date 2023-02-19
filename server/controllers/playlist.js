@@ -10,6 +10,7 @@ const {
   getSongPlayList,
   deleteSongPlayListDetail,
   updatePlaylistName,
+  checkPlaylistName,
 } = require("../models/playlist");
 
 module.exports = {
@@ -34,13 +35,20 @@ module.exports = {
   createNewPlaylist: asyncHandler(async (req, res) => {
     try {
       const { user_id, name } = req?.body;
-      const result = await createPlaylist(user_id, name);
-      if (result) {
-        return res.send({ success: true });
+      const checkName = await checkPlaylistName(name);
+      if (!checkName) {
+        const result = await createPlaylist(user_id, name);
+        if (result) {
+          return res.send({ success: true });
+        }
+        return res.send({
+          success: false,
+          error: "Tạo playlist thất bại",
+        });
       }
       return res.send({
         success: false,
-        error: "Tạo playlist thất bại",
+        error: "Tên playlist đã tồn tại",
       });
     } catch (error) {
       return res.send({
@@ -154,13 +162,20 @@ module.exports = {
     try {
       const { playlistId } = req?.params;
       const { name } = req?.body;
-      const result = await updatePlaylistName(playlistId, name);
-      if (result) {
-        return res.send({ success: true });
+      const checkName = await checkPlaylistName(name);
+      if (!checkName) {
+        const result = await updatePlaylistName(playlistId, name);
+        if (result) {
+          return res.send({ success: true });
+        }
+        return res.send({
+          success: false,
+          error: "Cập nhật playlist thất bại",
+        });
       }
       return res.send({
         success: false,
-        error: "Cập nhật playlist thất bại",
+        error: "Tên playlist đã tồn tại",
       });
     } catch (error) {
       return res.send({

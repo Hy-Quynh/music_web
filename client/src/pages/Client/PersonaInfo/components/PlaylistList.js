@@ -88,9 +88,9 @@ export default function PersonalPlaylist() {
         setVisibleCreatePlModal(false);
         return setPlayListName("");
       }
-      toast.error("Thêm mới playlist thất bại");
+      toast.error(result?.data?.error || "Thêm mới playlist thất bại");
     } catch (error) {
-      toast.error("Thêm mới playlist thất bại");
+      toast.error(error?.response?.data?.error || "Thêm mới playlist thất bại");
     }
   };
 
@@ -123,9 +123,9 @@ export default function PersonalPlaylist() {
         );
         return toast.success("Cập nhật playlist thành công");
       }
-      toast.error("Cập nhật playlist thất bại");
+      toast.error(result?.data?.error || "Cập nhật playlist thất bại");
     } catch (error) {
-      toast.error("Cập nhật playlist thất bại");
+      toast.error(error?.response?.data?.error || "Cập nhật playlist thất bại");
     }
   };
 

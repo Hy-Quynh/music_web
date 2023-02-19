@@ -61,9 +61,9 @@ export default function ControlList({ songId, color }) {
         setVisiblePlaylistModal(true);
         return setPlayListName("");
       }
-      toast.error("Thêm mới playlist thất bại");
+      toast.error(result?.data?.error || "Thêm mới playlist thất bại");
     } catch (error) {
-      toast.error("Thêm mới playlist thất bại");
+      toast.error(error?.response?.data?.error || "Thêm mới playlist thất bại");
     }
   };
 

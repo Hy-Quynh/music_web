@@ -130,4 +130,13 @@ module.exports = {
       return false;
     }
   },
+
+  checkPlaylistName: async (name) => {
+    try {
+      const result = await postgresql.query(`SELECT * FROM playlist WHERE name='${name}'`);
+      return result?.rows?.length ? true : false;
+    } catch (error) {
+      return false;
+    }
+  },
 };

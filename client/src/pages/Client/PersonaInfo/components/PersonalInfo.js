@@ -89,6 +89,7 @@ export default function Personal() {
         setVisiblePasswordModal(false);
         return toast.success("Cập nhật mật khẩu thành công");
       }
+      return toast.error(result?.data?.error ||"Cập nhật thất bại")
     } catch (error) {
       toast.error(error?.response?.data?.error || "Cập nhật thất bại");
     }

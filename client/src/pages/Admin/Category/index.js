@@ -88,16 +88,13 @@ export default function AdminCategory() {
     const { categoryName, description } = editCategory;
     if (!categoryName.trim().length || !description.trim().length) {
       return toast.error("Dữ liệu không được bỏ trống ");
-    } else if (categoryName.trim().length <= 3) {
-      return toast.error("Name must be more than 3 characters");
+    } else if (categoryName.trim().length <= 2) {
+      return toast.error("Tên cần ít nhất 2 kí tự");
     } else if (description.length <= 10) {
-      return toast.error("Description must be more than 10 characters");
+      return toast.error("Mô tả ít nhất 10 kí tự");
     } else {
       if (addCategoryModal.type === "add") {
-        const createRes = await createNewCategory(
-          categoryName,
-          description
-        );
+        const createRes = await createNewCategory(categoryName, description);
         if (createRes?.data?.success) {
           toast.success("Thêm mới thể loại thành công");
           getListCategory();
@@ -115,11 +112,13 @@ export default function AdminCategory() {
         );
 
         if (updateRes?.data?.success) {
-          toast.success("Update category success");
+          toast.success("Cập nhật thông tin thể loại thành công");
           getListCategory();
           setAddCategoryModal({ status: false, type: "" });
         } else {
-          toast.error(updateRes?.data?.error || "Update category failed");
+          toast.error(
+            updateRes?.response?.data?.error || "Cập nhật thông tin thể loại thất bại"
+          );
         }
       }
     }
@@ -129,14 +128,14 @@ export default function AdminCategory() {
     try {
       const deleteRes = await deleteCategoryData(categoryId);
       if (deleteRes?.data?.success) {
-        toast.success("Delete category success");
+        toast.success("Xoá thể loại thành công");
         getListCategory();
         setPopoverId("");
       } else {
-        toast.error(deleteRes?.data?.error || "Delete category failed");
+        toast.error(deleteRes?.data?.error || "Xoá thể loại thất bại");
       }
     } catch (error) {
-      toast.error("Delete category failed");
+      toast.error("Xoá thể loại thất bại");
     }
   };
 

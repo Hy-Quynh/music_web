@@ -14,13 +14,17 @@ export default function ChangeStatusModal(props) {
         !props?.user?.status
       );
       if (changeRes?.data?.success) {
-        toast.success("Change status success");
+        toast.success("Cập nhật trạng thái thành công");
         props.onClose();
         return props.handleChangeStatus(props?.user?._id, !props?.user?.status);
       }
-      return toast.error(changeRes?.data?.error || "Change status failed");
+      return toast.error(
+        changeRes?.data?.error || "Cập nhật trạng thái thất bại"
+      );
     } catch (error) {
-      toast.error(error?.data?.error || "Change status failed");
+      toast.error(
+        error?.response?.data?.error || "Cập nhật trạng thái thất bại"
+      );
     }
   };
 
