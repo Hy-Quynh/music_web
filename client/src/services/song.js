@@ -72,3 +72,21 @@ export async function createSongDownload(songId, userId) {
     },
   });
 }
+
+export async function getUserFavouriteSong(songId, userId) {
+  return request({
+    method: "GET",
+    url: `/song/favourite/data?songId=${songId}&userId=${userId}`,
+  });
+}
+
+
+export async function changeUserFavouriteSong(songId, userId, status) {
+  return request({
+    method: "PUT",
+    url: `/song/favourite/data?songId=${songId}&userId=${userId}`,
+    body: {
+      status,
+    },
+  });
+}

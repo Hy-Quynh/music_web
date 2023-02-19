@@ -7,7 +7,8 @@ const {
   deleteAdminAccount,
   changeAdminStatus,
 } = require("../models/admin");
-const { getSongDownloadData } = require("../models/song");
+const { getSongDownloadData, getSongFavouriteData, getTotalSongByDate } = require("../models/song");
+const { getTotalUserByDate } = require("../models/user");
 
 module.exports = {
   LOGIN: asyncHandler(async (req, res) => {
@@ -105,7 +106,10 @@ module.exports = {
     try {
       const { fromDate, toDate } = req?.query;
       const songDownload = await getSongDownloadData(fromDate, toDate);
-      return res.send({ success: true, payload: { songDownload } });
+      const songFavourite = await getSongFavouriteData(fromDate, toDate);
+      const totalUser = await getTotalUserByDate(fromDate, toDate);
+      const totalSong = await getTotalSongByDate(fromDate, toDate);
+      return res.send({ success: true, payload: { songDownload, songFavourite, totalUser, totalSong } });
     } catch (error) {
       return res.send({
         success: false,

@@ -1,5 +1,6 @@
 const { postgresql } = require("../config/connect");
 const { getByLimitAndOffset } = require("../utils/utils");
+const moment = require("moment");
 
 module.exports = {
   getUserByEmail: async (email) => {
@@ -103,6 +104,40 @@ module.exports = {
       return result?.rows ? true : false;
     } catch (error) {
       return false;
+    }
+  },
+
+  getTotalUserByDate: async (fromDate, toDate) => {
+    try {
+      const date_from =
+        fromDate && fromDate !== "undefined"
+          ? moment(
+              moment(fromDate, "YYYY-MM-DD")?.startOf("day").toDate()
+            ).format("YYYY-MM-DD hh:mm:ss")
+          : "";
+
+      const date_to =
+        toDate && toDate !== "undefined"
+          ? moment(moment(toDate, "YYYY-MM-DD")?.endOf("day").toDate()).format(
+              "YYYY-MM-DD hh:mm:ss"
+            )
+          : "";
+
+      const result = await postgresql.query(
+        `SELECT COUNT(_id) as total_user FROM users WHERE ${
+          date_from && date_from !== "undefined"
+            ? `date(created_day) >= date('${date_from}')`
+            : " created_day is not null "
+        } AND ${
+          date_to && date_to !== "undefined"
+            ? `date(created_day) <= date('${date_to}')`
+            : "created_day is not null "
+        }`
+      );
+      return result?.rows?.[0]?.total_user || 0;
+    } catch (error) {
+      console.log('error >>> ', error);
+      return 0;
     }
   },
 };

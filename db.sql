@@ -236,6 +236,18 @@ create table song_download (
 	REFERENCES users(_id)
 )
 
+create table song_favourite (
+	_id serial NOT null PRIMARY KEY,
+	user_id int,
+	song_id int,
+	favourite int,
+	created_day timestamp,
+	CONSTRAINT fk_songfavourite_song FOREIGN KEY (song_id)
+	REFERENCES songs(_id),
+	CONSTRAINT fk_songfavourite_user FOREIGN KEY (user_id)
+	REFERENCES users(_id)
+)
+
 
 
 

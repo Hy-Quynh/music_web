@@ -21,6 +21,8 @@ export default function Dashboard() {
   const [filterToDate, setFilterToDate] = useState("");
   const [totalDownload, setTotalDownload] = useState(0);
   const [totalFavourite, setTotalFavourite] = useState(0);
+  const [totalUser, setTotalUser] = useState(0);
+  const [totalSong, setTotalSong] = useState(0);
 
   useEffect(() => {
     setFilterFromDate(formatDate(new Date()));
@@ -32,6 +34,9 @@ export default function Dashboard() {
       const result = await getAdminStatistical(fromDate, toDate);
       if (result?.data?.success) {
         setTotalDownload(result?.data?.payload?.songDownload);
+        setTotalFavourite(result?.data?.payload?.songFavourite);
+        setTotalUser(result?.data?.payload?.totalUser);
+        setTotalSong(result?.data?.payload?.totalSong);
       }
     } catch (error) {
       console.log("Lấy thông tin thống kê thất bại");
@@ -99,11 +104,13 @@ export default function Dashboard() {
                 justifyContent: "space-between",
                 alignItems: "center",
                 marginTop: "30px",
+                flexWrap: "wrap",
+                gap: "50px",
               }}
             >
               <div
                 style={{
-                  width: "45%",
+                  width: "47%",
                   display: "flex",
                   flexDirection: "column",
                   textAlign: "center",
@@ -122,7 +129,7 @@ export default function Dashboard() {
               </div>
               <div
                 style={{
-                  width: "45%",
+                  width: "47%",
                   display: "flex",
                   flexDirection: "column",
                   textAlign: "center",
@@ -138,6 +145,45 @@ export default function Dashboard() {
                 </div>
                 <div style={{ fontSize: "22px", fontWeight: 700 }}>
                   {totalFavourite}
+                </div>
+              </div>
+              <div
+                style={{
+                  width: "47%",
+                  display: "flex",
+                  flexDirection: "column",
+                  textAlign: "center",
+                  height: "200px",
+                  background: "#5B8FB9",
+                  justifyContent: "center",
+                  borderRadius: "8px",
+                }}
+              >
+                <div style={{ fontSize: "22px", fontWeight: 700 }}>
+                  Số người dùng mới
+                </div>
+                <div style={{ fontSize: "22px", fontWeight: 700 }}>
+                  {totalUser}
+                </div>
+              </div>
+
+              <div
+                style={{
+                  width: "47%",
+                  display: "flex",
+                  flexDirection: "column",
+                  textAlign: "center",
+                  height: "200px",
+                  background: "#1C82AD",
+                  justifyContent: "center",
+                  borderRadius: "8px",
+                }}
+              >
+                <div style={{ fontSize: "22px", fontWeight: 700 }}>
+                  Bài hát mới
+                </div>
+                <div style={{ fontSize: "22px", fontWeight: 700 }}>
+                  {totalSong}
                 </div>
               </div>
             </div>

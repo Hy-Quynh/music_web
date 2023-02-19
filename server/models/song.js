@@ -201,7 +201,9 @@ module.exports = {
   getSongById: async (songId) => {
     try {
       const result = await postgresql.query(
-        `SELECT * FROM songs WHERE _id=${Number(songId)}`
+        `SELECT s.*, (SELECT COUNT(sf.song_id) FROM song_favourite sf WHERE sf.song_id = s._id AND sf.favourite = 1) as total_favourite, 
+        (SELECT COUNT(sf.song_id) FROM song_favourite sf WHERE sf.song_id = s._id AND sf.favourite = 0) as total_unfavourite
+         FROM songs s WHERE s._id=${Number(songId)}`
       );
       return result?.rows?.[0] || {};
     } catch (error) {
@@ -287,6 +289,112 @@ module.exports = {
         } `
       );
       return result?.rows?.[0]?.total_download || 0;
+    } catch (error) {
+      return 0;
+    }
+  },
+
+  getUserSongFavourite: async (userId, songId) => {
+    try {
+      const userFavourite = await postgresql.query(
+        `SELECT * FROM song_favourite WHERE song_id=${Number(
+          songId
+        )} AND user_id=${Number(userId)}`
+      );
+      return userFavourite?.rows?.[0]?.favourite !== 0 &&
+        userFavourite?.rows?.[0]?.favourite !== 1
+        ? -1
+        : userFavourite?.rows?.[0]?.favourite;
+    } catch (error) {
+      console.log("getUserBlogFavourite error >>>> ", error);
+      return -1;
+    }
+  },
+
+  changeUserFavouriteSong: async (userId, songId, status) => {
+    try {
+      await postgresql.query(
+        `DELETE FROM song_favourite WHERE song_id=${Number(
+          songId
+        )} AND user_id=${Number(userId)}`
+      );
+
+      if (Number(status) !== -1) {
+        await postgresql.query(
+          `INSERT INTO song_favourite(user_id, song_id, favourite, created_day) VALUES(${Number(
+            userId
+          )}, ${Number(songId)}, ${Number(status)}, now())`
+        );
+      }
+
+      return true;
+    } catch (error) {
+      console.log("changeUserFavouriteBlog error >>>> ", error);
+      return false;
+    }
+  },
+
+  getSongFavouriteData: async (fromDate, toDate) => {
+    try {
+      const date_from =
+        fromDate && fromDate !== "undefined"
+          ? moment(
+              moment(fromDate, "YYYY-MM-DD")?.startOf("day").toDate()
+            ).format("YYYY-MM-DD hh:mm:ss")
+          : "";
+
+      const date_to =
+        toDate && toDate !== "undefined"
+          ? moment(moment(toDate, "YYYY-MM-DD")?.endOf("day").toDate()).format(
+              "YYYY-MM-DD hh:mm:ss"
+            )
+          : "";
+
+      const result = await postgresql.query(
+        `SELECT COUNT(song_id) as total_favourite FROM song_favourite WHERE ${
+          date_from && date_from !== "undefined"
+            ? `date(created_day) >= date('${date_from}')`
+            : " created_day is not null "
+        } AND ${
+          date_to && date_to !== "undefined"
+            ? `date(created_day) <= date('${date_to}')`
+            : "created_day is not null "
+        } AND favourite = 1`
+      );
+      return result?.rows?.[0]?.total_favourite || 0;
+    } catch (error) {
+      return 0;
+    }
+  },
+
+  getTotalSongByDate: async (fromDate, toDate) => {
+    try {
+      const date_from =
+        fromDate && fromDate !== "undefined"
+          ? moment(
+              moment(fromDate, "YYYY-MM-DD")?.startOf("day").toDate()
+            ).format("YYYY-MM-DD hh:mm:ss")
+          : "";
+
+      const date_to =
+        toDate && toDate !== "undefined"
+          ? moment(moment(toDate, "YYYY-MM-DD")?.endOf("day").toDate()).format(
+              "YYYY-MM-DD hh:mm:ss"
+            )
+          : "";
+
+      const result = await postgresql.query(
+        `SELECT COUNT(_id) as total_song FROM songs WHERE ${
+          date_from && date_from !== "undefined"
+            ? `date(created_day) >= date('${date_from}')`
+            : " created_day is not null "
+        } AND ${
+          date_to && date_to !== "undefined"
+            ? `date(created_day) <= date('${date_to}')`
+            : "created_day is not null "
+        }`
+      );
+      return result?.rows?.[0]?.total_song || 0;
     } catch (error) {
       return 0;
     }

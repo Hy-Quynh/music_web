@@ -13,6 +13,8 @@ const {
   updateSongView,
   getHotSongData,
   createSongDownloadData,
+  getUserSongFavourite,
+  changeUserFavouriteSong,
 } = require("../models/song");
 
 module.exports = {
@@ -225,6 +227,33 @@ module.exports = {
       return res.send({
         success: false,
         error: "Thêm dữ liệu thất bại",
+      });
+    }
+  }),
+
+  getUserSongFavourite: asyncHandler(async (req, res) => {
+    try {
+      const { userId, songId } = req.query;
+      const favouriteRes = await getUserSongFavourite(userId, songId);
+      res.send({ success: true, payload: favouriteRes });
+    } catch (error) {
+      return res.send({
+        success: false,
+        error: "Lấy dữ liệu thất bại",
+      });
+    }
+  }),
+
+  changeUserFavouriteSong: asyncHandler(async (req, res) => {
+    try {
+      const { userId, songId } = req.query;
+      const { status } = req.body;
+      const changeRes = await changeUserFavouriteSong(userId, songId, status);
+      res.send({ success: changeRes });
+    } catch (error) {
+      return res.send({
+        success: false,
+        error: "Cập nhật dữ liệu thất bại",
       });
     }
   }),
