@@ -1,6 +1,7 @@
 const { postgresql } = require("../config/connect");
 const { getByLimitAndOffset } = require("../utils/utils");
 const moment = require("moment");
+const bcrypt = require("bcrypt");
 
 module.exports = {
   getUserByEmail: async (email) => {
@@ -136,8 +137,20 @@ module.exports = {
       );
       return result?.rows?.[0]?.total_user || 0;
     } catch (error) {
-      console.log('error >>> ', error);
+      console.log("error >>> ", error);
       return 0;
+    }
+  },
+
+  changeUserPassword: async (userId, password) => {
+    try {
+      const hash = bcrypt.hashSync(password, 10);
+      const result = await postgresql.query(
+        `UPDATE users SET password='${hash}' WHERE _id=${Number(userId)}`
+      );
+      return result?.rows ? true : false;
+    } catch (error) {
+      return false;
     }
   },
 };

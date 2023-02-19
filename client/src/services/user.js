@@ -51,3 +51,11 @@ export async function getBase64(url) {
     },
   });
 }
+
+export async function changeUserPassword(userId, password) {
+  return request({
+    method: "PUT",
+    url: `/user/password/${userId}`,
+    body: { password },
+  });
+}

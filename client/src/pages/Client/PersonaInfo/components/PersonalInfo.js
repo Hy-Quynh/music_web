@@ -1,8 +1,14 @@
+import LoadingButton from "@mui/lab/LoadingButton";
 import { Box, Button } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import CustomModal from "../../../../components/CustomModal";
 import RTextField from "../../../../components/RedditTextField";
-import { getUserById, updateUserInfo } from "../../../../services/user";
+import {
+  changeUserPassword,
+  getUserById,
+  updateUserInfo,
+} from "../../../../services/user";
 import { RANK_ENUM, USER_KEY } from "../../../../utils/constants";
 import { formaDateInput, parseJSON } from "../../../../utils/utils";
 
@@ -12,6 +18,10 @@ export default function Personal() {
     email: "",
     birdthday: "",
   });
+  const [visiblePasswordModal, setVisiblePasswordModal] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+
   const userData = parseJSON(localStorage.getItem(USER_KEY), {});
 
   const getUserInfo = async () => {
@@ -59,8 +69,80 @@ export default function Personal() {
     }
   };
 
+  const handleChangePassword = async () => {
+    try {
+      if (newPassword?.trim()?.length < 6) {
+        return toast.error("Mật khẩu cần ít nhất 6 kí tự");
+      }
+
+      if (newPassword !== confirmNewPassword) {
+        return toast.error("Mật khẩu nhập lại không hợp lệ");
+      }
+
+      const result = await changeUserPassword(
+        userData?._id,
+        newPassword?.trim()
+      );
+      if (result?.data?.success) {
+        setNewPassword("");
+        setConfirmNewPassword("");
+        setVisiblePasswordModal(false);
+        return toast.success("Cập nhật mật khẩu thành công");
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.error || "Cập nhật thất bại");
+    }
+  };
+
   return (
     <div>
+      {visiblePasswordModal && (
+        <CustomModal
+          visible={visiblePasswordModal}
+          onClose={() => {
+            setNewPassword("");
+            setConfirmNewPassword("");
+            setVisiblePasswordModal(false);
+          }}
+          title={"Đổi mật khẩu"}
+          content={
+            <div>
+              <RTextField
+                label="Mật khẩu mới"
+                value={newPassword || ""}
+                id="post-title"
+                variant="filled"
+                style={{ marginTop: 11, textAlign: "left" }}
+                onChange={(event) => setNewPassword(event?.target?.value)}
+                type="password"
+              />
+
+              <RTextField
+                label="Nhập lại mật khẩu"
+                value={confirmNewPassword || ""}
+                id="post-title"
+                variant="filled"
+                style={{ marginTop: 11, textAlign: "left" }}
+                onChange={(event) =>
+                  setConfirmNewPassword(event?.target?.value)
+                }
+                type="password"
+              />
+            </div>
+          }
+          action={
+            <LoadingButton
+              autoFocus
+              onClick={() => {
+                handleChangePassword();
+              }}
+            >
+              {"Đổi mật khẩu"}
+            </LoadingButton>
+          }
+        />
+      )}
+
       <RTextField
         label="Hạng thành viên"
         defaultValue=""
@@ -131,7 +213,16 @@ export default function Personal() {
         }}
       />
 
-      <Box sx={{ marginTop: "30px", display: 'flex', justifyContent: 'center' }}>
+      <div
+        style={{ cursor: "pointer", color: "#1976D2", marginTop: "20px" }}
+        onClick={() => setVisiblePasswordModal(true)}
+      >
+        Quên mật khẩu
+      </div>
+
+      <Box
+        sx={{ marginTop: "30px", display: "flex", justifyContent: "center" }}
+      >
         <Button
           variant="contained"
           sx={{ color: "white !important" }}

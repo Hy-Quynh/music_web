@@ -7,6 +7,7 @@ const {
   getUserById,
   updateUserInfo,
   getTotalAccount,
+  changeUserPassword,
 } = require("../models/user");
 const axios = require("axios");
 
@@ -117,7 +118,8 @@ module.exports = {
       const { url } = req?.body;
       const response = await axios.get(url, { responseType: "arraybuffer" });
       const base64 = Buffer.from(response.data, "binary").toString("base64");
-      const result = "data:" + response.headers["content-type"] + ";base64," + base64;
+      const result =
+        "data:" + response.headers["content-type"] + ";base64," + base64;
       if (result) {
         return res.send({ success: true, payload: result });
       }
@@ -125,6 +127,27 @@ module.exports = {
       return res.send({
         success: false,
         error: "Convert thất bại",
+      });
+    }
+  }),
+
+  changeUserPassword: asyncHandler(async (req, res) => {
+    try {
+      const { userId } = req?.params;
+      const { password } = req?.body;
+      const result = await changeUserPassword(userId, password);
+      
+      if (result) {
+        return res.send({ success: true });
+      }
+      return res.send({
+        success: false,
+        error: "Thay đổi mật khẩu thất bại",
+      });
+    } catch (error) {
+      return res.send({
+        success: false,
+        error: "Thay đổi mật khẩu thất bại",
       });
     }
   }),
