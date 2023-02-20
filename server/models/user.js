@@ -153,4 +153,43 @@ module.exports = {
       return false;
     }
   },
+
+  changeUserPasswordByEmail: async(email, password) => {
+    try {
+      const hash = bcrypt.hashSync(password, 10);
+      const result = await postgresql.query(
+        `UPDATE users SET password='${hash}' WHERE email='${email}'`
+      );
+      return result?.rows ? true : false;
+    } catch (error) {
+      return false;
+    }
+  },
+
+  getUserSecretKey: async (email) => {
+    try {
+      const find = await postgresql.query(
+        `SELECT * FROM user_otp_secret WHERE email='${email}'`
+      );
+      if (find?.rows?.length) {
+        return find?.rows?.[0]?.secret_key;
+      }
+      return "";
+    } catch (error) {
+      return "";
+    }
+  },
+
+  saveUserSecretKey: async (email, secretKey) => {
+    try {
+      console.log('email, secretKey >>> ', email, secretKey);
+      const result = await postgresql.query(
+        `INSERT INTO user_otp_secret(email, secret_key, created_day) VALUES('${email}', '${secretKey}', now())`
+      );
+      if (result?.rows) return true;
+      return false;
+    } catch (error) {
+      return false;
+    }
+  },
 };

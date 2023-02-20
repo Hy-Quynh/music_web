@@ -59,3 +59,35 @@ export async function changeUserPassword(userId, password) {
     body: { password },
   });
 }
+
+export async function checkEmailExist(email) {
+  return request({
+    method: "POST",
+    url: `/user/check-email`,
+    body: { email },
+  });
+}
+
+export async function sendOtp(email) {
+  return request({
+    method: "POST",
+    url: `/user/send-otp`,
+    body: { email },
+  });
+}
+
+export async function confirmOtp(email, otp) {
+  return request({
+    method: "POST",
+    url: `/user/confirm-otp`,
+    body: { email, otp },
+  });
+}
+
+export async function changeForgotPassword(email, password) {
+  return request({
+    method: "POST",
+    url: `/user/change-forgot-password`,
+    body: { email, password },
+  });
+}

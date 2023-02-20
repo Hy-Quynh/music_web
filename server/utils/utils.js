@@ -13,5 +13,15 @@ module.exports = {
       return moment(dateTime).format('DD-MM-YYYY');
     }
     return '';
+  },
+
+  parseJSON: (inputString, fallback) => {
+    if (inputString) {
+      try {
+        return JSON.parse(inputString);
+      } catch (e) {
+        return fallback;
+      }
+    }
   }
 }

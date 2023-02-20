@@ -30,6 +30,8 @@ import Member from "../pages/Client/Member";
 import MemberDetail from "../pages/Client/MemberDetail";
 import UserReport from "../pages/Admin/UserReport";
 import HotSong from "../pages/Client/HotSong";
+import ForgotPassword from "../pages/Client/ForgotPassword";
+
 
 const ClientLayoutPage = [
   {
@@ -95,6 +97,10 @@ const ClientLayoutPage = [
   {
     path: "/member/:id",
     page: <MemberDetail />,
+  },
+  {
+    path: "/forgot-password",
+    page: <ForgotPassword />,
   },
 ];
 

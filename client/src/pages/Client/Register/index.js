@@ -12,7 +12,7 @@ export default function Register() {
   const handleRegister = async () => {
     try {
       if (!email?.trim()?.length || !password?.trim()?.length) {
-        return toast.error("Email or Password can not blank");
+        return toast.error("Email hoặc mật khẩu không thể bỏ trống");
       }
 
       if (password?.trim()?.length < 6) {
@@ -20,14 +20,14 @@ export default function Register() {
       }
 
       if (password !== confirmPassword) {
-        return toast.error("Confirm password does not match the password");
+        return toast.error("Mật khẩu nhập lại không hợp lệ");
       }
 
       const registerResult = await userSignup(email, password);
 
       if (registerResult?.data?.success) {
         toast.success(
-          "Successful account registration, you will be redirected to the login page in 2s"
+          "Đăng ký thành công, bạn sẽ chuyển trang đăng nhập sau 2s"
         );
         setTimeout(() => {
           navigate("/login");
@@ -47,8 +47,8 @@ export default function Register() {
         style={{ backgroundImage: "url(img/bg-img/breadcumb3.jpg)" }}
       >
         <div className="bradcumbContent">
-          <p>See what’s new</p>
-          <h2>Sign Up</h2>
+          <p>Điều gì mới</p>
+          <h2>Đăng ký</h2>
         </div>
       </section>
       <section className="login-area section-padding-100">
@@ -56,43 +56,44 @@ export default function Register() {
           <div className="row justify-content-center">
             <div className="col-12 col-lg-8">
               <div className="login-content">
-                <h3>Register an account</h3>
+                <h3>Đăng ký tài khoản</h3>
                 <div className="login-form">
                   <form onSubmit={(event) => event.preventDefault()}>
                     <div className="form-group">
-                      <label htmlFor="exampleInputEmail1">Email address</label>
+                      <label htmlFor="exampleInputEmail1">Email: </label>
                       <input
                         type="email"
                         className="form-control"
                         id="exampleInputEmail1"
                         aria-describedby="emailHelp"
-                        placeholder="Enter E-mail"
+                        placeholder="Nhập vào địa chỉ email"
                         value={email}
                         onChange={(event) => setEmail(event.target.value)}
                       />
                       <small id="emailHelp" className="form-text text-muted">
                         <i className="fa fa-lock mr-2" />
-                        We'll never share your email with anyone else.
+                        Chúng tôi sẽ không bao giờ chia sẻ email của bạn với bất
+                        kỳ ai khác.
                       </small>
                     </div>
                     <div className="form-group">
-                      <label htmlFor="exampleInputPassword1">Password</label>
+                      <label htmlFor="exampleInputPassword1">Mật khẩu: </label>
                       <input
                         type="password"
                         className="form-control"
                         id="exampleInputPassword1"
-                        placeholder="Password"
+                        placeholder="Nhập vào mật khẩu"
                         value={password}
                         onChange={(event) => setPassword(event.target.value)}
                       />
                       <small id="emailHelp" className="form-text text-muted">
-                        Password needs at least 6 characters
+                        Mật khẩu cần ít nhất 6 kí tự
                       </small>
                     </div>
 
                     <div className="form-group">
                       <label htmlFor="exampleInputPassword2">
-                        Confirm Password
+                        Nhập lại mật khẩu
                       </label>
                       <input
                         type="password"
@@ -107,14 +108,14 @@ export default function Register() {
                     </div>
 
                     <div style={{ textAlign: "right" }}>
-                      Do you already have an account? <a href="/login">Login</a>
+                      Bạn đã có tài khoản? <a href="/login">Đăng nhập</a>
                     </div>
                     <button
                       type="submit"
                       className="btn oneMusic-btn mt-30"
                       onClick={() => handleRegister()}
                     >
-                      Sign up
+                      Đăng ký
                     </button>
                   </form>
                 </div>

@@ -248,6 +248,13 @@ create table song_favourite (
 	REFERENCES users(_id)
 )
 
+select * from user_otp_secret;
+create table user_otp_secret (
+	_id serial NOT null PRIMARY KEY,
+	email varchar(255),
+	secret_key varchar(255),
+	created_day timestamp
+)
 
 
 
