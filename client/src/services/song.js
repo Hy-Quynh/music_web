@@ -80,7 +80,6 @@ export async function getUserFavouriteSong(songId, userId) {
   });
 }
 
-
 export async function changeUserFavouriteSong(songId, userId, status) {
   return request({
     method: "PUT",
@@ -88,5 +87,22 @@ export async function changeUserFavouriteSong(songId, userId, status) {
     body: {
       status,
     },
+  });
+}
+
+export async function createUserListenHistory(songId, userId) {
+  return request({
+    method: "POST",
+    url: `/song/${songId}/user/listen`,
+    body: {
+      userId,
+    },
+  });
+}
+
+export async function getUserListen(userId) {
+  return request({
+    method: "GET",
+    url: `/song/user/listen?userId=${userId}`,
   });
 }

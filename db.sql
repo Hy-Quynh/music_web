@@ -261,12 +261,24 @@ create table song_favourite (
 	REFERENCES users(_id)
 )
 
-select * from user_otp_secret;
 create table user_otp_secret (
 	_id serial NOT null PRIMARY KEY,
 	email varchar(255),
 	secret_key varchar(255),
 	created_day timestamp
+)
+
+SELECT COUNT(s.category_id) as total_category, s.category_id FROM user_listen_time ult JOIN songs s ON ult.song_id = s._id WHERE ult.user_id = 1 group by s.category_id order by total_category DESC limit 10 offset 0;
+
+create table user_listen_time (
+	_id serial NOT null PRIMARY KEY,
+	user_id int,
+	song_id int,
+	time int,
+	CONSTRAINT fk_userListenTime_song FOREIGN KEY (song_id)
+	REFERENCES songs(_id),
+	CONSTRAINT fk_userListenTime_user FOREIGN KEY (user_id)
+	REFERENCES users(_id)
 )
 
 

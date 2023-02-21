@@ -15,6 +15,8 @@ const {
   createSongDownloadData,
   getUserSongFavourite,
   changeUserFavouriteSong,
+  createUserListenSong,
+  getUserListenData,
 } = require("../models/song");
 
 module.exports = {
@@ -38,6 +40,7 @@ module.exports = {
         singer,
         searchText
       );
+
       if (result) {
         for (let i = 0; i < result?.length; i++) {
           const singer = await getSongSinger(result?.[i]?._id);
@@ -254,6 +257,45 @@ module.exports = {
       return res.send({
         success: false,
         error: "Cập nhật dữ liệu thất bại",
+      });
+    }
+  }),
+
+  createUserListenTime: asyncHandler(async (req, res) => {
+    try {
+      const { songId } = req.params;
+      const { userId } = req?.body;
+      const result = await createUserListenSong(userId, songId);
+      if (result) {
+        return res.send({ success: true });
+      }
+      return res.send({
+        success: false,
+        error: "Tạo dữ liệu thất bại",
+      });
+    } catch (error) {
+      return res.send({
+        success: false,
+        error: "Tạo dữ liệu thất bại",
+      });
+    }
+  }),
+
+  getUserListenData: asyncHandler(async (req, res) => {
+    try {
+      const { userId } = req.query;
+      const result = await getUserListenData(userId);
+      if (result) {
+        for (let i = 0; i < result?.length; i++) {
+          const singer = await getSongSinger(result?.[i]?._id);
+          result[i].singer = [...singer];
+        }
+      }
+      return res.send({ success: true, payload: result });
+    } catch (error) {
+      return res.send({
+        success: false,
+        error: "Lấy dữ liệu thất bại",
       });
     }
   }),

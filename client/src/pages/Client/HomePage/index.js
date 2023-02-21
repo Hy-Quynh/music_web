@@ -14,6 +14,7 @@ import NewHit from "./components/NewHit";
 import PopularArtist from "./components/PopularArtist";
 import PlayIcon from "../../../assets/image/play-music.svg";
 import StopIcon from "../../../assets/image/stop-music.svg";
+import UserListen from "./components/UserListen";
 
 const PAGE_LIMIT = 6;
 
@@ -167,6 +168,16 @@ export default function HomePage() {
       </section>
 
       <section className="miscellaneous-area section-padding-100-0">
+        <div className="container">
+          <div className="row">
+            <div className="col-12 col-lg-12">
+              <UserListen />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="miscellaneous-area ">
         <div className="container">
           <div className="row">
             <div className="col-12 col-lg-12">

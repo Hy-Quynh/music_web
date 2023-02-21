@@ -399,4 +399,62 @@ module.exports = {
       return 0;
     }
   },
+
+  createUserListenSong: async (userId, songId) => {
+    try {
+      const userHistory = await postgresql.query(
+        `SELECT * FROM user_listen_time WHERE user_id=${Number(
+          userId
+        )} AND song_id=${Number(songId)}`
+      );
+
+      if (userHistory?.rows?.length) {
+        const time = userHistory?.rows?.[0]?.time;
+        const updateRes = await postgresql.query(
+          `UPDATE user_listen_time SET time=${
+            Number(time) + 1
+          } WHERE user_id=${Number(userId)} AND song_id=${Number(songId)}`
+        );
+        return updateRes?.rows ? true : false;
+      }
+      const createRes = await postgresql.query(
+        `INSERT INTO user_listen_time(user_id, song_id, time) VALUES(${Number(
+          userId
+        )}, ${Number(songId)}, 1)`
+      );
+      return createRes?.rows ? true : false;
+    } catch (error) {
+      return false;
+    }
+  },
+
+  getUserListenData: async (userId) => {
+    try {
+      const list =
+        await postgresql.query(`SELECT COUNT(s.category_id) as total_category, s.category_id FROM user_listen_time ult JOIN songs s ON ult.song_id = s._id WHERE ult.user_id = ${Number(
+          userId
+        )} group by s.category_id order by total_category DESC limit 10 offset 0;
+      `);
+      const listRow = list?.rows;
+
+      const fullList = [];
+      let listIndex = 0;
+
+      while (fullList?.length < 10 && listIndex <= listRow?.length - 1) {
+        const song =
+          await postgresql.query(`SELECT s.*, c.name as country_name, al.name as album_name, ct.name as category_name
+        FROM songs s JOIN countries c ON s.country_id = c._id 
+        LEFT JOIN albums al ON s.album_id = al._id  
+        JOIN categorys ct ON s.category_id = ct._id
+        WHERE s.category_id=${Number(listRow[listIndex]?.category_id)} ORDER BY created_day ASC`);
+
+        fullList?.push(...song?.rows);
+        listIndex = listIndex + 1;
+      }
+      return fullList;
+    } catch (error) {
+      console.log('error >>> ', error);
+      return [];
+    }
+  },
 };

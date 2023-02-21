@@ -14,7 +14,10 @@ import ControlList from "../../pages/Client/SongDetail/components/ControlList";
 import DownloadIcon from "@mui/icons-material/Download";
 import { getBase64 } from "../../services/user";
 import { toast } from "react-hot-toast";
-import { createSongDownload } from "../../services/song";
+import {
+  createSongDownload,
+  createUserListenHistory,
+} from "../../services/song";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
@@ -143,6 +146,15 @@ export default function ClientLayout(props) {
     }
   };
 
+  useEffect(() => {
+    if (userData?._id && song._id) {
+      if (!song?.song_name && song?.name) {
+        (async () => {
+          await createUserListenHistory(song?._id, userData?._id);
+        })();
+      }
+    }
+  }, [song._id]);
 
   return (
     <>
@@ -496,7 +508,7 @@ export default function ClientLayout(props) {
                   >
                     <RepeatIcon
                       style={{
-                        color: repeat ? "white" : "red" ,
+                        color: repeat ? "white" : "red",
                         marginLeft: "10px",
                         cursor: "pointer",
                       }}

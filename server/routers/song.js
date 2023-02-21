@@ -12,5 +12,7 @@ router.get("/hot/list", songController.getHotSong);
 router.post("/:songId/download", songController.addSongDownloadData);
 router.get('/favourite/data', songController.getUserSongFavourite)
 router.put('/favourite/data', songController.changeUserFavouriteSong)
+router.post("/:songId/user/listen", songController.createUserListenTime);
+router.get("/user/listen", songController.getUserListenData);
 
 module.exports = router;
