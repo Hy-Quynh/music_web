@@ -27,6 +27,8 @@ create table categorys (
 	created_day timestamp
 );
 
+alter table albums drop column singer_id;
+
 create table albums (
 	_id serial PRIMARY key,
 	name varchar(255),
@@ -34,13 +36,24 @@ create table albums (
 	avatar text,
 	created_day timestamp,
 	country_id int,
-	singer_id int,
 	CONSTRAINT fk_albums_countries
 	FOREIGN KEY (country_id) 
-	REFERENCES countries(_id),
+	REFERENCES countries(_id)
+);
+
+select * from album_singer;
+create table album_singer (
+	album_id int,
+	singer_id int,
+	created_day timestamp,
+	primary key (album_id, singer_id),
 	
-	CONSTRAINT fk_albums_singers
-	FOREIGN KEY (singer_id) 
+	CONSTRAINT fk_albumSinger_albums
+    FOREIGN KEY(album_id) 
+	REFERENCES albums(_id),
+	
+	CONSTRAINT fk_albumSinger_singers
+    FOREIGN KEY(singer_id) 
 	REFERENCES singers(_id)
 );
 

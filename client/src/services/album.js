@@ -25,7 +25,7 @@ export async function createNewAlbum(
   name,
   description,
   avatar,
-  singerId,
+  singer,
   countryId
 ) {
   return request({
@@ -35,7 +35,7 @@ export async function createNewAlbum(
       name,
       description,
       avatar,
-      singerId,
+      singer,
       countryId,
     },
   });
@@ -46,7 +46,7 @@ export async function updateAlbum(
   name,
   description,
   avatar,
-  singerId,
+  singer,
   countryId
 ) {
   return request({
@@ -56,7 +56,7 @@ export async function updateAlbum(
       name,
       description,
       avatar,
-      singerId,
+      singer,
       countryId,
     },
   });

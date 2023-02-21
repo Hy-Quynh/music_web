@@ -9,6 +9,9 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import {
   Button,
+  Checkbox,
+  ListItemIcon,
+  ListItemText,
   MenuItem,
   Select,
   Stack,
@@ -32,6 +35,8 @@ import storage from "../../../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getAllSinger } from "../../../services/singer";
 import { getAllCountry } from "../../../services/country";
+import { parseJSON } from "../../../utils/utils";
+import { MenuProps, useStyles } from "../Song/utils";
 
 const columns = [
   { id: "stt", label: "#", minWidth: 50, align: "center" },
@@ -85,7 +90,7 @@ export default function AdminAlbum() {
     description: "",
     avatar: "",
     albumId: -1,
-    singerId: -1,
+    singer: [],
     countryId: -1,
   });
   const [page, setPage] = React.useState(0);
@@ -94,6 +99,7 @@ export default function AdminAlbum() {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [singerList, setSingerList] = useState([]);
   const [countryList, setCountryList] = useState([]);
+  const classes = useStyles();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -144,19 +150,19 @@ export default function AdminAlbum() {
   }, []);
 
   const handleCreateUpdateAlbum = async () => {
-    const { albumName, description, avatar, singerId, countryId } = editAlbum;
+    const { albumName, description, avatar, singer, countryId } = editAlbum;
     if (
       !albumName.trim().length ||
       !description.trim().length ||
-      singerId === -1 ||
+      !singer?.length ||
       countryId === -1 ||
       (typeof avatar === "string" && !avatar?.length)
     ) {
       return toast.error("Dữ liệu không được bỏ trống ");
-    } else if (albumName.trim().length <= 3) {
-      return toast.error("Name must be more than 3 characters");
+    } else if (albumName.trim().length < 2) {
+      return toast.error("Tên có ít nhất 2 kí tự");
     } else if (description.length <= 10) {
-      return toast.error("Description must be more than 10 characters");
+      return toast.error("Mô tả ít nhất 10 kí tự");
     } else {
       let newAvatar = avatar;
       if (typeof avatar !== "string") {
@@ -169,7 +175,7 @@ export default function AdminAlbum() {
           const url = await getDownloadURL(pathReference);
           newAvatar = url;
         } else {
-          return toast.error("Can't upload avatar");
+          return toast.error("Không thể tải hình ảnh");
         }
       }
 
@@ -178,7 +184,7 @@ export default function AdminAlbum() {
           albumName,
           description,
           newAvatar,
-          singerId,
+          singer,
           countryId
         );
         if (createRes?.data?.success) {
@@ -186,7 +192,9 @@ export default function AdminAlbum() {
           getListAlbum();
           return setAddAlbumModal({ status: false, type: "" });
         } else {
-          return toast.error(createRes?.data?.error || "Thêm mới album thất bại");
+          return toast.error(
+            createRes?.data?.error || "Thêm mới album thất bại"
+          );
         }
       } else {
         const updateRes = await updateAlbum(
@@ -194,7 +202,7 @@ export default function AdminAlbum() {
           albumName,
           description,
           newAvatar,
-          singerId,
+          singer,
           countryId
         );
 
@@ -213,14 +221,14 @@ export default function AdminAlbum() {
     try {
       const deleteRes = await deleteAlbumData(albumId);
       if (deleteRes?.data?.success) {
-        toast.success("Delete album success");
+        toast.success("Xoá album thành công");
         getListAlbum();
         setPopoverId("");
       } else {
-        toast.error(deleteRes?.data?.error || "Delete album failed");
+        toast.error(deleteRes?.data?.error || "Xoá album thất bại");
       }
     } catch (error) {
-      toast.error("Delete album failed");
+      toast.error("Xoá album thất bại");
     }
   };
 
@@ -258,7 +266,7 @@ export default function AdminAlbum() {
                   marginTop: "10px",
                 }}
               >
-                Country:
+                Quốc gia:
               </Typography>
 
               <Select
@@ -291,28 +299,108 @@ export default function AdminAlbum() {
                   marginTop: "10px",
                 }}
               >
-                Singer:
+                Ca sĩ:
               </Typography>
-
               <Select
-                placeholder="Enter Singer"
-                value={editAlbum?.singerId || -1}
+                labelId="mutiple-select-label"
+                multiple
                 sx={{ width: "100%" }}
-                label="Singer"
+                value={editAlbum?.singer}
                 onChange={(event) => {
-                  setEditAlbum({
-                    ...editAlbum,
-                    singerId: event.target.value,
-                  });
-                }}
-              >
-                {singerList?.map((item, index) => {
-                  return (
-                    <MenuItem value={item?._id} key={`country-item-${index}`}>
-                      {item?.name}
-                    </MenuItem>
+                  const value = event.target.value;
+                  if (value[value.length - 1] === "all") {
+                    setEditAlbum({
+                      ...editAlbum,
+                      singer:
+                        editAlbum?.singer.length === singerList.length
+                          ? []
+                          : singerList?.map((item) => {
+                              return {
+                                _id: item?._id,
+                                name: item?.name,
+                              };
+                            }),
+                    });
+                    return;
+                  }
+                  const songSinger = [...editAlbum?.singer];
+                  const valueParse = parseJSON(
+                    value[value.length - 1],
+                    value[value.length - 1]
                   );
-                })}
+                  const findSinger = songSinger?.find(
+                    (item) => item?._id === valueParse?._id
+                  );
+
+                  if (!findSinger) {
+                    setEditAlbum({
+                      ...editAlbum,
+                      singer: value?.map((item) => parseJSON(item, item)),
+                    });
+                  } else {
+                    setEditAlbum({
+                      ...editAlbum,
+                      singer: songSinger?.filter(
+                        (item) => item?._id !== valueParse?._id
+                      ),
+                    });
+                  }
+                }}
+                renderValue={(selected) =>
+                  selected?.map((item) => item?.name).join(", ")
+                }
+                MenuProps={MenuProps}
+              >
+                <MenuItem
+                  value="all"
+                  classes={{
+                    root:
+                      editAlbum?.singer?.length > 0 &&
+                      editAlbum?.singer?.length === singerList?.length
+                        ? classes.selectedAll
+                        : "",
+                  }}
+                >
+                  <ListItemIcon>
+                    <Checkbox
+                      classes={{ indeterminate: classes.indeterminateColor }}
+                      checked={
+                        editAlbum?.singer?.length > 0 &&
+                        editAlbum?.singer?.length === singerList?.length
+                      }
+                      indeterminate={
+                        editAlbum?.singer.length > 0 &&
+                        editAlbum?.singer.length < singerList.length
+                      }
+                    />
+                  </ListItemIcon>
+                  <ListItemText
+                    classes={{ primary: classes.selectAllText }}
+                    primary="Select All"
+                  />
+                </MenuItem>
+                {singerList.map((option, index) => (
+                  <MenuItem
+                    key={`singer-item-${index}`}
+                    value={JSON.stringify({
+                      _id: option?._id,
+                      name: option?.name,
+                    })}
+                  >
+                    <ListItemIcon>
+                      <Checkbox
+                        checked={
+                          editAlbum?.singer?.findIndex(
+                            (item) => item?._id === option?._id
+                          ) >= 0
+                            ? true
+                            : false
+                        }
+                      />
+                    </ListItemIcon>
+                    <ListItemText primary={option?.name} />
+                  </MenuItem>
+                ))}
               </Select>
 
               <Typography
@@ -325,7 +413,7 @@ export default function AdminAlbum() {
                   marginTop: "10px",
                 }}
               >
-                Avatar:
+                Ảnh đại diện:
               </Typography>
               <RTextField
                 defaultValue=""
@@ -395,7 +483,7 @@ export default function AdminAlbum() {
                 albumName: "",
                 description: "",
                 avatar: "",
-                singerId: -1,
+                singer: [],
                 countryId: -1,
               });
               setAddAlbumModal({ status: true, type: "add" });
@@ -471,7 +559,7 @@ export default function AdminAlbum() {
                                       description: row?.description,
                                       avatar: row?.avatar,
                                       albumId: row?._id,
-                                      singerId: row?.singer_id || -1,
+                                      singer: row?.singer,
                                       countryId: row?.country_id || -1,
                                     });
                                     setAddAlbumModal({
