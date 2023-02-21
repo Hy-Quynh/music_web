@@ -491,12 +491,12 @@ export default function ClientLayout(props) {
 
                 {listSongPlaying?.length > 1 ? (
                   <Tooltip
-                    title={repeat ? "Phát một bài" : "Lăp lại"}
+                    title={repeat ? "Lặp lại" : "Phát một bài"}
                     placement="top"
                   >
                     <RepeatIcon
                       style={{
-                        color: repeat ? "red" : "white",
+                        color: repeat ? "white" : "red" ,
                         marginLeft: "10px",
                         cursor: "pointer",
                       }}
