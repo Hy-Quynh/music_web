@@ -2,7 +2,7 @@ import { CircularProgress, Popover, TextField, Tooltip } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setSongPlaying, songData } from "../../slices/songSlice";
+import { setListType, setSongPlaying, songData } from "../../slices/songSlice";
 import { USER_KEY } from "../../utils/constants";
 import { parseJSON } from "../../utils/utils";
 import SearchIcon from "@mui/icons-material/Search";
@@ -15,6 +15,13 @@ import DownloadIcon from "@mui/icons-material/Download";
 import { getBase64 } from "../../services/user";
 import { toast } from "react-hot-toast";
 import { createSongDownload } from "../../services/song";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
+import ShareIcon from "@mui/icons-material/Share";
+import ShuffleIcon from "@mui/icons-material/Shuffle";
+import RepeatIcon from "@mui/icons-material/Repeat";
 
 export default function ClientLayout(props) {
   const { song } = useSelector(songData);
@@ -28,6 +35,9 @@ export default function ClientLayout(props) {
   const { listSongPlaying } = useSelector(songData);
   const [songPlayingIndex, setSongPlayingIndex] = useState(0);
   const [downloadLoading, setDownloadLoading] = useState(false);
+  const { listType } = useSelector(songData);
+  const [shuffle, setShuffle] = useState(false);
+  const [repeat, setRepeat] = useState(true);
 
   const open = Boolean(anchorEl);
   const searchOpen = Boolean(searchAnchorEl);
@@ -68,10 +78,71 @@ export default function ClientLayout(props) {
 
   useEffect(() => {
     if (listSongPlaying?.length) {
+      const findIndex = [...listSongPlaying]?.findIndex(
+        (item) => item?._id === song?._id
+      );
+
+      if (findIndex >= 0) {
+        setSongPlayingIndex(findIndex);
+        dispatch(
+          setSongPlaying({ ...listSongPlaying[findIndex], playing: true })
+        );
+      } else {
+        setSongPlayingIndex(0);
+        dispatch(setSongPlaying({ ...listSongPlaying[0], playing: true }));
+      }
+    }
+  }, [listSongPlaying]);
+
+  useEffect(() => {
+    if (listSongPlaying?.length) {
       setSongPlayingIndex(0);
       dispatch(setSongPlaying({ ...listSongPlaying[0], playing: true }));
     }
-  }, [listSongPlaying]);
+  }, [listType?.type]);
+
+  const fastBackWard = () => {
+    audioRef.current.currentTime = audioRef.current.currentTime - 10;
+  };
+
+  const fastForward = () => {
+    audioRef.current.currentTime = audioRef.current.currentTime + 10;
+  };
+
+  const nextAndBackSong = (type) => {
+    if (listSongPlaying?.length > 1) {
+      if (songPlayingIndex === listSongPlaying?.length - 1 && type === "next") {
+        setSongPlayingIndex(0);
+        dispatch(
+          setSongPlaying({
+            ...listSongPlaying[0],
+            playing: true,
+          })
+        );
+      } else if (songPlayingIndex === 0 && type === "back") {
+        setSongPlayingIndex(listSongPlaying?.length - 1);
+        dispatch(
+          setSongPlaying({
+            ...listSongPlaying?.[listSongPlaying?.length - 1],
+            playing: true,
+          })
+        );
+      } else {
+        setSongPlayingIndex(
+          type === "next" ? songPlayingIndex + 1 : songPlayingIndex - 1
+        );
+        dispatch(
+          setSongPlaying({
+            ...listSongPlaying[
+              type === "next" ? songPlayingIndex + 1 : songPlayingIndex - 1
+            ],
+            playing: true,
+          })
+        );
+      }
+    }
+  };
+
 
   return (
     <>
@@ -295,39 +366,147 @@ export default function ClientLayout(props) {
                 gap: "20px",
               }}
             >
-              <audio
-                preload="auto"
-                controls
-                ref={audioRef}
-                onPlay={(event) => {
-                  dispatch(setSongPlaying({ ...song, playing: true }));
-                }}
-                onPause={(event) => {
-                  dispatch(setSongPlaying({ ...song, playing: false }));
-                }}
-                controlsList="nodownload"
-                onEnded={() => {
-                  if (listSongPlaying?.length) {
-                    if (songPlayingIndex === listSongPlaying?.length - 1) {
-                      setSongPlayingIndex(0);
-                      dispatch(
-                        setSongPlaying({ ...listSongPlaying[0], playing: true })
-                      );
-                    } else {
-                      setSongPlayingIndex(songPlayingIndex + 1);
-                      dispatch(
-                        setSongPlaying({
-                          ...listSongPlaying[songPlayingIndex + 1],
-                          playing: true,
-                        })
-                      );
+              <div style={{ display: "flex", alignItems: "center" }}>
+                {listSongPlaying?.length > 1 ? (
+                  <Tooltip
+                    title={shuffle ? "Tắt lặp ngẫu nhiên" : "Lặp ngẫu nhiên"}
+                    placement="top"
+                  >
+                    <ShuffleIcon
+                      style={{
+                        color: shuffle ? "red" : "white",
+                        marginRight: "10px",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => setShuffle(!shuffle)}
+                    />
+                  </Tooltip>
+                ) : (
+                  <></>
+                )}
+
+                {listSongPlaying?.length > 1 ? (
+                  <Tooltip title="Bài phía trước" placement="top">
+                    <ArrowBackIosIcon
+                      style={{ color: "white" }}
+                      sx={{ width: "30px", cursor: "pointer" }}
+                      onClick={() => nextAndBackSong("back")}
+                    />
+                  </Tooltip>
+                ) : (
+                  <></>
+                )}
+
+                <Tooltip title="Chậm 10s" placement="top">
+                  <KeyboardDoubleArrowLeftIcon
+                    style={{ color: "white", marginRight: "10px" }}
+                    sx={{ width: "30px", height: "30px", cursor: "pointer" }}
+                    onClick={() => fastBackWard()}
+                  />
+                </Tooltip>
+                <audio
+                  preload="auto"
+                  controls
+                  ref={audioRef}
+                  onPause={(event) => {
+                    if (listType?.playing) {
+                      dispatch(setListType({ ...listType, playing: false }));
                     }
-                  }
-                }}
-                on
-              >
-                <source src={song?.link} />
-              </audio>
+                    dispatch(setSongPlaying({ ...song, playing: false }));
+                  }}
+                  onPlaying={() => {
+                    if (!song?.playing) {
+                      dispatch(setSongPlaying({ ...song, playing: true }));
+                    }
+                    if (!listType?.playing) {
+                      dispatch(setListType({ ...listType, playing: true }));
+                    }
+                  }}
+                  controlsList="nodownload"
+                  onEnded={() => {
+                    if (repeat) {
+                      if (listSongPlaying?.length) {
+                        if (!shuffle) {
+                          if (
+                            songPlayingIndex ===
+                            listSongPlaying?.length - 1
+                          ) {
+                            setSongPlayingIndex(0);
+                            dispatch(
+                              setSongPlaying({
+                                ...listSongPlaying[0],
+                                playing: true,
+                              })
+                            );
+                          } else {
+                            setSongPlayingIndex(songPlayingIndex + 1);
+                            dispatch(
+                              setSongPlaying({
+                                ...listSongPlaying[songPlayingIndex + 1],
+                                playing: true,
+                              })
+                            );
+                          }
+                        } else {
+                          const random =
+                            Math.floor(
+                              Math.random() * (listSongPlaying?.length - 1)
+                            ) + 0;
+                          setSongPlayingIndex(random);
+                          dispatch(
+                            setSongPlaying({
+                              ...listSongPlaying[random],
+                              playing: true,
+                            })
+                          );
+                        }
+                      }
+                    } else {
+                      audioRef.current.load();
+                      audioRef.current.play();
+                    }
+                  }}
+                >
+                  <source src={song?.link} />
+                </audio>
+                <Tooltip title="Nhanh 10s" placement="top">
+                  <KeyboardDoubleArrowRightIcon
+                    style={{ color: "white", marginLeft: "10px" }}
+                    sx={{ width: "30px", height: "30px", cursor: "pointer" }}
+                    onClick={() => fastForward()}
+                  />
+                </Tooltip>
+
+                {listSongPlaying?.length > 1 ? (
+                  <Tooltip title="Bài phía sau" placement="top">
+                    <ArrowForwardIosIcon
+                      style={{ color: "white" }}
+                      sx={{ width: "30px", cursor: "pointer" }}
+                      onClick={() => nextAndBackSong("next")}
+                    />
+                  </Tooltip>
+                ) : (
+                  <></>
+                )}
+
+                {listSongPlaying?.length > 1 ? (
+                  <Tooltip
+                    title={repeat ? "Phát một bài" : "Lăp lại"}
+                    placement="top"
+                  >
+                    <RepeatIcon
+                      style={{
+                        color: repeat ? "red" : "white",
+                        marginLeft: "10px",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => setRepeat(!repeat)}
+                    />
+                  </Tooltip>
+                ) : (
+                  <></>
+                )}
+              </div>
 
               <div className="song-control-list">
                 {!song?.song_name ? (
@@ -366,6 +545,9 @@ export default function ClientLayout(props) {
                       />
                     )}
                   </div>
+                </Tooltip>
+                <Tooltip title="Chia sẻ" placement="top">
+                  <ShareIcon size={"20px"} sx={{ color: "white" }} />
                 </Tooltip>
               </div>
             </div>

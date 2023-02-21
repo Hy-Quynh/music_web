@@ -3,6 +3,8 @@ import PlayIcon from "../../../../assets/image/play-music-black.svg";
 import StopIcon from "../../../../assets/image/stop-music-black.svg";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  setListSongPlaying,
+  setListType,
   setSongPlaying,
   setSongState,
   songData,
@@ -15,6 +17,8 @@ export default function MostSearchList() {
   const dispatch = useDispatch();
   const { song } = useSelector(songData);
   const navigate = useNavigate();
+  const { listSongPlaying } = useSelector(songData);
+  const { listType } = useSelector(songData);
 
   const getListSong = async () => {
     try {
@@ -34,7 +38,7 @@ export default function MostSearchList() {
   return (
     <div className="new-hits-area mb-100">
       <div
-        className="section-heading text-left mb-50 wow fadeInUp"
+        className="section-heading text-left mb-50"
         data-wow-delay="50ms"
       >
         <h2>Bài hát được tìm kiếm nhiều nhất</h2>
@@ -42,7 +46,7 @@ export default function MostSearchList() {
       {listHit?.map((item, index) => {
         return (
           <div
-            className="single-new-item d-flex align-items-center justify-content-between wow fadeInUp"
+            className="single-new-item d-flex align-items-center justify-content-between"
             data-wow-delay="100ms"
             key={`album-item-${index}`}
           >
@@ -105,6 +109,19 @@ export default function MostSearchList() {
                     cursor: "pointer",
                   }}
                   onClick={() => {
+                    if (
+                      !listSongPlaying?.length ||
+                      listType?.type !== "most-search"
+                    ) {
+                      dispatch(setListSongPlaying(listHit));
+                      dispatch(
+                        setListType({
+                          type: "most-search",
+                          ...listType,
+                        })
+                      );
+                    }
+
                     dispatch(setSongPlaying({ ...item, playing: true }));
                   }}
                 />

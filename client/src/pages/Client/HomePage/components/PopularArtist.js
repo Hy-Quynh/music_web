@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getPopularSinger } from "../../../../services/singer";
+import {
+  setSongPlaying,
+  setListSongPlaying,
+} from "../../../../slices/songSlice";
 
 export default function PopularArtist() {
   const [popularSinger, setPopularSinger] = useState([]);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const getListPopularSinger = async () => {
     try {
@@ -22,9 +28,9 @@ export default function PopularArtist() {
   }, []);
 
   return (
-    <div className="popular-artists-area mb-100" style={{minHeight: '750px'}}>
+    <div className="popular-artists-area mb-100" style={{ minHeight: "750px" }}>
       <div
-        className="section-heading text-left mb-50 wow fadeInUp"
+        className="section-heading text-left mb-50"
         data-wow-delay="50ms"
       >
         <p>Điều gì mới</p>
@@ -33,11 +39,15 @@ export default function PopularArtist() {
       {popularSinger?.map((item, index) => {
         return (
           <div
-            className="single-artists d-flex align-items-center wow fadeInUp"
+            className="single-artists d-flex align-items-center"
             data-wow-delay="100ms"
             key={`popular-singer-item-${index}`}
-            style={{cursor: 'pointer'}}
-            onClick={() => navigate(`/singer/${item?._id}`)}
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              dispatch(setSongPlaying({}));
+              dispatch(setListSongPlaying([]));
+              navigate(`/singer/${item?._id}`);
+            }}
           >
             <div
               className="thumbnail"

@@ -3,6 +3,8 @@ import PlayIcon from "../../../../assets/image/play-music-black.svg";
 import StopIcon from "../../../../assets/image/stop-music-black.svg";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  setListSongPlaying,
+  setListType,
   setSongPlaying,
   setSongState,
   songData,
@@ -13,11 +15,13 @@ export default function NewHit({listHit}) {
   const dispatch = useDispatch();
   const { song } = useSelector(songData);
   const navigate = useNavigate();
+  const { listSongPlaying } = useSelector(songData);
+  const { listType } = useSelector(songData);
 
   return (
     <div className="new-hits-area mb-100" style={{minHeight: '750px'}}>
       <div
-        className="section-heading text-left mb-50 wow fadeInUp"
+        className="section-heading text-left mb-50"
         data-wow-delay="50ms"
       >
         <p>Điều gì mới</p>
@@ -26,7 +30,7 @@ export default function NewHit({listHit}) {
       {listHit?.map((item, index) => {
         return (
           <div
-            className="single-new-item d-flex align-items-center justify-content-between wow fadeInUp"
+            className="single-new-item d-flex align-items-center justify-content-between"
             data-wow-delay="100ms"
             key={`album-item-${index}`}
           >
@@ -89,6 +93,15 @@ export default function NewHit({listHit}) {
                     cursor: "pointer",
                   }}
                   onClick={() => {
+                    if (!listSongPlaying?.length || listType?.type !== "new-hit"){
+                      dispatch(setListSongPlaying(listHit))                 
+                      dispatch(
+                        setListType({
+                          type: "new-hit",
+                          ...listType
+                        })
+                      );
+                    }
                     dispatch(setSongPlaying({ ...item, playing: true }));
                   }}
                 />

@@ -1,9 +1,12 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { getCategoryDetail } from "../../../services/category";
 import { getAllSong } from "../../../services/song";
 import {
+  setListSongPlaying,
+  setListType,
   setSongPlaying,
   setSongState,
   songData,
@@ -20,10 +23,10 @@ export default function CategoryDetail() {
   const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState(0);
   const navigate = useNavigate();
-
+  const { listSongPlaying } = useSelector(songData);
+  const { listType } = useSelector(songData);
   const dispatch = useDispatch();
   const { song } = useSelector(songData);
-
   const { id } = useParams();
 
   const getCategoryData = async () => {
@@ -34,6 +37,13 @@ export default function CategoryDetail() {
       }
     } catch (error) {
       console.log("category detail error >>> ", error);
+    }
+  };
+
+  const setAllSongPlaying = async () => {
+    const result = await getAllSong(undefined, undefined, undefined, id);
+    if (result?.data?.success) {
+      dispatch(setListSongPlaying(result?.data?.payload?.song));
     }
   };
 
@@ -81,11 +91,36 @@ export default function CategoryDetail() {
                         style={{ cursor: "pointer" }}
                         onClick={() => {
                           if (it?._id !== song?._id) {
+                            if (
+                              !listSongPlaying?.length ||
+                              listType?.type !== `category-detail-${id}`
+                            ) {
+                              setAllSongPlaying();
+                              dispatch(
+                                setListType({
+                                  type: `category-detail-${id}`,
+                                  ...listType,
+                                })
+                              );
+                            }
+
                             dispatch(setSongPlaying({ ...it, playing: true }));
                           } else {
                             if (song?.playing) {
                               dispatch(setSongState(false));
                             } else {
+                              if (
+                                !listSongPlaying?.length ||
+                                listType?.type !== `category-detail-${id}`
+                              ) {
+                                setAllSongPlaying();
+                                dispatch(
+                                  setListType({
+                                    type: `category-detail-${id}`,
+                                    ...listType,
+                                  })
+                                );
+                              }
                               dispatch(setSongState(true));
                             }
                           }

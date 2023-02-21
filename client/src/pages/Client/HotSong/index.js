@@ -21,6 +21,7 @@ export default function HotSong() {
   const { song } = useSelector(songData);
   const navigate = useNavigate();
   const { listType } = useSelector(songData);
+  const { listSongPlaying } = useSelector(songData);
 
   const getHotSong = async () => {
     try {
@@ -206,6 +207,16 @@ export default function HotSong() {
                                 );
                               }
 
+                              if (!listSongPlaying?.length || listType?.type !== 'hot-song') {
+                                dispatch(setListSongPlaying(listSong));
+                                dispatch(
+                                  setListType({
+                                    type: "hot-song",
+                                    ...listType
+                                  })
+                                );
+                              }
+                              
                               dispatch(
                                 setSongPlaying({ ...item, playing: true })
                               );

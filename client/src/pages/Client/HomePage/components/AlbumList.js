@@ -43,7 +43,7 @@ export default function AlbumList() {
                 key={`album-item-${index}`}
               >
                 <div
-                  className="single-album-area wow fadeInUp"
+                  className="single-album-area"
                   data-wow-delay="100ms"
                 >
                   <div
@@ -77,7 +77,7 @@ export default function AlbumList() {
         <div className="row">
           <div className="col-12">
             <div
-              className="load-more-btn text-center wow fadeInUp"
+              className="load-more-btn text-center"
               data-wow-delay="300ms"
             >
               <a href="/album" className="btn oneMusic-btn">

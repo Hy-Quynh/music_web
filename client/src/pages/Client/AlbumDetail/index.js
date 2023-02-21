@@ -23,12 +23,19 @@ export default function AlbumDetail() {
   const [albumDetail, setAlbumDetail] = useState({});
   const [page, setPage] = useState(0);
   const [totalPage, setTotalPage] = useState(0);
-
+  const { listSongPlaying } = useSelector(songData);
   const dispatch = useDispatch();
   const { song } = useSelector(songData);
   const { listType } = useSelector(songData);
   const { id } = useParams();
   const navigate = useNavigate();
+
+  const setAllSongPlaying = async () => {
+    const result = await getAllSong(undefined, undefined, id);
+    if (result?.data?.success) {
+      dispatch(setListSongPlaying(result?.data?.payload?.song));
+    }
+  };
 
   const getAllListSong = async () => {
     try {
@@ -261,14 +268,24 @@ export default function AlbumDetail() {
                                     onClick={() => {
                                       if (
                                         !listType?.playing &&
-                                        listType?.type === "playlist" &&
+                                        listType?.type === "album" &&
                                         listType?.id === item?._id
                                       ) {
                                         dispatch(
                                           setListType({
-                                            type: "playlist",
-                                            id: item?._id,
+                                            type: "album",
+                                            id,
                                             playing: true,
+                                          })
+                                        );
+                                      }
+
+                                      if (!listSongPlaying?.length || listType?.type !== 'album') {
+                                        setAllSongPlaying();
+                                        dispatch(
+                                          setListType({
+                                            type: "album",
+                                            ...listType
                                           })
                                         );
                                       }

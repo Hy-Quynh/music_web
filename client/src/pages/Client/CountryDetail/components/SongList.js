@@ -1,6 +1,8 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  setListSongPlaying,
+  setListType,
   setSongPlaying,
   setSongState,
   songData,
@@ -9,10 +11,12 @@ import PlayMusicIcon from "../../../../assets/image/play-music.svg";
 import StopMusicIcon from "../../../../assets/image/stop-music.svg";
 import { useNavigate } from "react-router-dom";
 
-export default function SongList({ songList }) {
+export default function SongList({ songList, countryId }) {
   const dispatch = useDispatch();
   const { song } = useSelector(songData);
   const navigate = useNavigate();
+  const { listSongPlaying } = useSelector(songData);
+  const { listType } = useSelector(songData);
 
   return (
     <div className="country-song">
@@ -36,11 +40,36 @@ export default function SongList({ songList }) {
                         style={{ cursor: "pointer" }}
                         onClick={() => {
                           if (it?._id !== song?._id) {
+                            if (
+                              !listSongPlaying?.length ||
+                              listType?.type !== `country-song-${countryId}`
+                            ) {
+                              dispatch(setListSongPlaying(songList));
+                              dispatch(
+                                setListType({
+                                  type: `country-song-${countryId}`,
+                                  ...listType,
+                                })
+                              );
+                            }
+
                             dispatch(setSongPlaying({ ...it, playing: true }));
                           } else {
                             if (song?.playing) {
                               dispatch(setSongState(false));
                             } else {
+                              if (
+                                !listSongPlaying?.length ||
+                                listType?.type !== `country-song-${countryId}`
+                              ) {
+                                dispatch(setListSongPlaying(songList));
+                                dispatch(
+                                  setListType({
+                                    type: `country-song-${countryId}`,
+                                    ...listType,
+                                  })
+                                );
+                              }
                               dispatch(setSongState(true));
                             }
                           }

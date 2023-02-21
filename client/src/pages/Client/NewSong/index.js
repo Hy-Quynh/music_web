@@ -23,6 +23,7 @@ export default function NewSong() {
   const { song } = useSelector(songData);
   const navigate = useNavigate();
   const { listType } = useSelector(songData);
+  const { listSongPlaying } = useSelector(songData);
 
   const getListSong = async () => {
     try {
@@ -204,6 +205,16 @@ export default function NewSong() {
                                     type: "new-song",
                                     id: "new-song",
                                     playing: true,
+                                  })
+                                );
+                              }
+
+                              if (!listSongPlaying?.length || listType?.type !== 'new-song') {
+                                dispatch(setListSongPlaying(listSong));
+                                dispatch(
+                                  setListType({
+                                    type: "new-song",
+                                    ...listType
                                   })
                                 );
                               }

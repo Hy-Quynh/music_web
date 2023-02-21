@@ -77,7 +77,7 @@ export default function CountryDetail() {
       ></section>
       <div className="country-name">{countryDetail?.name}</div>
       <div style={{padding: '20px 40px'}}>
-        <SongList songList={songList} />
+        <SongList songList={songList} countryId={id}/>
         <AlbumList albumList={albumList} />
         <SingerList singerList={singerList} />
       </div>

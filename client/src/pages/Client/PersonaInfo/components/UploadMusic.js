@@ -39,12 +39,32 @@ export default function UploadMusic() {
   const [userSong, setUserSong] = useState([]);
   const dispatch = useDispatch();
   const { song, listType } = useSelector(songData);
+  const { listSongPlaying } = useSelector(songData);
+
+  const setPLayListSong = async () => {
+    const result = await getUserSong(undefined, undefined, userInfo?._id);
+    if (result?.data?.success) {
+      const userSong = [...result?.data?.payload?.userSong]?.map((item) => {
+        return {
+          ...item,
+          _id: item?._id + "upload",
+        };
+      });
+      dispatch(setListSongPlaying(userSong));
+    }
+  };
 
   const getAllListSong = async () => {
     try {
       const result = await getUserSong(undefined, undefined, userInfo?._id);
       if (result?.data?.success) {
-        dispatch(setListSongPlaying(result?.data?.payload?.userSong));
+        const userSong = [...result?.data?.payload?.userSong]?.map((item) => {
+          return {
+            ...item,
+            _id: item?._id + "upload",
+          };
+        });
+        dispatch(setListSongPlaying(userSong));
         dispatch(
           setListType({
             type: "user-upload",
@@ -342,7 +362,7 @@ export default function UploadMusic() {
                         </div>
                       </div>
                       <div>
-                        {song?._id === item?._id && song?.playing ? (
+                        {song?._id === item?._id + "upload" && song?.playing ? (
                           <img
                             src={StopMusicIcon}
                             alt="play music"
@@ -387,8 +407,23 @@ export default function UploadMusic() {
                                   })
                                 );
                               }
+
+                              if (!listSongPlaying?.length || listType?.type !== 'user-upload') {
+                                setPLayListSong();
+                                dispatch(
+                                  setListType({
+                                    type: "user-upload",
+                                    ...listType
+                                  })
+                                );
+                              }
+
                               dispatch(
-                                setSongPlaying({ ...item, playing: true })
+                                setSongPlaying({
+                                  ...item,
+                                  _id: item?._id + "upload",
+                                  playing: true,
+                                })
                               );
                             }}
                           />

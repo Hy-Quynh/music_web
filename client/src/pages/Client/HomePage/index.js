@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getAllSong } from "../../../services/song";
-import { setSongPlaying, setSongState, songData } from "../../../slices/songSlice";
+import {
+  setListSongPlaying,
+  setSongPlaying,
+  setSongState,
+  songData,
+} from "../../../slices/songSlice";
 import AlbumList from "./components/AlbumList";
 import MostSearchList from "./components/MostSearchList";
 import NewHit from "./components/NewHit";
@@ -16,7 +21,7 @@ export default function HomePage() {
   const [listHit, setListHit] = useState([]);
   const dispatch = useDispatch();
   const { song } = useSelector(songData);
-  const navigate = useNavigate();
+  const { listSongPlaying } = useSelector(songData);
 
   const getListHit = async () => {
     try {
@@ -100,10 +105,25 @@ export default function HomePage() {
                 >
                   {listHit?.[0]?.description}
                 </p>
-                <div className="song-play-area" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                <div
+                  className="song-play-area"
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
                   <div className="song-name">
-                    <p style={{fontSize: '16px', fontWeight: 700}}>{listHit?.[0]?.name}</p>
-                    <p style={{fontSize: '14px'}}>{listHit?.[0]?.singer?.length ? listHit?.[0]?.singer?.map((item) => item?.name)?.join(', '): ''}</p>
+                    <p style={{ fontSize: "16px", fontWeight: 700 }}>
+                      {listHit?.[0]?.name}
+                    </p>
+                    <p style={{ fontSize: "14px" }}>
+                      {listHit?.[0]?.singer?.length
+                        ? listHit?.[0]?.singer
+                            ?.map((item) => item?.name)
+                            ?.join(", ")
+                        : ""}
+                    </p>
                   </div>
                   <div>
                     {song?._id === listHit?.[0]?._id && song?.playing ? (
@@ -129,7 +149,12 @@ export default function HomePage() {
                           cursor: "pointer",
                         }}
                         onClick={() => {
-                          dispatch(setSongPlaying({ ...listHit?.[0], playing: true }));
+                          if (listSongPlaying?.length) {
+                            dispatch(setListSongPlaying([]));
+                          }
+                          dispatch(
+                            setSongPlaying({ ...listHit?.[0], playing: true })
+                          );
                         }}
                       />
                     )}

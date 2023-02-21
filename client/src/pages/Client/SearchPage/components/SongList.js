@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllSong } from "../../../../services/song";
 import {
+  setListSongPlaying,
+  setListType,
   setSongPlaying,
   setSongState,
   songData,
@@ -17,6 +19,23 @@ export default function SongList({ searchText }) {
   const [totalPage, setTotalPage] = useState(0);
   const dispatch = useDispatch();
   const { song } = useSelector(songData);
+  const { listSongPlaying } = useSelector(songData);
+  const { listType } = useSelector(songData);
+
+  const setAllSongPlaying = async () => {
+    const result = await getAllSong(
+      PAGE_LIMIT,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      searchText
+    );
+    if (result?.data?.success) {
+      dispatch(setListSongPlaying(result?.data?.payload?.song));
+    }
+  };
 
   const getSongList = async () => {
     try {
@@ -112,6 +131,19 @@ export default function SongList({ searchText }) {
                               cursor: "pointer",
                             }}
                             onClick={() => {
+                              if (
+                                !listSongPlaying?.length ||
+                                listType?.type !== "search-page"
+                              ) {
+                                setAllSongPlaying();
+                                dispatch(
+                                  setListType({
+                                    type: "search-page",
+                                    ...listType,
+                                  })
+                                );
+                              }
+
                               dispatch(
                                 setSongPlaying({ ...item, playing: true })
                               );

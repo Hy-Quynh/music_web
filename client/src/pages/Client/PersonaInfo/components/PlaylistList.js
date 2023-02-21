@@ -61,7 +61,7 @@ export default function PersonalPlaylist() {
     _id: -1,
     name: "",
   });
-
+  const { listSongPlaying } = useSelector(songData);
   const userData = parseJSON(localStorage.getItem(USER_KEY), {});
 
   const getUserPlayList = async () => {
@@ -143,6 +143,13 @@ export default function PersonalPlaylist() {
       }
     } catch (error) {
       console.log("get playlist song error >>> ", error);
+    }
+  };
+
+  const setAllSongPlaying = async (playListId) => {
+    const result = await getPlaylistSong(playListId);
+    if (result?.data?.success) {
+      dispatch(setListSongPlaying(result?.data?.payload));
     }
   };
 
@@ -567,6 +574,16 @@ export default function PersonalPlaylist() {
                                               type: "playlist",
                                               id: item?._id,
                                               playing: true,
+                                            })
+                                          );
+                                        }
+
+                                        if (!listSongPlaying?.length || listType?.type !== "playlist"){
+                                          setAllSongPlaying(item?._id)
+                                          dispatch(
+                                            setListType({
+                                              type: "playlist",
+                                              ...listType
                                             })
                                           );
                                         }

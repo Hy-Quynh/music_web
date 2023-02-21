@@ -32,6 +32,7 @@ export default function PersonalPlaylist({ userId }) {
   const dispatch = useDispatch();
   const { song } = useSelector(songData);
   const { listType } = useSelector(songData);
+  const { listSongPlaying } = useSelector(songData);
 
   const getUserPlayList = async () => {
     try {
@@ -43,6 +44,14 @@ export default function PersonalPlaylist({ userId }) {
       console.log("get user playlist error >>> ", error);
     }
   };
+
+  const setAllSongPlaying = async (playListId) => {
+    const result = await getPlaylistSong(playListId);
+    if (result?.data?.success) {
+      dispatch(setListSongPlaying(result?.data?.payload));
+    }
+  };
+
 
   const playAllListSong = async (playListId) => {
     try {
@@ -261,36 +270,6 @@ export default function PersonalPlaylist({ userId }) {
                               >
                                 <div style={{ marginLeft: "20px" }}>
                                   {song?._id === it?._id && song?.playing ? (
-                                    //   <img
-                                    //     src={StopMusicIcon}
-                                    //     alt="play music"
-                                    //     style={{
-                                    //       width: "50px",
-                                    //       height: "50px",
-                                    //       cursor: "pointer",
-                                    //     }}
-                                    //     onClick={() => {
-                                    //       dispatch(setSongState(false));
-                                    //     }}
-                                    //   />
-                                    // ) : (
-                                    //   <img
-                                    //     src={PlayMusicIcon}
-                                    //     alt="play music"
-                                    //     style={{
-                                    //       width: "50px",
-                                    //       height: "50px",
-                                    //       cursor: "pointer",
-                                    //     }}
-                                    //     onClick={() => {
-                                    //       dispatch(
-                                    //         setSongPlaying({
-                                    //           ...it,
-                                    //           playing: true,
-                                    //         })
-                                    //       );
-                                    //     }}
-                                    //   />
                                     <img
                                       src={StopMusicIcon}
                                       alt="play music"
@@ -350,6 +329,16 @@ export default function PersonalPlaylist({ userId }) {
                                               type: "member-playlist",
                                               id: item?._id,
                                               playing: true,
+                                            })
+                                          );
+                                        }
+
+                                        if (!listSongPlaying?.length || listType?.type !== "member-playlist"){
+                                          setAllSongPlaying(item?._id)
+                                          dispatch(
+                                            setListType({
+                                              type: "member-playlist",
+                                              ...listType
                                             })
                                           );
                                         }

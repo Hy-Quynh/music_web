@@ -4,6 +4,8 @@ import PlayMusicIcon from "../../../../assets/image/play-music.svg";
 import StopMusicIcon from "../../../../assets/image/stop-music.svg";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  setListSongPlaying,
+  setListType,
   setSongPlaying,
   setSongState,
   songData,
@@ -15,6 +17,8 @@ export default function CategorySong() {
   const dispatch = useDispatch();
   const { song } = useSelector(songData);
   const navigate = useNavigate();
+  const { listSongPlaying } = useSelector(songData);
+  const { listType } = useSelector(songData);
 
   const getSong = async () => {
     try {
@@ -59,6 +63,16 @@ export default function CategorySong() {
                               style={{ cursor: "pointer" }}
                               onClick={() => {
                                 if (it?._id !== song?._id) {
+                                  if (!listSongPlaying?.length || listType?.type !== `category-song-${item?._id}`) {
+                                    dispatch(setListSongPlaying(item?.song));
+                                    dispatch(
+                                      setListType({
+                                        type: `category-song-${item?._id}`,
+                                        ...listType
+                                      })
+                                    );
+                                  }
+
                                   dispatch(
                                     setSongPlaying({ ...it, playing: true })
                                   );
@@ -66,6 +80,15 @@ export default function CategorySong() {
                                   if (song?.playing) {
                                     dispatch(setSongState(false));
                                   } else {
+                                    if (!listSongPlaying?.length || listType?.type !== `category-song-${item?._id}`) {
+                                      dispatch(setListSongPlaying(item?.song));
+                                      dispatch(
+                                        setListType({
+                                          type: `category-song-${item?._id}`,
+                                          ...listType
+                                        })
+                                      );
+                                    }
                                     dispatch(setSongState(true));
                                   }
                                 }
