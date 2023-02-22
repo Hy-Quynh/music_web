@@ -52,19 +52,16 @@ export default function HomePage() {
               <div className="row">
                 <div className="col-12">
                   <div className="hero-slides-content text-center">
-                    <h6 data-animation="fadeInUp" data-delay="100ms">
-                      Latest album
-                    </h6>
                     <h2 data-animation="fadeInUp" data-delay="300ms">
-                      Beyond Time <span>Beyond Time</span>
+                      MUSIC FOR EVERYONE <span>MUSIC FOR EVERYONE</span>
                     </h2>
                     <a
                       data-animation="fadeInUp"
                       data-delay="500ms"
-                      href="#"
+                      href="/new-song"
                       className="btn oneMusic-btn mt-50"
                     >
-                      Discover <i className="fa fa-angle-double-right" />
+                      Nghe ngay <i className="fa fa-angle-double-right" />
                     </a>
                   </div>
                 </div>

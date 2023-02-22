@@ -208,9 +208,6 @@ export default function ClientLayout(props) {
                         <a href="/member">Thành viên</a>
                       </li>
                       <li>
-                        <a href="contact.html">Liên hệ</a>
-                      </li>
-                      <li>
                         <SearchIcon
                           style={{ color: "white", cursor: "pointer" }}
                           onClick={(event) => {
