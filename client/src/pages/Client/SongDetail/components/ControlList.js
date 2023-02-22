@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import PlaylistAddCircleIcon from "@mui/icons-material/PlaylistAddCircle";
-import PlaylistAddCheckCircleIcon from "@mui/icons-material/PlaylistAddCheckCircle";
 import ReportIcon from "@mui/icons-material/Report";
 import {
   Button,
@@ -24,6 +23,7 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import RTextField from "../../../../components/RedditTextField";
 import { createNewReportSong } from "../../../../services/songReport";
+import ShareIcon from "@mui/icons-material/Share";
 
 export default function ControlList({ songId, color }) {
   const [visiblePlaylistModal, setVisiblePlaylistModal] = useState(false);
@@ -282,6 +282,16 @@ export default function ControlList({ songId, color }) {
             }}
             sx={{ color: color || "" }}
           />
+        </Tooltip>
+      </div>
+      <div className="control-item">
+        <Tooltip title="Chia sẻ" placement="top">
+          <a
+            href={`https://www.facebook.com/sharer/sharer.php?u=192.168.11.10:3000/song/${songId}`}
+            target="_blank"
+          >
+            <ShareIcon size={"20px"} sx={{ color: color || "" }} />
+          </a>
         </Tooltip>
       </div>
     </div>

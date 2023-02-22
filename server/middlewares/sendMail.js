@@ -3,10 +3,10 @@ const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;
 
 const CLIENT_ID =
-  "697741933845-jj5mkjo1ohpu08nf9vaag4e4ajps3jje.apps.googleusercontent.com";
-const CLIENT_SECRET = "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";
+  "302296299882-16i2pv69fp2qksdm8dop13vr5avgrbde.apps.googleusercontent.com";
+const CLIENT_SECRET = "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";
 const REFRESH_TOKEN =
-  "1//04z65RJCLNj-kCgYIARAAGAQSNwF-L9IretJkUfbZCtrQlhuRoIO1GHWalVFQVhp5sLqp26qTgwQ27vj1_74bw1LzMt--7sD69II";
+  "1//04YyoYwL82kOICgYIARAAGAQSNwF-L9IrcFE65izwLlRxaIvv2rxvbdM3JPBE8IX5GTc0uIH4CZfgaMDRi2hVO39EvWdR9ann0nI";
 
 const oauth2Client = new OAuth2(
   CLIENT_ID,
@@ -21,6 +21,7 @@ oauth2Client.setCredentials({
 const getTransporter = async () => {
   const accessToken = await new Promise((resolve, reject) => {
     oauth2Client.getAccessToken((err, token) => {
+      console.log('err >>>> ', err);
       if (err) {
         reject();
       }
@@ -32,7 +33,7 @@ const getTransporter = async () => {
     service: "gmail",
     auth: {
       type: "OAuth2",
-      user: "lieuquynh3001@gmail.com",
+      user: "mqn2405@gmail.com",
       accessToken,
       clientId: CLIENT_ID,
       clientSecret: CLIENT_SECRET,
@@ -46,7 +47,7 @@ module.exports = {
     try {
       const transporter = await getTransporter();
       const mailOptions = {
-        from: '"ONE SOUND" <lieuquynh3001@gmail.com>',
+        from: '"ONE SOUND" <mqn2405@gmail.com>',
         to: to,
         subject: "Gửi mã OTP",
         html: ` 

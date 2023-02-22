@@ -555,9 +555,6 @@ export default function ClientLayout(props) {
                     )}
                   </div>
                 </Tooltip>
-                <Tooltip title="Chia sẻ" placement="top">
-                  <ShareIcon size={"20px"} sx={{ color: "white" }} />
-                </Tooltip>
               </div>
             </div>
           </div>
