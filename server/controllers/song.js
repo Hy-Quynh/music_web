@@ -126,14 +126,11 @@ module.exports = {
   deleteSong: asyncHandler(async (req, res) => {
     try {
       const { songId } = req?.params;
-      const singerSong = await deleteSongSinger(songId);
-      if (singerSong) {
-        const songResult = await deleteSong(songId);
-        if (songResult) {
-          return res.send({
-            success: true,
-          });
-        }
+      const songResult = await deleteSong(songId);
+      if (songResult) {
+        return res.send({
+          success: true,
+        });
       }
 
       return res.send({
