@@ -140,7 +140,7 @@ export default function AdminSong() {
           const url = await getDownloadURL(pathReference);
           newAvatar = url;
         } else {
-          return toast.error("Can't upload avatar");
+          return toast.error("Không thể tải hình ảnh");
         }
       }
 
@@ -155,7 +155,7 @@ export default function AdminSong() {
           const url = await getDownloadURL(pathReference);
           newLink = url;
         } else {
-          return toast.error("Can't upload song");
+          return toast.error("Không thể tải hình ảnh");
         }
       }
 
@@ -183,11 +183,11 @@ export default function AdminSong() {
         };
         const updateRes = await updateSong(editSong?._id, song);
         if (updateRes?.data?.success) {
-          toast.success("Update song succes");
+          toast.success("Cập nhật bài hát thành công");
           getListSong();
           return setAddSongModal({ status: false, type: "" });
         } else {
-          return toast.error(updateRes?.data?.error || "Update song failed");
+          return toast.error(updateRes?.data?.error || "Cập nhật bài hát thất bại");
         }
       }
     } catch (error) {
@@ -199,14 +199,14 @@ export default function AdminSong() {
     try {
       const deleteRes = await deleteSongData(songId);
       if (deleteRes?.data?.success) {
-        toast.success("Delete song success");
+        toast.success("Xoá bài hát thành công");
         getListSong();
         setPopoverId("");
       } else {
-        toast.error(deleteRes?.data?.error || "Delete song failed");
+        toast.error(deleteRes?.data?.error || "Xoá bài hát thất bại");
       }
     } catch (error) {
-      toast.error("Delete song failed");
+      toast.error("Xoá bài hát thất bại");
     }
   };
 

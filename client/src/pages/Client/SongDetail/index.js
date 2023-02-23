@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   changeUserFavouriteSong,
   getSongById,
@@ -32,6 +32,7 @@ export default function SongDetail() {
   const dispatch = useDispatch();
   const { song } = useSelector(songData);
   const userInfo = parseJSON(localStorage.getItem(USER_KEY));
+  const navigate = useNavigate();
 
   const getSongDetail = async () => {
     try {
@@ -58,7 +59,6 @@ export default function SongDetail() {
     (async () => {
       if (userInfo) {
         const favourite = await getUserFavouriteSong(id, userInfo?._id);
-        console.log('favourite >>> ', favourite);
         if (favourite?.data?.success)
           setSongFavourite(favourite?.data?.payload);
       }
@@ -112,6 +112,7 @@ export default function SongDetail() {
       toast.error("Thay đổi trạng thái yêu thích thất bại");
     }
   };
+
   return (
     <div>
       <section
@@ -131,7 +132,15 @@ export default function SongDetail() {
             <div className="song-detail-singer">
               Ca sĩ:{" "}
               {songDetail?.singer?.length
-                ? songDetail?.singer?.map((it) => it?.name).join(", ")
+                ? songDetail?.singer?.map((it, id) => (
+                    <span
+                      style={{ color: "black", cursor: 'pointer', textDecoration: 'underline' }}
+                      key={`song-singer-${id}`}
+                      onClick={() => navigate(`/singer/${it?._id}`)}
+                    >
+                      {it?.name} {id < songDetail?.singer?.length - 1 ? ', ' : ''}
+                    </span>
+                  ))
                 : ""}
             </div>
             <div
