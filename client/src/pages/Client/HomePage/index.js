@@ -17,6 +17,8 @@ import StopIcon from "../../../assets/image/stop-music.svg";
 import UserListen from "./components/UserListen";
 import { parseJSON } from "../../../utils/utils";
 import { USER_KEY } from "../../../utils/constants";
+import MostListenList from "./components/MostListenList";
+import MostFavouriteList from "./components/MostFavourietList";
 
 const PAGE_LIMIT = 6;
 
@@ -188,6 +190,30 @@ export default function HomePage() {
           <div className="row">
             <div className="col-12 col-lg-12">
               <MostSearchList />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        className={`miscellaneous-area`}
+      >
+        <div className="container">
+          <div className="row">
+            <div className="col-12 col-lg-12">
+              <MostListenList />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        className={`miscellaneous-area`}
+      >
+        <div className="container">
+          <div className="row">
+            <div className="col-12 col-lg-12">
+              <MostFavouriteList />
             </div>
           </div>
         </div>

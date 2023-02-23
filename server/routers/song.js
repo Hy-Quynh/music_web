@@ -14,5 +14,7 @@ router.get('/favourite/data', songController.getUserSongFavourite)
 router.put('/favourite/data', songController.changeUserFavouriteSong)
 router.post("/:songId/user/listen", songController.createUserListenTime);
 router.get("/user/listen", songController.getUserListenData);
+router.get("/most-listen/list", songController.getMostListenList);
+router.get("/most-favourite/list", songController.getMostFavourite);
 
 module.exports = router;

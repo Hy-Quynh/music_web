@@ -17,6 +17,8 @@ const {
   changeUserFavouriteSong,
   createUserListenSong,
   getUserListenData,
+  getSongMostListen,
+  getSongMostFavourite,
 } = require("../models/song");
 
 module.exports = {
@@ -282,6 +284,42 @@ module.exports = {
     try {
       const { userId } = req.query;
       const result = await getUserListenData(userId);
+      if (result) {
+        for (let i = 0; i < result?.length; i++) {
+          const singer = await getSongSinger(result?.[i]?._id);
+          result[i].singer = [...singer];
+        }
+      }
+      return res.send({ success: true, payload: result });
+    } catch (error) {
+      return res.send({
+        success: false,
+        error: "Lấy dữ liệu thất bại",
+      });
+    }
+  }),
+
+  getMostListenList: asyncHandler(async (req, res) => {
+    try {
+      const result = await getSongMostListen();
+      if (result) {
+        for (let i = 0; i < result?.length; i++) {
+          const singer = await getSongSinger(result?.[i]?._id);
+          result[i].singer = [...singer];
+        }
+      }
+      return res.send({ success: true, payload: result });
+    } catch (error) {
+      return res.send({
+        success: false,
+        error: "Lấy dữ liệu thất bại",
+      });
+    }
+  }),
+
+  getMostFavourite: asyncHandler(async (req, res) => {
+    try {
+      const result = await getSongMostFavourite();
       if (result) {
         for (let i = 0; i < result?.length; i++) {
           const singer = await getSongSinger(result?.[i]?._id);

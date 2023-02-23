@@ -106,3 +106,17 @@ export async function getUserListen(userId) {
     url: `/song/user/listen?userId=${userId}`,
   });
 }
+
+export async function getMostListen() {
+  return request({
+    method: "GET",
+    url: `/song/most-listen/list`,
+  });
+}
+
+export async function getMostFavourite() {
+  return request({
+    method: "GET",
+    url: `/song/most-favourite/list`,
+  });
+}

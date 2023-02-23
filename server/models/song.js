@@ -446,15 +446,53 @@ module.exports = {
         FROM songs s JOIN countries c ON s.country_id = c._id 
         LEFT JOIN albums al ON s.album_id = al._id  
         JOIN categorys ct ON s.category_id = ct._id
-        WHERE s.category_id=${Number(listRow[listIndex]?.category_id)} ORDER BY created_day ASC`);
+        WHERE s.category_id=${Number(
+          listRow[listIndex]?.category_id
+        )} ORDER BY created_day ASC`);
 
         fullList?.push(...song?.rows);
         listIndex = listIndex + 1;
       }
       return fullList;
     } catch (error) {
-      console.log('error >>> ', error);
+      console.log("error >>> ", error);
       return [];
     }
   },
+
+  getSongMostListen: async () => {
+    try {
+      const result =
+        await postgresql.query(`SELECT s.*, c.name as country_name, al.name as album_name, ct.name as category_name, sum(ult.time) as total_listen
+        FROM songs s JOIN user_listen_time ult ON s._id = ult.song_id 
+       JOIN countries c ON s.country_id = c._id 
+       LEFT JOIN albums al ON s.album_id = al._id  
+       JOIN categorys ct ON s.category_id = ct._id 
+       GROUP BY (s._id, c.name, al.name, ct.name) 
+       ORDER BY sum(ult.time) DESC LIMIT 10 OFFSET 0`);
+
+      return result?.rows || [];
+    } catch (error) {
+      return [];
+    }
+  },
+
+  getSongMostFavourite: async () => {
+    try {
+      const result =
+        await postgresql.query(`SELECT s.*, c.name as country_name, al.name as album_name, ct.name as category_name, COUNT(sf.song_id) as total_favourite
+        FROM songs s JOIN song_favourite sf ON s._id = sf.song_id 
+       JOIN countries c ON s.country_id = c._id 
+       LEFT JOIN albums al ON s.album_id = al._id  
+       JOIN categorys ct ON s.category_id = ct._id 
+       WHERE sf.favourite = 1
+       GROUP BY (s._id, c.name, al.name, ct.name) 
+       ORDER BY COUNT(sf.song_id) DESC LIMIT 10 OFFSET 0`);
+
+      return result?.rows || [];
+
+    } catch (error) {
+      return []
+    }
+  }
 };

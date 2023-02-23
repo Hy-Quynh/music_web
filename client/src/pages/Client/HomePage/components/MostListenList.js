@@ -10,43 +10,37 @@ import {
   songData,
 } from "../../../../slices/songSlice";
 import { useNavigate } from "react-router-dom";
-import { getUserListen } from "../../../../services/song";
-import { parseJSON } from "../../../../utils/utils";
-import { USER_KEY } from "../../../../utils/constants";
+import { getMostListen } from "../../../../services/song";
 
-export default function UserListen() {
+export default function MostListenList() {
+  const [listHit, setListHit] = useState([]);
   const dispatch = useDispatch();
   const { song } = useSelector(songData);
   const navigate = useNavigate();
   const { listSongPlaying } = useSelector(songData);
   const { listType } = useSelector(songData);
-  const userData = parseJSON(localStorage.getItem(USER_KEY));
-  const [listSong, setListSong] = useState([]);
 
-  const getUserRemind = async () => {
+  const getMostListenSong = async () => {
     try {
-      const result = await getUserListen(userData?._id);
-      if (result?.data?.success) {
-        setListSong(result?.data?.payload);
+      const hit = await getMostListen();
+      if (hit?.data?.success) {
+        setListHit(hit?.data?.payload);
       }
     } catch (error) {
-      console.log("Lấy danh sách gợi ý thất bại");
+      console.log("get most listen song ", error);
     }
   };
 
   useEffect(() => {
-    if (userData?._id) {
-      getUserRemind();
-    }
+    getMostListenSong();
   }, []);
 
   return (
-    <div className="new-hits-area mb-100" style={{ minHeight: "750px" }}>
+    <div className="new-hits-area mb-100">
       <div className="section-heading text-left mb-50" data-wow-delay="50ms">
-        <p>Điều gì mới</p>
-        <h2>Danh sách bài hát gợi ý</h2>
+        <h2>Bài hát được nghe nhiều nhất</h2>
       </div>
-      {listSong?.map((item, index) => {
+      {listHit?.map((item, index) => {
         return (
           <div
             className="single-new-item d-flex align-items-center justify-content-between"
@@ -114,16 +108,17 @@ export default function UserListen() {
                   onClick={() => {
                     if (
                       !listSongPlaying?.length ||
-                      listType?.type !== "remind-song"
+                      listType?.type !== "most-search"
                     ) {
-                      dispatch(setListSongPlaying(listSong));
+                      dispatch(setListSongPlaying(listHit));
                       dispatch(
                         setListType({
-                          type: "remind-song",
+                          type: "most-search",
                           ...listType,
                         })
                       );
                     }
+
                     dispatch(setSongPlaying({ ...item, playing: true }));
                   }}
                 />
