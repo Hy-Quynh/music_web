@@ -268,8 +268,6 @@ create table user_otp_secret (
 	created_day timestamp
 )
 
-SELECT COUNT(s.category_id) as total_category, s.category_id FROM user_listen_time ult JOIN songs s ON ult.song_id = s._id WHERE ult.user_id = 1 group by s.category_id order by total_category DESC limit 10 offset 0;
-
 create table user_listen_time (
 	_id serial NOT null PRIMARY KEY,
 	user_id int,

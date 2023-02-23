@@ -131,9 +131,9 @@ module.exports = {
     }
   },
 
-  checkPlaylistName: async (name) => {
+  checkPlaylistName: async (name, userId) => {
     try {
-      const result = await postgresql.query(`SELECT * FROM playlist WHERE name='${name}'`);
+      const result = await postgresql.query(`SELECT * FROM playlist WHERE name='${name}' AND user_id=${Number(userId)}`);
       return result?.rows?.length ? true : false;
     } catch (error) {
       return false;

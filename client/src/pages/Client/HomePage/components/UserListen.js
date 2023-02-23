@@ -26,6 +26,7 @@ export default function UserListen() {
   const getUserRemind = async () => {
     try {
       const result = await getUserListen(userData?._id);
+      console.log('result >>>> ', result);
       if (result?.data?.success) {
         setListSong(result?.data?.payload);
       }

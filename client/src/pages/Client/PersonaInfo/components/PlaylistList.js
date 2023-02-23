@@ -102,7 +102,8 @@ export default function PersonalPlaylist() {
 
       const result = await updatePlaylistName(
         editData?._id,
-        editData?.name?.trim()
+        editData?.name?.trim(),
+        userData?._id
       );
       if (result?.data?.success) {
         setVisibleEditModal(false);

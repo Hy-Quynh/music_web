@@ -15,6 +15,8 @@ import PopularArtist from "./components/PopularArtist";
 import PlayIcon from "../../../assets/image/play-music.svg";
 import StopIcon from "../../../assets/image/stop-music.svg";
 import UserListen from "./components/UserListen";
+import { parseJSON } from "../../../utils/utils";
+import { USER_KEY } from "../../../utils/constants";
 
 const PAGE_LIMIT = 6;
 
@@ -23,6 +25,7 @@ export default function HomePage() {
   const dispatch = useDispatch();
   const { song } = useSelector(songData);
   const { listSongPlaying } = useSelector(songData);
+  const userData = parseJSON(localStorage.getItem(USER_KEY));
 
   const getListHit = async () => {
     try {
@@ -164,17 +167,23 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="miscellaneous-area section-padding-100-0">
-        <div className="container">
-          <div className="row">
-            <div className="col-12 col-lg-12">
-              <UserListen />
+      {userData?._id && (
+        <section className="miscellaneous-area section-padding-100-0">
+          <div className="container">
+            <div className="row">
+              <div className="col-12 col-lg-12">
+                <UserListen />
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      <section className="miscellaneous-area ">
+      <section
+        className={`miscellaneous-area ${
+          !userData?._id ? "section-padding-100-0" : ""
+        }`}
+      >
         <div className="container">
           <div className="row">
             <div className="col-12 col-lg-12">

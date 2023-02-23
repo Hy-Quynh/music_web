@@ -18,12 +18,13 @@ export async function createNewPlaylist(user_id, name) {
   });
 }
 
-export async function updatePlaylistName(id, name) {
+export async function updatePlaylistName(id, name, userId) {
   return request({
     method: "PUT",
     url: `/playlist/${id}`,
     body: {
-      name
+      name,
+      userId
     },
   });
 }

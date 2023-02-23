@@ -35,7 +35,7 @@ module.exports = {
   createNewPlaylist: asyncHandler(async (req, res) => {
     try {
       const { user_id, name } = req?.body;
-      const checkName = await checkPlaylistName(name);
+      const checkName = await checkPlaylistName(name, user_id);
       if (!checkName) {
         const result = await createPlaylist(user_id, name);
         if (result) {
@@ -161,8 +161,8 @@ module.exports = {
   updatePlaylistName: asyncHandler(async (req, res) => {
     try {
       const { playlistId } = req?.params;
-      const { name } = req?.body;
-      const checkName = await checkPlaylistName(name);
+      const { name, userId } = req?.body;
+      const checkName = await checkPlaylistName(name, userId);
       if (!checkName) {
         const result = await updatePlaylistName(playlistId, name);
         if (result) {
