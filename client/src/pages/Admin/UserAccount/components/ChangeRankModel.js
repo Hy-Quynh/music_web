@@ -2,7 +2,7 @@ import { Chip } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import CustomModal from "../../../../components/CustomModal";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { COPPER_RANK, RANK_LIST } from "../../../../utils/constants";
+import { COPPER_RANK, RANK_ENUM, RANK_LIST } from "../../../../utils/constants";
 import { toast } from "react-hot-toast";
 import { changeUserRank } from "../../../../services/user";
 
@@ -23,13 +23,13 @@ export default function ChangeRankModal(props) {
     try {
       const changeRes = await changeUserRank(props?.user?._id, currentRank);
       if (changeRes?.data?.success) {
-        toast.success("Change status success");
+        toast.success("Thay đổi hạng thành công");
         props.onClose();
         return props.handleChangeRank(props?.user?._id, currentRank);
       }
-      return toast.error(changeRes?.data?.error || "Change status failed");
+      return toast.error(changeRes?.data?.error || "Thay đổi hạng thất bại");
     } catch (error) {
-      toast.error(error?.data?.error || "Change rank failed");
+      toast.error(error?.data?.error || "Thay đổi hạng thất bại");
     }
   };
 
@@ -37,10 +37,10 @@ export default function ChangeRankModal(props) {
     <CustomModal
       onClose={props.onClose}
       visible={props.visible}
-      title={"Customer class change"}
+      title={"Thay đổi hạng thất bại"}
       content={
-        <div>
-          <div>Customer class change confirmation</div>
+        <div style={{minWidth: '300px'}}>
+          <div style={{textAlign: 'center'}}>Chi tiết hạng thành viên</div>
           <div
             style={{
               marginTop: "20px",
@@ -59,7 +59,7 @@ export default function ChangeRankModal(props) {
                 >
                   <Chip
                     sx={{ cursor: "pointer" }}
-                    label={item}
+                    label={RANK_ENUM[item]}
                     color="primary"
                     variant={currentRank === item ? "filled" : "outlined"}
                   />
@@ -77,14 +77,14 @@ export default function ChangeRankModal(props) {
             color="error"
             onClick={() => props.onClose()}
           >
-            Cancel
+            Huỷ
           </LoadingButton>
           <LoadingButton
             autoFocus
             variant="text"
             onClick={() => handleChangeRank()}
           >
-            Confirm
+            Xác nhận
           </LoadingButton>
         </div>
       }

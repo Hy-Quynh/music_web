@@ -22,7 +22,6 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
-import ShareIcon from "@mui/icons-material/Share";
 import ShuffleIcon from "@mui/icons-material/Shuffle";
 import RepeatIcon from "@mui/icons-material/Repeat";
 
@@ -523,38 +522,45 @@ export default function ClientLayout(props) {
                 ) : (
                   <></>
                 )}
-                <Tooltip title="Tải xuống" placement="top">
-                  <div
-                    onClick={async () => {
-                      if (!downloadLoading) {
-                        setDownloadLoading(true);
-                        const result = await getBase64(song?.link);
-                        if (result?.data?.success) {
-                          var a = document.createElement("a");
-                          a.href = result?.data?.payload;
-                          a.download = `${song?.name || song?.song_name}.mp3`;
-                          a.click();
-                          toast.success("Tải về thành công");
-                          if (!song?.song_name) {
-                            await createSongDownload(
-                              song?._id,
-                              userData?._id || -1
-                            );
+                {userData?.rank === "SILVER" ? (
+                  <Tooltip title="Tải xuống" placement="top">
+                    <div
+                      onClick={async () => {
+                        if (!downloadLoading) {
+                          setDownloadLoading(true);
+                          const result = await getBase64(song?.link);
+                          if (result?.data?.success) {
+                            var a = document.createElement("a");
+                            a.href = result?.data?.payload;
+                            a.download = `${song?.name || song?.song_name}.mp3`;
+                            a.click();
+                            toast.success("Tải về thành công");
+                            if (!song?.song_name) {
+                              await createSongDownload(
+                                song?._id,
+                                userData?._id || -1
+                              );
+                            }
                           }
+                          setDownloadLoading(false);
                         }
-                        setDownloadLoading(false);
-                      }
-                    }}
-                  >
-                    {downloadLoading ? (
-                      <CircularProgress size={"20px"} sx={{ color: "white" }} />
-                    ) : (
-                      <DownloadIcon
-                        sx={{ color: "white", cursor: "pointer" }}
-                      />
-                    )}
-                  </div>
-                </Tooltip>
+                      }}
+                    >
+                      {downloadLoading ? (
+                        <CircularProgress
+                          size={"20px"}
+                          sx={{ color: "white" }}
+                        />
+                      ) : (
+                        <DownloadIcon
+                          sx={{ color: "white", cursor: "pointer" }}
+                        />
+                      )}
+                    </div>
+                  </Tooltip>
+                ) : (
+                  <></>
+                )}
               </div>
             </div>
           </div>

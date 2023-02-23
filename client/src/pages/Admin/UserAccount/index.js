@@ -19,7 +19,7 @@ import { dateTimeConverter } from "../../../utils/utils";
 import { getAllUserAccount } from "../../../services/user";
 import ChangeStatusModal from "./components/ChangeStatusModal";
 import ChangeRankModal from "./components/ChangeRankModel";
-import { COPPER_RANK } from "../../../utils/constants";
+import { COPPER_RANK, RANK_ENUM } from "../../../utils/constants";
 
 const columns = [
   { id: "stt", label: "#", minWidth: 50 },
@@ -27,19 +27,19 @@ const columns = [
   { id: "email", label: "Email", minWidth: 170 },
   {
     id: "status",
-    label: "Status",
+    label: "Trạng thái",
     minWidth: 170,
     align: "center",
   },
   {
     id: "rank",
-    label: "Rank",
+    label: "Hạng",
     minWidth: 170,
     align: "center",
   },
   {
     id: "created_day",
-    label: "Created Date",
+    label: "Ngày tạo",
     minWidth: 170,
     align: "center",
   },
@@ -52,9 +52,9 @@ const columns = [
 
 const displayRank = (rank) => {
   if (!rank) {
-    return COPPER_RANK;
+    return 'Thường';
   }
-  return rank;
+  return RANK_ENUM[rank];
 };
 
 export default function UserAccount() {
@@ -105,7 +105,7 @@ export default function UserAccount() {
           gutterBottom
           sx={{ textAlign: "left" }}
         >
-          Customer Account Management
+          Quản lí tài khoản khách hàng
         </Typography>
       </Stack>
       <Paper sx={{ width: "100%", overflow: "hidden" }}>

@@ -24,6 +24,7 @@ export default function Login() {
             role: payload?.role,
             name: payload?.name,
             _id: payload?._id,
+            rank: payload?.rank
           })
         );
         toast.success(
