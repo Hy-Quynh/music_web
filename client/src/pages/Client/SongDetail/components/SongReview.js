@@ -446,17 +446,37 @@ export default function SongReview({ songId }) {
                                   )}
                               </p>
                               <div>
+                                <span
+                                  style={{
+                                    position: "absolute",
+                                    marginLeft: "5px",
+                                    padding: "1px 4px",
+                                    color: "white",
+                                    background: "black",
+                                    fontSize: "11px",
+                                    marginTop: "5px",
+                                    width: "120px",
+                                    textAlign: "center",
+                                    textOverflow: 'ellipsis',
+                                    overflow: 'hidden'
+                                  }}
+                                >
+                                  {reviewItem?.user_email}
+                                </span>
                                 <TextareaAutosize
                                   aria-label="minimum height"
                                   minRows={2}
-                                  value={childrenReviewItem?.review}
                                   style={{
                                     resize: "none",
                                     width: "100%",
                                     padding: "5px",
                                   }}
                                   disabled={true}
-                                />
+                                >
+                                  {" "?.repeat(
+                                    33
+                                  ) + childrenReviewItem?.review}
+                                </TextareaAutosize>
                               </div>
                             </div>
                           </div>
