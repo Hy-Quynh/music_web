@@ -522,10 +522,10 @@ export default function ClientLayout(props) {
                 ) : (
                   <></>
                 )}
-                {userData?.rank === "SILVER" ? (
-                  <Tooltip title="Tải xuống" placement="top">
-                    <div
-                      onClick={async () => {
+                <Tooltip title="Tải xuống" placement="top">
+                  <div
+                    onClick={async () => {
+                      if (userData?.rank === "SILVER") {
                         if (!downloadLoading) {
                           setDownloadLoading(true);
                           const result = await getBase64(song?.link);
@@ -544,23 +544,21 @@ export default function ClientLayout(props) {
                           }
                           setDownloadLoading(false);
                         }
-                      }}
-                    >
-                      {downloadLoading ? (
-                        <CircularProgress
-                          size={"20px"}
-                          sx={{ color: "white" }}
-                        />
-                      ) : (
-                        <DownloadIcon
-                          sx={{ color: "white", cursor: "pointer" }}
-                        />
-                      )}
-                    </div>
-                  </Tooltip>
-                ) : (
-                  <></>
-                )}
+
+                      }else {
+                        return toast.error('Chức năng này chỉ dành cho tài khoản VIP')
+                      }
+                    }}
+                  >
+                    {downloadLoading ? (
+                      <CircularProgress size={"20px"} sx={{ color: "white" }} />
+                    ) : (
+                      <DownloadIcon
+                        sx={{ color: "white", cursor: "pointer" }}
+                      />
+                    )}
+                  </div>
+                </Tooltip>
               </div>
             </div>
           </div>

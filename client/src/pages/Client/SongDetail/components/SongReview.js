@@ -161,7 +161,7 @@ export default function SongReview({ songId }) {
                 <Button
                   variant="contained"
                   onClick={() => createNewReview()}
-                  sx={{ color: "white !important", background: '#252525' }}
+                  sx={{ color: "white !important", background: "#252525" }}
                 >
                   Gửi đánh giá
                 </Button>
@@ -171,7 +171,7 @@ export default function SongReview({ songId }) {
         </div>
         <div className="col-sm-2 col-md-3"></div>
       </div>
-      
+
       {reviewData.map((reviewItem, reviewIndex) => {
         return (
           <div key={`product-review-item-${reviewIndex}`}>
@@ -219,7 +219,9 @@ export default function SongReview({ songId }) {
                       </h6>
                     </div>
                   </Stack>
-                  <p style={{ marginBottom: 0, fontSize: "16px", marginTop: 0 }}>
+                  <p
+                    style={{ marginBottom: 0, fontSize: "16px", marginTop: 0 }}
+                  >
                     Ngày review:{" "}
                     {reviewItem.created_day &&
                       dateTimeConverter(reviewItem?.created_day)}
@@ -234,7 +236,7 @@ export default function SongReview({ songId }) {
                           : (reviewItem?.review && reviewItem?.review) || ""
                       }
                       disabled={reviewItem?._id === reviewEditId ? false : true}
-                      style={{ resize: "none", padding: '5px' }}
+                      style={{ resize: "none", padding: "5px" }}
                       onChange={(event) => {
                         setReviewEditContent(event?.target?.value);
                       }}
@@ -247,8 +249,7 @@ export default function SongReview({ songId }) {
                       marginTop: "5px",
                     }}
                   >
-                    {Number(reviewItem?.user_id) ===
-                    Number(userData?._id) ? (
+                    {Number(reviewItem?.user_id) === Number(userData?._id) ? (
                       <div
                         style={{
                           display: "flex",
@@ -444,17 +445,19 @@ export default function SongReview({ songId }) {
                                     childrenReviewItem?.created_day
                                   )}
                               </p>
-                              <TextareaAutosize
-                                aria-label="minimum height"
-                                minRows={2}
-                                value={childrenReviewItem?.review}
-                                style={{
-                                  resize: "none",
-                                  width: "100%",
-                                  padding: '5px'
-                                }}
-                                disabled={true}
-                              />
+                              <div>
+                                <TextareaAutosize
+                                  aria-label="minimum height"
+                                  minRows={2}
+                                  value={childrenReviewItem?.review}
+                                  style={{
+                                    resize: "none",
+                                    width: "100%",
+                                    padding: "5px",
+                                  }}
+                                  disabled={true}
+                                />
+                              </div>
                             </div>
                           </div>
                         );
@@ -484,7 +487,11 @@ export default function SongReview({ songId }) {
                           aria-label="minimum height"
                           minRows={2}
                           value={replyContent}
-                          style={{ resize: "none", width: "90%", padding: '5px' }}
+                          style={{
+                            resize: "none",
+                            width: "90%",
+                            padding: "5px",
+                          }}
                           onChange={(event) =>
                             setReplyContent(event?.target?.value)
                           }
@@ -502,7 +509,11 @@ export default function SongReview({ songId }) {
                       >
                         <Button
                           variant="outlined"
-                          sx={{ padding: "2px", color: '#252525', borderColor: '#252525' }}
+                          sx={{
+                            padding: "2px",
+                            color: "#252525",
+                            borderColor: "#252525",
+                          }}
                           onClick={() => {
                             createReviewChildren();
                           }}
@@ -537,7 +548,7 @@ export default function SongReview({ songId }) {
                   className="load-more-btn text-center"
                   onClick={() => {
                     if (currentPage > 0) {
-                      getAllReview(currentPage - 1)
+                      getAllReview(currentPage - 1);
                       setCurrentPage(currentPage - 1);
                     }
                   }}
@@ -561,14 +572,12 @@ export default function SongReview({ songId }) {
                   className="load-more-btn text-center"
                   onClick={() => {
                     if (currentPage + 1 < totalPage) {
-                      getAllReview(currentPage + 1)
+                      getAllReview(currentPage + 1);
                       setCurrentPage(currentPage + 1);
                     }
                   }}
                 >
-                  <a className="btn oneMusic-btn">
-                    Sau
-                  </a>
+                  <a className="btn oneMusic-btn">Sau</a>
                 </div>
               </div>
             </div>
